@@ -104,15 +104,15 @@ osc_cols = high_res_processor.compute_osc_cols()
 # Get two middle oscillating columns
 mid_idx = len(osc_cols) // 2
 
-left_temp_last_cycle = high_res_heating_results['heating_rate_results'][555]['temp_last_cycle']
-right_temp_last_cycle = high_res_heating_results['heating_rate_results'][556]['temp_last_cycle']
+left_temp_last_cycle = high_res_heating_results['heating_rate_results'][osc_cols[mid_idx - 1]]['temp_last_cycle']
+right_temp_last_cycle = high_res_heating_results['heating_rate_results'][osc_cols[mid_idx]]['temp_last_cycle']
 avg = (left_temp_last_cycle + right_temp_last_cycle) / 2
 
 left_edge = high_res_heating_results['heating_rate_results'][osc_cols[0]]['temp_last_cycle']
 right_edge = high_res_heating_results['heating_rate_results'][osc_cols[-1]]['temp_last_cycle']
 
 temp_last_cycle = avg
-radial_distances = high_res_heating_results['heating_rate_results'][555]['radial_distances']
+radial_distances = high_res_heating_results['heating_rate_results'][osc_cols[mid_idx]]['radial_distances']
 
 # Compute best fit lines
 x = radial_distances[19:36]
