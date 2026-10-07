@@ -91,8 +91,9 @@ RESULTS_PATHS = [
 # Cross-platform path handling: convert Windows (I:\) to macOS (/Volumes/) if needed.
 # The same fallback as compute_horizontal_wavelengths.py:50-57, plus the "/Volumes/MyBook"
 # mount point actually used on this machine (the bare "/Volumes/ArchiveSims" form does
-# not resolve here, which is why that script only prints warnings on macOS).
-_POSIX_ROOTS = ["/Volumes/", "/Volumes/MyBook/"]
+# not resolve here, which is why that script only prints warnings on macOS). "Z:\" is the
+# Windows workstation mount of the same archive.
+_POSIX_ROOTS = ["Z:\\", "/Volumes/", "/Volumes/MyBook/"]
 for _i, _path in enumerate(RESULTS_PATHS):
     if os.path.exists(_path):
         continue

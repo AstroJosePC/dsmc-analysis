@@ -149,6 +149,7 @@ def manuscript_table(rows: list[dict]) -> list[dict]:
             "Total cells": r["total_cells"],
             "dPhi (deg)": round(r["dphi_deg"], 4),
             "dPhi r0 (km)": round(r["dphi_km_lower_boundary"], 1),
+            "Band half-width (deg)": round(r["band_half_width_deg"], 4),
             "Forced cells": r["wedge_cells"],
             "Forcing region L (km)": round(r["forcing_width_km_lower_boundary"], 1),
             "Forcing region (deg)": round(r["wedge_cells"] * r["dphi_deg"], 2),
