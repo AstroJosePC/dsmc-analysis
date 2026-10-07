@@ -128,8 +128,8 @@ def plot_fit_with_confidence(ax, x, popt, pcov, func, confidence=0.95, color='r'
     ax.plot(x, y_fit, color=color, ls='--', label=label)
     ax.fill_between(x, y_lower, y_upper, color=color, alpha=0.2, label=f'{int(confidence*100)}% CI')
 
-# prepare data and fit
-_df = df[(df['Cell Size'] >= 6) & (df['Amp'] == 0.25)]
+# prepare data and fit: production runs S1-S6 only (the parquet also holds a 72-cell exploratory run)
+_df = df[df['Azi Cells'].isin(azi_cells_to_sim) & (df['Amp'] == 0.25)]
 df_filtered_grouped = _df.groupby('Azi Cells').agg({'Density Amplitude Growth': 'max'}).reset_index()
 
 fig, ax = plt.subplots(figsize=(6.5, 4.5))
@@ -148,6 +148,20 @@ ax.axhline(y=spherical_2d_growth_profiles['growth_peaks_std'].data[:, -1].max(),
 plot_fit_with_confidence(ax, x_fit, popt, pcov, func, confidence=0.95, color='r', label=r'Fit: $A - \frac{B}{x}$')
 ax.legend(fontsize=10)
 plt.tight_layout()
+fig.savefig(path.join(path.dirname(__file__), 'Figure_7.png'), dpi=300, bbox_inches='tight')
 plt.show()
+
+# ----------------- Table 4: G_max offset from the fitted asymptote -----------------
+LAMBDA_H_KM = 463.6  # S6 horizontal wavelength quoted in the paper
+perr = np.sqrt(np.diag(pcov))
+print(f"G_inf = {popt[0]:.3f} +- {perr[0]:.3f}, B = {popt[1]:.1f} +- {perr[1]:.1f}")
+
+table4 = df_filtered_grouped.rename(columns={'Azi Cells': 'N_phi', 'Density Amplitude Growth': 'G_max'})
+table4.insert(0, 'Simulation', table4['N_phi'].map(azi_cells_to_sim))
+table4['cell_width_km'] = table4['N_phi'].map(lambda n: config_info[n]['cell_width'])
+table4['cells_per_lambda_h'] = LAMBDA_H_KM / table4['cell_width_km']
+table4['offset_pct'] = 100 * (table4['G_max'] - popt[0]) / popt[0]
+table4.to_csv(path.join(path.dirname(__file__), 'Table_4_resolution_audit.csv'), index=False, float_format='%.4f')
+print(table4.to_string(index=False, float_format='%.3f'))
 
 # end of script
