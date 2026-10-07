@@ -11,8 +11,10 @@ Mirroring the notebook ('density and heat manuscript plots.ipynb') and zenodo pa
 import os
 from pathlib import Path
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats
 
 # Import data processor and helper functions
 from optimized_loader import OptimizedDSMCDataProcessor
@@ -30,8 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent
 # Simulation paths (try local Mac mount first, then Windows fallback)
 S6_CANDIDATE_PATHS = [
     Path("/Volumes/MyBook/ArchiveSims/Results_20240722_041906.318"),
-    Path(r"I:\ArchiveSims\Results_20240722_041906.318"),
     Path(r"Z:\ArchiveSims\Results_20240722_041906.318"),
+    Path(r"I:\ArchiveSims\Results_20240722_041906.318"),
 ]
 S6_DIR = next((p for p in S6_CANDIDATE_PATHS if p.exists()), None)
 if S6_DIR is None:
@@ -40,6 +42,7 @@ if S6_DIR is None:
 # 1D Spherical heating rate dataset (AW1)
 AW1_CANDIDATE_PATHS = [
     Path("/Volumes/MyBook/ArchiveSims/Results_20250326_133319.916/exports/heating_rate_data.npz"),
+    Path(r"Z:\ArchiveSims\Results_20250326_133319.916\exports\heating_rate_data.npz"),
     Path(r"I:\ArchiveSims\Results_20250326_133319.916\exports\heating_rate_data.npz"),
     BASE_DIR / "heating_rate_data_1d_radial.npz",
     BASE_DIR / "zenodo_release" / "heating_rate_data_1d_radial.npz",
@@ -114,12 +117,13 @@ high_res_processor = OptimizedDSMCDataProcessor(str(S6_DIR))
 high_res_processor.load_parameters()
 high_res_processor.load_data()
 
-# Identify oscillating columns: middle (554, 555) and outer edges (511, 598)
+# Identify oscillating columns (0-indexed; forced range 511-598 inclusive, 88 cells):
+# middle pair (554, 555) and outer edges (511, 598). 1-indexed (Fortran/text): 555/556 and 512/599.
 osc_cols = high_res_processor.compute_osc_cols()
 mid_idx = len(osc_cols) // 2
 cols_center = [int(osc_cols[mid_idx - 1]), int(osc_cols[mid_idx])]  # [554, 555]
 cols_outer = [int(osc_cols[0]), int(osc_cols[-1])]                 # [511, 598]
-cols_to_compute = sorted(list(set(cols_center + cols_outer + [556])))
+cols_to_compute = sorted(cols_center + cols_outer)
 
 print(f"Center columns: {cols_center}, Outer edge columns: {cols_outer}")
 
@@ -155,21 +159,24 @@ print(f"1D Spherical Model:  {slope_1d:.6f} km⁻¹ (R² = {r2_1d:.4f})")
 print("\nComputing temperature heating rates...")
 heating_results = high_res_processor.compute_temperature_heating_rate(H=H, azimuthal_indices=cols_to_compute)
 
-left_temp_last_cycle = heating_results['heating_rate_results'][555]['temp_last_cycle']
-right_temp_last_cycle = heating_results['heating_rate_results'][556]['temp_last_cycle']
-avg_center_temp = (left_temp_last_cycle + right_temp_last_cycle) / 2.0
+hr = heating_results['heating_rate_results']
+avg_center_temp = 0.5 * (hr[cols_center[0]]['temp_last_cycle'] + hr[cols_center[1]]['temp_last_cycle'])
+avg_edge_temp = 0.5 * (hr[cols_outer[0]]['temp_last_cycle'] + hr[cols_outer[1]]['temp_last_cycle'])
 
-left_edge_temp = heating_results['heating_rate_results'][cols_outer[0]]['temp_last_cycle']
-right_edge_temp = heating_results['heating_rate_results'][cols_outer[1]]['temp_last_cycle']
-avg_edge_temp = 0.5 * (left_edge_temp + right_edge_temp)
-
-radial_distances = heating_results['heating_rate_results'][555]['radial_distances']
-x_alt = radial_distances[19:36]  # altitude range for fit (~153 to 327 km)
+ref = hr[cols_center[0]]
+x_alt = ref['radial_distances'][ref['cell_min_idx']:ref['cell_max_idx'] + 1]  # ~153 to 327 km
 y1_center = avg_center_temp
 y2_edges = avg_edge_temp
 
-slope1_center, intercept1_center = np.polyfit(x_alt, y1_center, 1)
-slope2_edges, intercept2_edges = np.polyfit(x_alt, y2_edges, 1)
+
+def fit_slope_ci(x, y):
+    """OLS slope with 95% t-interval half-width, as in helper_funcs.compute_heating_rate_slope."""
+    lr = stats.linregress(x, y)
+    return lr.slope, lr.intercept, stats.t.ppf(0.975, len(x) - 2) * lr.stderr
+
+
+slope1_center, intercept1_center, ci1_center = fit_slope_ci(x_alt, y1_center)
+slope2_edges, intercept2_edges, ci2_edges = fit_slope_ci(x_alt, y2_edges)
 
 # Tian reference line (slope 9.4 K/H)
 line_94_y = 9.4 * (x_alt - x_alt[0]) / H
@@ -178,9 +185,22 @@ line_94_intercept = np.mean([y1_center[0], y2_edges[0]])
 # 1D Spherical AW1 data
 aw1_data = np.load(AW1_PATH)
 
-print("\n--- Temperature Heating Slopes ---")
-print(f"Slope for center: {slope1_center * H:.4f} K/H")
-print(f"Slope for edges:  {slope2_edges * H:.4f} K/H")
+print("\n--- Temperature Heating Slopes (95% t-interval) ---")
+print(f"Slope for center: {slope1_center * H:.4f} +- {ci1_center * H:.4f} K/H")
+print(f"Slope for edges:  {slope2_edges * H:.4f} +- {ci2_edges * H:.4f} K/H")
+
+# Table 2 temperature-gradient column, all rows with the same estimator and interval
+aw1_ci = 0.5 * (float(aw1_data['slope_H_ci_upper']) - float(aw1_data['slope_H_ci_lower']))
+table2 = pd.DataFrame([
+    dict(geometry='1D Cartesian (T23)', dTdz_K_per_H0=9.4, ci95_K_per_H0=np.nan, n_points=np.nan),
+    dict(geometry='1D Radial (P26)', dTdz_K_per_H0=float(aw1_data['slope_H']), ci95_K_per_H0=aw1_ci, n_points=int(aw1_data['n_points'])),
+    dict(geometry='2D centerline (S6)', dTdz_K_per_H0=slope1_center * H, ci95_K_per_H0=ci1_center * H, n_points=len(x_alt)),
+    dict(geometry='2D edges (S6)', dTdz_K_per_H0=slope2_edges * H, ci95_K_per_H0=ci2_edges * H, n_points=len(x_alt)),
+])
+table2_path = BASE_DIR / "exports" / "table2_temperature_gradients.csv"
+table2.to_csv(table2_path, index=False, float_format='%.4f')
+print(table2.to_string(index=False, float_format='%.2f'))
+print(f"Saved {table2_path}")
 
 
 # ---------------------------------------------------------
