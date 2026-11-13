@@ -90,6 +90,7 @@
 
 % ------------------------------------------------------------------ boxes, links, citations
 \usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
 \usepackage{enumitem}
 \setlist{itemsep=2pt, topsep=2pt, parsep=0pt, leftmargin=1.3em}
 \setlist[itemize]{label={\color{grey}–}}
@@ -132,46 +133,62 @@
 \vspace{8pt}
 {\small José Pérez Chávez}\par
 \vspace{2pt}
-{\footnotesize\color{grey}Numbers generated \generatedOn{} from the analysis files of the finished verification runs, h2\_ubc\_rtop sweep and h2\_hold campaign.}\par
+{\footnotesize\color{grey}Numbers generated \generatedOn{} from the finished verification, sweep and campaign runs (\S\ref{sec:runs}).}\par
 \vspace{2pt}
 {\color{rulegrey}\rule{\textwidth}{0.6pt}}
 \end{flushleft}
 
 % Summary: written last, after the body.
-\begin{tcolorbox}[enhanced, sharp corners, frame hidden, colback=white,
+\begin{tcolorbox}[enhanced, breakable, sharp corners, frame hidden, colback=white,
   borderline west={1.2pt}{0pt}{lightgrey}, left=12pt, right=2pt, top=2pt, bottom=2pt,
   before skip=6pt, after skip=4pt]
 {\footnotesize\ttfamily\color{grey}SUMMARY}\par\vspace{3pt}
 \small
+We added two ballistic upper boundary conditions (UBCs) to our 1-D Mars DSMC solver, tested them against collisionless theory, and compared them with \citet{cm21}, who simulated \Htwo{} escape at Callisto.
+\begin{itemize}[leftmargin=1.1em, itemsep=1pt, topsep=2pt]
+  \item \emph{Reflect}: a bound particle that crosses the top is reflected specularly. \emph{Kepler hold}: it is set aside and re-injected at its analytic two-body return time. \emph{Explicit tracking}: it is integrated with RK4 until it re-enters. The particles waiting to return are the \emph{hold}.
+  \item Three run groups (\S\ref{sec:context}): \verNHoldRuns{} collisionless \emph{verification} runs; a collisional \emph{sweep} of \nSweepTotal{} runs over the top altitude, \sweepTend{}~s each; a collisional \emph{campaign} of \campNtotal{} runs at three tops, \campTend{}~s each.
+  \item $z$ or $|z|$ is a difference in units of its standard error.
+\end{itemize}
+\textbf{Main result.} The two ballistic UBCs agree with each other and with collisionless theory. Replacing reflection by either changes our escape rate far less than in the paper, which we attribute to our exosphere being collisionless above the lowest top. The Kepler hold is the default; explicit tracking is needed only when the motion above the top is not Keplerian (\S\ref{sec:kve}).
 \begin{itemize}[leftmargin=1.1em, itemsep=3pt]
-  \item \textbf{Our \Htwo{} column is far less collisional than Carberry Mogan's.} At the lower boundary, $\mathrm{Kn}_0 = \ell/r_0 = $ \oKnZero{}, against their \pKnZero{} (\oKnRatio{} times larger). Our Kn\,=\,1 exobase sits at \exoZReflectKn{}~km ($r_x/r_0 = $ \exoRReflectKn{}), below every upper boundary we use; theirs lies at \pExoKnReflect{}\,$r_0$. Most of the differences below follow from this (\S\ref{sec:paper}).
-  \item \textbf{The upper boundary condition reshapes our exosphere but hardly changes escape.} At \profZtop{}~km, the Kepler-hold exosphere is cooler than reflect at the top ($T$ ratio \TRatioKeplerTop{}) and less dense ($n$ ratio \nRatioKeplerTop{}, max $|z|$ \nZmaxKepler{}), as in their Fig.~2. Yet $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ is \sweepPhiRatioRange{} across the sweep, and \sweepPhiRatioTop{} at \profZtop{}~km. They find \pPhiRatioStart{}–\pPhiRatioEnd{} (\S\ref{sec:escape}, \S\ref{sec:time}).
-  \item \textbf{Our hold fills on a time longer than their orbital clock.} The collisionless hold reaches 90\% of steady state in $\tauf = $ \tauFillLo{}–\tauFillHi{}~s, which is \tauFillLoOrb{}–\tauFillHiOrb{}\,$\torb$. Our \Htwo{} has no orbital clock, so time is normalised by $\tauf$. At the highest top, the sweep ends at \heldFracSweepEnd{}\% of the steady hold and the campaign at \heldFracCampEnd{}\%.
-  \item \textbf{The ballistic/return ratio relaxes fast here.} In the collisionless verification runs it is \verInRetKepler{} (analytic \anInRetVerEnd{}) by \verTend{}~s, while the hold is only \heldFracVerEnd{}\% full. Their ratio is still \pInRetEnd{} after \pFigThreeThi{}\,$\torb$. Candidate causes are our Hill-sphere cutoff, our larger $\lambda_{\mathrm{J},0}$ and their collisions above the exobase; our data cannot yet separate them (\S\ref{sec:time}).
-  \item \textbf{The Kepler hold and explicit RK4 tracking are equivalent.} Escape matches the collisionless solution ($z = $ \verEscZKepler{} and \verEscZExplicit{}). The held counts differ by \verKvsEHeld{}\%, and the density profiles agree to max $|z| = $ \verKvsEZ{}. RK4 returns lag the Kepler prediction by \verDelayMean{}\,$\pm$\,\verDelayStd{}~s, which is $\Delta t/2 \pm \Delta t/\sqrt{12}$. The hold balance closes exactly in all \verNHoldRuns{} runs.
+  \item \textbf{Our \Htwo{} column is far less collisional than that of Carberry Mogan et al.} At the lower boundary, the Knudsen number $\mathrm{Kn}_0 = \ell/r_0$ (mean free path over source radius) is \oKnZero{}, against their \pKnZero{} (\oKnRatio{} times larger). Our Kn\,=\,1 exobase (where $\ell$ equals the scale height) sits at \exoZReflectKn{}~km ($r_x/r_0 = $ \exoRReflectKn{}), below every upper boundary we use; theirs lies at \pExoKnReflect{}\,$r_0$. Most of the differences below follow from this (\S\ref{sec:paper}).
+  \item \textbf{The upper boundary condition reshapes our exosphere but hardly changes escape.} At \profZtop{}~km, the Kepler-hold exosphere is cooler than reflect at the top ($T_\mathrm{Kepler}/T_\mathrm{reflect} = $ \TRatioKeplerTop{}) and less dense ($n$ ratio \nRatioKeplerTop{}, max $|z|$ \nZmaxKepler{}), as in their Fig.~2. Yet the escape-rate ratio $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ is \sweepPhiRatioRange{} across the sweep, and \sweepPhiRatioTop{} at \profZtop{}~km. They find \pPhiRatioStart{}–\pPhiRatioEnd{} (\S\ref{sec:escape}, \S\ref{sec:time}).
+  \item \textbf{The hold takes longer to fill than one Callisto orbit ($\torb$).} The collisionless hold reaches 90\% of steady state in $\tauf = $ \tauFillLo{}–\tauFillHi{}~s, which is \tauFillLoOrb{}–\tauFillHiOrb{}\,$\torb$. Our problem has no external clock such as $\torb$, so time is normalised by $\tauf$. At the highest top, the sweep ends at \heldFracSweepEnd{}\% of the steady hold and the campaign at \heldFracCampEnd{}\%.
+  \item \textbf{The rate into the hold over the return rate (the paper's ballistic/return ratio) falls to unity quickly here.} In the collisionless verification runs it is \verInRetKepler{} (analytic \anInRetVerEnd{}) by \verTend{}~s, while the hold is only \heldFracVerEnd{}\% full. Their ratio is still \pInRetEnd{} after \pFigThreeThi{}\,$\torb$. Candidate causes are our Hill-sphere cutoff (bound orbits with apoapsis beyond Mars's Hill radius count as escaped), our larger $\lambda_{\mathrm{J},0}$ and their collisions above the exobase; our data cannot yet separate them (\S\ref{sec:time}).
+  \item \textbf{The Kepler hold and explicit RK4 tracking are equivalent.} In the collisionless verification runs, escape matches theory ($z = $ \verEscZKepler{} and \verEscZExplicit{}). The held counts differ by \verKvsEHeld{}\%, and the density profiles agree to max $|z| = $ \verKvsEZ{}. RK4 returns lag the Kepler prediction by \verDelayMean{}\,$\pm$\,\verDelayStd{}~s, which is $\Delta t/2 \pm \Delta t/\sqrt{12}$. The hold balance (entries minus returns equals the change in held count) closes exactly in all \verNHoldRuns{} runs.
   \item \textbf{The equivalence holds in the collisional \campTend{}~s campaign at all three tops.} Explicit/Kepler escape is \prodEscRatioTop{} at the highest top, and the time-mean held counts agree to \prodHeldRatioRange{}. Density and temperature profiles agree to max $|z| = $ \prodZmaxN{} and \prodZmaxT{}. Explicit tracking costs \prodWallRatioRange{} times the Kepler wall time (\S\ref{sec:kve}).
-  \item \textbf{The new diagnostic exposes bug 2 at once.} On \texttt{main}, the hold records \eightReturns{} returns, and the held count grows at the entry rate (\S\ref{sec:verif}).
-  \item \textbf{Open} (\S\ref{sec:open}): the causes of the fast relaxation of the ballistic/return ratio (first, the Hill cutoff) still need testing, and no collisional run reaches Carberry Mogan's $\mathrm{Kn}_0$.
+  \item \textbf{The new hold diagnostic exposes an earlier solver bug at once.} Before the fix, the Kepler hold never released its particles (the \emph{frozen hold}). Run on purpose (E8), it records \eightReturns{} returns, and the held count grows at the entry rate (\S\ref{sec:verif}).
+  \item \textbf{Open} (\S\ref{sec:open}): (i) which candidate cause explains why our ballistic/return ratio relaxes so much faster than theirs; the Hill cutoff can be tested first, with a collisionless calculation. (ii) No collisional run of ours reaches their $\mathrm{Kn}_0$, so the size of their escape suppression is not reproduced.
 \end{itemize}
 \end{tcolorbox}
 
 % ================================================================== 1
 \section{Context and question}\label{sec:context}
 
-The 1-D Mars DSMC solver (HARRAH) needs an upper boundary condition (UBC) for computational particles that cross the top of the domain, $\rtop$, while still bound. Specular reflection is cheap, and it is the long-standing default. However, it returns every such particle instantly. \citet{cm21} showed for \Htwo{} at Callisto that this inflates and warms the exosphere and overestimates escape by about \pOverestimate{}\% over less than one orbital period. Their alternative is to track the ballistic arcs explicitly. They argue that ballistic treatment is needed for transient problems such as the gravity-wave runs of \citet{leclercq20}, which are the target application of this solver.
+Our 1-D Mars DSMC solver (HARRAH) needs an upper boundary condition (UBC) for computational particles that cross the top of the domain, $\rtop$, while still bound. Specular reflection is cheap, and it is the long-standing default. However, it returns every such particle instantly. \citet{cm21} showed for \Htwo{} at Callisto that this inflates and warms the exosphere and overestimates escape by about \pOverestimate{}\% over less than one orbital period. Their alternative is to track the ballistic arcs explicitly. They argue that ballistic treatment is needed for transient problems such as the gravity-wave runs of \citet{leclercq20}, which are the target application of this solver.
 
-Branch \texttt{feature/ubc-hold-explicit} (draft PR~\#14, stacked on \#13) provides two ballistic UBCs that share one escape decision:
+The solver now has two ballistic UBCs that share one escape decision (code references are in Appendix~\ref{app:pipeline}). In both, a bound particle that crosses $\rtop$ leaves the simulated domain and is \emph{held} until it comes back:
 \begin{itemize}
   \item \textbf{UBC~2, the Kepler hold.} A held particle is parked and re-injected at its analytic Kepler return time.
   \item \textbf{UBC~5, explicit RK4 tracking.} A held particle is integrated by the domain's RK4 mover until it re-enters.
 \end{itemize}
-PR~\#13 fixed the two bugs that made the earlier reflect and Kepler-hold results unusable: a duplication in reflect, and the frozen hold (bug~2).
+UBC numbers are our solver's codes (1 reflect, 2 Kepler hold, 3 free escape, 5 explicit RK4). The paper's UBCs are always written in parentheses, (1)–(4); Table~\ref{tab:map} maps one set onto the other.
+
+An earlier fix removed two solver bugs that had made the previous reflect and Kepler-hold results unusable: reflect added reflected particles to their cell twice, and the Kepler hold never released its particles (the \emph{frozen hold}). Verification run E8 reproduces the frozen hold on purpose.
 
 This report answers three questions:
 \begin{itemize}
   \item Do UBC~2 and UBC~5 give the same answer, and does each reproduce the collisionless solution?
   \item How do our reflect, Kepler-hold and free-escape results compare with Carberry Mogan et al.'s Figs.~1–3 and Table~1, and why do they differ?
   \item Which ballistic UBC should production and gravity-wave runs use?
+\end{itemize}
+
+\para{Three run groups} (details in \S\ref{sec:runs}).
+\begin{itemize}
+  \item \textbf{Verification:} \verNHoldRuns{} collisionless runs at one top, labelled E7a–E9.
+  \item \textbf{Sweep:} \nSweepTotal{} collisional runs over $\rtop$ with reflect, the Kepler hold and free escape, \sweepTend{}~s each.
+  \item \textbf{Campaign:} \campNtotal{} collisional runs with reflect, the Kepler hold and explicit RK4 at three tops, \campTend{}~s each.
 \end{itemize}
 
 % ================================================================== 2
@@ -188,11 +205,11 @@ This report answers three questions:
       \item (4) Free escape.
     \end{itemize}
   \item \textbf{Fig.~1.} Escape rate against $r_\mathrm{max}/r_0 = $ \pRmaxLo{}–\pRmaxHi{}, at $\lambda_{\mathrm{J},0} = $ \pFigOneLambda{} and $\mathrm{Kn}_0 = $ \pFigOneKn{}.
-  \item \textbf{Fig.~2, Fig.~3 and Table~1.} The source parameters in their Table~1 footnote give $\lambda_{\mathrm{J},0} = $ \pLambdaZero{}, and the title of their Fig.~2 gives $\mathrm{Kn}_0 = $ \pKnZero{}. Profiles and exobases are taken after about one Callisto orbit, $\torb = $ \pTorb{}~s. Fig.~3 follows $\Phi_{(3)}/\Phi_{(1)}$, rising from \pPhiRatioStart{} to \pPhiRatioEnd{}, and the ballistic/return rate ratio, falling from \pInRetStart{} to \pInRetEnd{}, over \pFigThreeTlo{}–\pFigThreeThi{}\,$\torb$. Neither has converged.
+  \item \textbf{Fig.~2, Fig.~3 and Table~1.} The source parameters in their Table~1 footnote give $\lambda_{\mathrm{J},0} = $ \pLambdaZero{}, and the title of their Fig.~2 gives $\mathrm{Kn}_0 = $ \pKnZero{}. Profiles and exobases are taken after about one Callisto orbit, $\torb = $ \pTorb{}~s. Fig.~3 follows $\Phi_{(3)}/\Phi_{(1)}$, rising from \pPhiRatioStart{} to \pPhiRatioEnd{}, and the ballistic/return rate ratio, falling from \pInRetStart{} to \pInRetEnd{}, over \pFigThreeTlo{}–\pFigThreeThi{}\,$\torb$. Neither curve has converged.
 \end{itemize}
 
 \begin{table}[t]
-  \caption{Setup of \citet{cm21} (Fig.~2, Fig.~3, Table~1) against ours. The paper's $\lambda_{\mathrm{J},0}$, $\phi_{\mathrm{J},0}$ and Hill radius are recomputed from the parameters they state; their $\mathrm{Kn}_0$ is quoted from their Fig.~2. Our $\mathrm{Kn}_0$ uses the hard-sphere mean free path at $n_0$ with our VHS reference diameter. The “solver bottom cell” values come from the time-mean profile of \oBottomRun{}.}
+  \caption{Setup of \citet{cm21} (Fig.~2, Fig.~3, Table~1) against ours. The paper's $\lambda_{\mathrm{J},0}$, $\phi_{\mathrm{J},0}$ and Hill radius are recomputed from the parameters they state; their $\mathrm{Kn}_0$ is quoted from their Fig.~2. Our $\mathrm{Kn}_0$ uses the hard-sphere mean free path at $n_0$ with our VHS reference diameter. The “solver bottom cell” values come from the time-mean profile of the sweep reflect run at the highest top. UBC numbers in the paper's column are the paper's. $\lambda_{\mathrm{J},0}$ is the Jeans parameter at the source and $\phi_{\mathrm{J},0}$ the Jeans escape rate there (\S\ref{sec:ref}).}
   \label{tab:setup}
   \small
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
@@ -206,36 +223,36 @@ This report answers three questions:
 
 \para{Collisionality: the main contrast.} The lower boundary sits at $r_0 = $ \oRzero{}~km (\oZzero{}~km altitude), with $T_0 = $ \oTzero{}~K and $n_0 = $ \oNzero{}~\minv{}. There the mean free path is $\ell = 1/(\sqrt2\, n_0 \pi d_\mathrm{ref}^2) = $ \oMfpZero{}~km and the scale height $H = kT_0 r_0^2/(GMm) = $ \oScaleHZero{}~km.
 \begin{itemize}
-  \item \textbf{Knudsen numbers.} $\mathrm{Kn}_0 = \ell/r_0 = $ \oKnZero{} and $\mathrm{Kn}(r_0) = \ell/H = $ \oKnH{}. The solver's own bottom cell gives \oKnZeroBottom{} and \oKnBottom{}. That is \oKnRatio{} times more rarefied than Carberry Mogan's \pKnZero{}.
-  \item \textbf{Exobase.} Our column becomes collisionless about \exoKnHeightH{} scale heights above the source. The Kn\,=\,1 exobase is at \exoZReflectKn{}~km and the $\mathrm{Kn}_0$\,=\,1 exobase at \exoZReflectKnZero{}~km. Both lie below the lowest upper boundary, $\rtop = $ \oRtopLo{}\,$r_0$.
+  \item \textbf{Knudsen numbers.} $\mathrm{Kn}_0 = \ell/r_0 = $ \oKnZero{} (the definition the paper quotes) and $\mathrm{Kn}(r_0) = \ell/H = $ \oKnH{}. Taken from the solver's bottom cell instead of from $n_0$, they are \oKnZeroBottom{} and \oKnBottom{}. Our $\mathrm{Kn}_0$ is \oKnRatio{} times more rarefied than Carberry Mogan's \pKnZero{}.
+  \item \textbf{Exobase.} Our column becomes collisionless about \exoKnHeightH{} scale heights above the source. The Kn\,=\,1 exobase (where $\ell = H$) is at \exoZReflectKn{}~km and the $\mathrm{Kn}_0$\,=\,1 exobase (where $\ell = r_0$) at \exoZReflectKnZero{}~km. Both lie below the lowest upper boundary, $\rtop = $ \oRtopLo{}\,$r_0$.
   \item \textbf{Consequence.} In \citet{cm21} the exobase is at several $r_0$, so the region the UBC perturbs overlaps the collisional transition region that sets escape. In ours, the UBC acts almost entirely on a collisionless exosphere.
 \end{itemize}
 
 \para{Binding.} $\lambda_{\mathrm{J},0} = $ \oLambdaZero{} against their \pLambdaZero{}. In our runs, a smaller fraction of the source flux reaches the top, and less of it arrives just below escape speed.
 
-\para{Hill sphere.} Mars's Hill radius (solar tides) is \oHill{}\,$r_0$ (\oHillKm{}~km), far outside our domains ($\rtop/r_0 = $ \oRtopLo{}–\oRtopHi{}). Our ballistic UBCs remove a bound particle whose apoapsis lies beyond $\rhill$, so three things follow:
+\para{Hill sphere.} Mars's Hill radius (beyond which solar tides dominate) is \oHill{}\,$r_0$ (\oHillKm{}~km), far outside our domains ($\rtop/r_0 = $ \oRtopLo{}–\oRtopHi{}). Our ballistic UBCs count as escaped any bound particle whose apoapsis lies beyond $\rhill$ (the \emph{Hill cutoff}), so three things follow:
 \begin{itemize}
   \item Even without collisions, ballistic escape exceeds reflect escape by \anBallisticExcess{}\% at the top boundary.
   \item No held orbit lasts longer than \tReturnMax{}~s (\tReturnMaxDays{}~d, \tReturnMaxOrb{}\,$\torb$): a radial orbit with apoapsis at $\rhill$.
   \item Carberry Mogan's UBC~(3) has no such cutoff. Orbits just below $v_\mathrm{esc}$ have unbounded return times.
 \end{itemize}
 
-\para{Time normalisation.} Callisto's orbit gives \citet{cm21} a physical clock. Our \Htwo{} has none on this timescale, so we normalise by $\tauf$: the time for the collisionless held inventory to reach 90\% of its steady value. $\tauf$ is \tauFillLo{}–\tauFillHi{}~s from the lowest to the highest top (Table~\ref{tab:times}). The verification, sweep and campaign runs end at \verTend{}, \sweepTend{} and \campTend{}~s. That is \sweepTendOverTau{} and \campTendOverTau{}\,$\tauf$ for the highest top.
+\para{Time normalisation.} Callisto's orbital period $\torb$ gives \citet{cm21} an external clock. Our problem has none, so we normalise by $\tauf$: the time for the collisionless held inventory to reach 90\% of its steady value. $\tauf$ is \tauFillLo{}–\tauFillHi{}~s from the lowest to the highest top (Table~\ref{tab:times}). The verification, sweep and campaign runs end at \verTend{}, \sweepTend{} and \campTend{}~s. At the highest top, the sweep and the campaign therefore end at \sweepTendOverTau{} and \campTendOverTau{}\,$\tauf$.
 
 % ================================================================== 3
 \section{Methods}\label{sec:methods}
 
 \subsection{Upper boundary conditions}\label{sec:ubc}
 
-A computational particle that crosses $\rtop$ outward is treated as follows (\texttt{MOD\_Boundary.f90}, \texttt{Escape}):
+A computational particle that crosses $\rtop$ outward is treated as follows:
 \begin{itemize}
   \item \textbf{UBC 1, reflect.} If $v > v_\mathrm{esc}(\rtop) = \sqrt{2GM/\rtop}$ the particle escapes. Otherwise it is reflected specularly, so it returns with zero delay.
-  \item \textbf{UBC 2, Kepler hold.} If $v > v_\mathrm{esc}(\rtop)$ it escapes (\emph{direct}). Otherwise the solver computes its Kepler orbit. If the apoapsis $a(1+e)$ exceeds $\rhill$, the particle also escapes (\emph{orbit}). Otherwise it is parked above the boundary: not moved, collided or sampled. It is re-injected with the same energy and angular momentum, inward radial velocity and unchanged radial direction at the first step with $t \ge t_\mathrm{ret} - \Delta t/2$, where
+  \item \textbf{UBC 2, Kepler hold.} If $v > v_\mathrm{esc}(\rtop)$ it escapes (a \emph{direct} escape). Otherwise the solver computes its Kepler orbit, with semi-major axis $a$ and eccentricity $e$. If the apoapsis $a(1+e)$ exceeds $\rhill$, the particle also escapes (an \emph{orbit} escape: the Hill cutoff). Otherwise it is parked above the boundary: not moved, collided or sampled. It is re-injected with the same energy and angular momentum, inward radial velocity and unchanged radial direction at the first step with $t \ge t_\mathrm{ret} - \Delta t/2$, where
   \[
-    t_\mathrm{ret} = t + \frac{M_\mathrm{ret} - M_\mathrm{now}}{n},\qquad
-    M_\mathrm{ret} = 2\pi - \bigl(E_\mathrm{top} - e\sin E_\mathrm{top}\bigr),\qquad n = \sqrt{GM/a^3},
+    t_\mathrm{ret} = t + \frac{M_\mathrm{ret} - M_\mathrm{now}}{n_\mathrm{K}},\qquad
+    M_\mathrm{ret} = 2\pi - \bigl(E_\mathrm{top} - e\sin E_\mathrm{top}\bigr),\qquad n_\mathrm{K} = \sqrt{GM/a^3},
   \]
-  $E_\mathrm{top}$ is the eccentric anomaly at $\rtop$ on the outbound leg, and $M_\mathrm{now}$ the current mean anomaly.
+  $E_\mathrm{top}$ is the eccentric anomaly at $\rtop$ on the outbound leg, $M_\mathrm{now}$ the current mean anomaly and $n_\mathrm{K}$ the mean motion.
   \item \textbf{UBC 5, explicit RK4.} The escape decision is identical to UBC~2. Held particles are then integrated by the domain's RK4 mover under point-mass gravity, and they re-enter at the first step that ends with $r \le \rtop$. The Kepler $t_\mathrm{ret}$ is still computed, but only as a diagnostic.
   \item \textbf{UBC 3, free escape.} Every crossing particle is removed.
 \end{itemize}
@@ -243,7 +260,7 @@ A computational particle that crosses $\rtop$ outward is treated as follows (\te
 Table~\ref{tab:map} maps these onto the four UBCs of \citet{cm21}.
 
 \begin{table}[h]
-  \caption{Correspondence between our UBC codes and those of \citet{cm21}.}
+  \caption{Correspondence between our UBC codes and those of \citet{cm21}, which are written in parentheses throughout.}
   \label{tab:map}
   \small
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.28\textwidth}>{\raggedright\arraybackslash}X@{}}
@@ -260,7 +277,7 @@ Table~\ref{tab:map} maps these onto the four UBCs of \citet{cm21}.
 
 \subsection{Hold bookkeeping and the exact balance invariant}\label{sec:bookkeeping}
 
-Commit \texttt{1206efc6} added a per-interval diagnostic, \texttt{Results/Diagnostics/*\_BallisticHold.ascii}. For each averaging interval $k$, it records:
+The solver now writes a hold diagnostic with every output. For each output interval $k$ (the averaging period between two outputs), it records:
 \begin{itemize}
   \item the counts $n_\mathrm{in}$ (entries into the hold) and $n_\mathrm{ret}$ (returns);
   \item the escapes: $n_\mathrm{esc,dir}$ for $v>v_\mathrm{esc}$ and $n_\mathrm{esc,orb}$ for the Hill cutoff;
@@ -271,33 +288,33 @@ Reflection counts as a zero-duration hold, so for UBC~1 $n_\mathrm{in} = n_\math
 \[
   N_\mathrm{held}(k) - N_\mathrm{held}(k-1) = n_\mathrm{in}(k) - n_\mathrm{ret}(k)
 \]
-exactly, in integer counts of computational particles. The h2\_hold campaign analysis checks it for every run with hold files, with the same test as \texttt{hold\_diagnostics.py} in the solver's \texttt{verification/} folder.
+exactly, in integer counts of computational particles. The analysis checks it for every run that has hold diagnostics. Where a figure or table gives held \emph{molecules}, the count is multiplied by the particle weight.
 
-\subsection{Collisionless reference}
+\subsection{Collisionless reference}\label{sec:ref}
 
-\texttt{dsmclib.exosphere} gives the collisionless (Liouville) exosphere for the same source ($n_0$, $T_0$, $r_0$) under each UBC. It provides cell-averaged $n$ and $T$, the escape rate through $\rtop$, and the time-dependent held inventory $N_\mathrm{held}(t)$ from a hold that starts empty. From these the report derives three quantities:
+Our analysis library gives the collisionless (Liouville) exosphere for the same source ($n_0$, $T_0$, $r_0$) under each UBC. It provides cell-averaged $n$ and $T$, the escape rate through $\rtop$, and the time-dependent held inventory $N_\mathrm{held}(t)$ from a hold that starts empty. From these the report derives three quantities:
 \begin{itemize}
   \item $\tauf$, the fill time defined in \S\ref{sec:paper};
-  \item $R_\mathrm{in}$, the rate of bound outward crossings with apoapsis inside $\rhill$, equal to the free-escape rate minus the ballistic rate;
+  \item $R_\mathrm{in}$, the rate at which bound particles cross $\rtop$ outward and are held (apoapsis inside $\rhill$). It equals the collisionless free-escape rate minus the ballistic escape rate;
   \item the analytic ballistic/return ratio, $R_\mathrm{in}/(R_\mathrm{in} - \mathrm{d}N_\mathrm{held}/\mathrm{d}t)$.
 \end{itemize}
-The Jeans rate at the source is $\phi_{\mathrm{J},0} = \pi r_0^2 n_0 \bar c\,(1+\lambda_{\mathrm{J},0})\,e^{-\lambda_{\mathrm{J},0}}$, where $\bar c = \sqrt{8kT_0/\pi m}$. That gives $\phi_{\mathrm{J},0} = $ \oPhiJZero{}~\sinv{} for us and \pPhiJZero{}~\sinv{} for \citet{cm21}. Every temperature is the bulk-flow-corrected $T = T_\mathrm{trans} - m v_r^2/(3k)$. DSMC errors are batch-means standard errors, and escape errors are Poisson errors on the count $k$ of escaping computational particles.
+The Jeans rate at the source is $\phi_{\mathrm{J},0} = \pi r_0^2 n_0 \bar c\,(1+\lambda_{\mathrm{J},0})\,e^{-\lambda_{\mathrm{J},0}}$, where $\bar c = \sqrt{8kT_0/\pi m}$. That gives $\phi_{\mathrm{J},0} = $ \oPhiJZero{}~\sinv{} for us and \pPhiJZero{}~\sinv{} for \citet{cm21}. Every temperature is the bulk-flow-corrected $T = T_\mathrm{trans} - m v_r^2/(3k)$. DSMC errors are batch-means standard errors, and escape errors are Poisson errors on the count $k$ of escaping computational particles. A $z$-score ($z$, $|z|$) is a difference divided by its standard error, and “max $|z|$” is its largest value over a profile.
 
 \subsection{Runs}\label{sec:runs}
 
-All runs are pure \Htwo{} with the same source: \oTzero{}~K, $n_0 = $ \oNzero{}~\minv{} at \oZzero{}~km, and $m = $ \oMass{}~amu. VHS collisions use $d_\mathrm{ref} = $ \oDref{}~Å and $\omega = $ \oOmega{}. The particle weight is \oWeight{}, and $\Delta t = $ \oDt{}~s.
+All runs are pure \Htwo{} with the same source: \oTzero{}~K, $n_0 = $ \oNzero{}~\minv{} at \oZzero{}~km, and $m = $ \oMass{}~amu. VHS collisions use $d_\mathrm{ref} = $ \oDref{}~Å and $\omega = $ \oOmega{}. The particle weight is \oWeight{}, and $\Delta t = $ \oDt{}~s. $\Delta r$ is the maximum radial cell width, 250 or 1000~km. $z_\mathrm{top}$ is the requested top altitude. The solver extends the last cell past it, so the actual boundary $\rtop$ lies somewhat higher (Table~\ref{tab:sweep}), and profile altitudes are cell centres.
 \begin{itemize}
   \item \textbf{Verification E7–E9.} Collisions are off and $\rtop$ is at \verZtopKm{}~km. E7a, E7b and E9 last \verTend{}~s, with steady windows from \verTzero{}~ks; E7c and E8 last \verTendShort{}~s and E7d \verTendRestart{}~s:
     \begin{itemize}
       \item E7a Kepler hold;
       \item E7b explicit RK4;
-      \item E7c explicit with a \texttt{-fcheck=all} build;
-      \item E7d explicit, restarted mid-run;
-      \item E8 the pre-fix Kepler hold of \texttt{main} (bug~2);
+      \item E7c explicit RK4 on a debug build with run-time checks (\texttt{-fcheck=all});
+      \item E7d explicit RK4, stopped and restarted mid-run, to test that the hold survives a restart;
+      \item E8 the Kepler hold before the fix (the frozen hold), as a negative control;
       \item E9 reflect.
     \end{itemize}
-  \item \textbf{h2\_ubc\_rtop sweep.} UBCs 1–3, \nSweepTotal{} runs over $\rtop$ and $\Delta r \in$ \{250, 1000\}~km, each lasting \sweepTend{}~s. They use the older binary \texttt{64f21a1a}, which writes no hold diagnostics. Profiles and escape are averaged over a fixed window from \profWindowReflect{}~ks to the end, as in the h2\_ubc\_rtop analysis.
-  \item \textbf{h2\_hold campaign.} UBCs 1, 2 and 5 at three tops with $\Delta r = $ 250~km, each lasting \campTend{}~s. They use the new binary \texttt{43064c24}, with collisions on, and write hold diagnostics. Profiles and escape are averaged over the steady window of the particle inventory, which starts early (a few ks at the two lower tops) while the hold is still filling. Kepler, explicit and reflect runs at one top share the same window, so the campaign ratios compare like with like; they are not steady-state values. \campNdone{} of \campNtotal{} runs are analysed.
+  \item \textbf{Sweep.} UBCs 1–3 (reflect, Kepler hold, free escape), \nSweepTotal{} runs over $\rtop$ and $\Delta r \in$ \{250, 1000\}~km, each lasting \sweepTend{}~s. They use an older solver build that writes no hold diagnostics. Profiles and escape are averaged over a fixed window from \profWindowReflect{}~ks to the end.
+  \item \textbf{Campaign.} UBCs 1, 2 and 5 (reflect, Kepler hold, explicit RK4) at three tops with $\Delta r = $ 250~km, each lasting \campTend{}~s. They use the current build, with collisions on, and write hold diagnostics. Profiles and escape are averaged over the steady window of the particle inventory, which starts early (a few ks at the two lower tops) while the hold is still filling. Kepler, explicit and reflect runs at one top share the same window, so the campaign ratios compare like with like; they are not steady-state values. \campNdone{} of \campNtotal{} runs are analysed.
 \end{itemize}
 Table~\ref{tab:inputs} (Appendix~\ref{app:status}) gives the run status.
 
@@ -307,13 +324,13 @@ Table~\ref{tab:inputs} (Appendix~\ref{app:status}) gives the run status.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig4_verification.pdf}
-  \caption{Collisionless verification at $\rtop = $ \verZtopKm{}~km. Time-mean DSMC density (a) and bulk-flow-corrected temperature (b) over $t > $ \verTzero{}~ks, each divided by the cell-averaged collisionless solution for its UBC. E9 reflect is charcoal, E7a Kepler hold solid orange with squares, and E7b explicit RK4 dashed orange with diamonds. Bands are $\pm1$ standard error.}
+  \caption{Collisionless verification (collisions off) at $\rtop = $ \verZtopKm{}~km: each UBC against its own collisionless solution. Time-mean DSMC density (a) and bulk-flow-corrected temperature (b) over $t > $ \verTzero{}~ks, each divided by the cell-averaged collisionless solution for its UBC. E9 reflect is charcoal, E7a Kepler hold solid orange with squares, and E7b explicit RK4 dashed orange with diamonds. Bands are $\pm1$ standard error.}
   \label{fig:verif}
 \end{figure}
 
 \para{Against the collisionless solution} (Fig.~\ref{fig:verif}, Table~\ref{tab:verif}).
 \begin{itemize}
-  \item \textbf{Density.} The maximum $|\Delta n/n|$ is \verDnMaxKepler{}\% for E7a, \verDnMaxExplicit{}\% for E7b and \verDnMaxReflect{}\% for E9. The largest $|z|$ is \verZnMaxKepler{}, \verZnMaxExplicit{} and \verZnMaxReflect{}. These are sub-per-cent deviations made significant by very small batch-means errors.
+  \item \textbf{Density.} The maximum $|\Delta n/n|$ is \verDnMaxKepler{}\% for E7a, \verDnMaxExplicit{}\% for E7b and \verDnMaxReflect{}\% for E9. The largest $|z|$ is \verZnMaxKepler{}, \verZnMaxExplicit{} and \verZnMaxReflect{}. The agreement is at the sub-per-cent level. The large $|z|$ come from very small batch-means errors, not from a visible discrepancy.
   \item \textbf{Temperature.} The maximum $|\Delta T/T|$ is \verDTMaxKepler{}\%, \verDTMaxExplicit{}\% and \verDTMaxReflect{}\%.
   \item \textbf{Escape.} DSMC over analytic is \verEscRatioKepler{} ($k = $ \verEscKKepler{}, $z = $ \verEscZKepler{}), \verEscRatioExplicit{} ($k = $ \verEscKExplicit{}, $z = $ \verEscZExplicit{}) and \verEscRatioReflect{} ($k = $ \verEscKReflect{}, $z = $ \verEscZReflect{}).
   \item \textbf{Held inventory.} DSMC over the analytic $N_\mathrm{held}(t)$ is \verHeldRatioKepler{} for E7a and \verHeldRatioExplicit{} for E7b.
@@ -327,17 +344,17 @@ Table~\ref{tab:inputs} (Appendix~\ref{app:status}) gives the run status.
   \item \textbf{Restart.} E7d (restarted) against E7b agrees to max $|z| = $ \verRestartZ{} in density, and to \verRestartHeld{}\% in held count. The hold state survives a restart.
 \end{itemize}
 
-\para{Bookkeeping.} The balance invariant holds with a maximum violation of \verViolMax{} computational particles in all \verNHoldRuns{} runs, including the \texttt{-fcheck=all} build. In E9, $n_\mathrm{in} = n_\mathrm{ret}$ in every interval.
+\para{Hold balance.} The balance invariant holds with a maximum violation of \verViolMax{} computational particles in all \verNHoldRuns{} runs, including the debug build. In E9, $n_\mathrm{in} = n_\mathrm{ret}$ in every interval.
 
-\para{Bug 2 in one plot.} E8 runs the old Kepler hold of \texttt{main}. Its bookkeeping is self-consistent: the invariant holds. But it records \eightReturns{} returns in \eightTend{}~s of simulated time:
+\para{The frozen hold (E8).} E8 runs the Kepler hold as it was before the fix. Its bookkeeping is self-consistent: the invariant holds. But it records \eightReturns{} returns in \eightTend{}~s of simulated time:
 \begin{itemize}
   \item The held count grows linearly, at \eightGrowth{} computational particles~\sinv{}, the entry rate after the first (spin-up) interval (\eightEntrySteady{}~\sinv{}; \eightEntry{}~\sinv{} including it).
   \item It ends at \eightHeldEnd{}, which equals the cumulative entries.
 \end{itemize}
-In other words, every particle that entered the hold stayed there (Fig.~\ref{fig:time}e). With the diagnostic in place, this frozen hold shows in the first interval as $n_\mathrm{ret} = 0$ beside $n_\mathrm{in} > 0$. The density deficit it caused had previously been hard to attribute.
+In other words, every particle that entered the hold stayed there (Fig.~\ref{fig:time}e). With the diagnostic in place, this frozen hold shows in the first interval as $n_\mathrm{ret} = 0$ beside $n_\mathrm{in} > 0$. Before the diagnostic existed, the density deficit it caused had been hard to attribute.
 
 \begin{table}[t]
-  \caption{Hold bookkeeping of the verification runs, in computational particles. “Viol.”: maximum violation of the balance invariant. “Esc dir/orb”: escapes at $v>v_\mathrm{esc}$ and by the Hill cutoff. “Delay”: RK4 minus Kepler return time (UBC~5 only), mean $\pm$ s.d. in s. “Esc $z$”: DSMC escape against the collisionless rate, in Poisson errors. For E9 reflect, “in” and “ret” count reflections.}
+  \caption{Hold bookkeeping of the verification runs, in computational particles. “Viol.”: maximum violation of the balance invariant. “Esc dir/orb”: escapes at $v>v_\mathrm{esc}$ and by the Hill cutoff. “Delay”: RK4 minus Kepler return time (UBC~5 only), mean $\pm$ s.d. in s. “Esc $z$”: DSMC escape against the collisionless rate, in Poisson errors. “In”, “Ret” and the escapes are totals over the run, and “Held end” is the held count at its end. E7a: Kepler hold. E7b: explicit RK4. E7c: the same on a debug build. E7d: the same, restarted. E8: Kepler hold before the fix (frozen hold). E9: reflect, where “In” and “Ret” count reflections.}
   \label{tab:verif}
   \footnotesize
   \setlength{\tabcolsep}{3.4pt}
@@ -351,12 +368,12 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
 \end{table}
 
 % ================================================================== 5
-\section{Escape against domain size (Fig.~1 analogue)}\label{sec:escape}
+\section{Escape against domain size (cf.\ Fig.~1 of the paper)}\label{sec:escape}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig1_escape_rtop.pdf}
-  \caption{(a) Escape rate $\Phi/\phi_{\mathrm{J},0}$ against $\rtop/r_0$ for the h2\_ubc\_rtop sweep, the analogue of Fig.~1 of \citet{cm21}. Large markers are $\Delta r = $ 250~km and small hollow markers $\Delta r = $ 1000~km. Grey dashed and dotted curves are the collisionless rates. The arrow points to $\rhill$, which lies off the axis. Hollow diamonds are the explicit RK4 runs of the \campTend{}~s campaign, averaged over their own steady windows; explicit RK4 is not part of the sweep. (b) $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the common steady window of each pair, with Poisson $1\sigma$ errors. The hollow square at the left is the collisionless E7a/E9 pair. The dashed line is the collisionless ratio, which exceeds unity only because of the Hill cutoff.}
+  \caption{Reflect and Kepler-hold escape barely depend on the top; free escape does. (a) Escape rate $\Phi/\phi_{\mathrm{J},0}$ against $\rtop/r_0$ for the sweep, the analogue of Fig.~1 of \citet{cm21}. Large markers have maximum cell width $\Delta r = $ 250~km and small hollow markers $\Delta r = $ 1000~km. Grey dashed and dotted curves are the collisionless rates. The arrow points to $\rhill$, which lies off the axis. Hollow diamonds are the explicit RK4 runs of the \campTend{}~s campaign, averaged over their own steady windows; explicit RK4 is not part of the sweep. (b) $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the common steady window of each pair, with Poisson $1\sigma$ errors. The hollow square at the left is the collisionless verification pair (E7a Kepler hold over E9 reflect). The dashed line is the collisionless ratio, which exceeds unity only because of the Hill cutoff.}
   \label{fig:escape}
 \end{figure}
 
@@ -365,25 +382,26 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
   \item \textbf{Range.} Over all sweep runs, $\Phi/\phi_{\mathrm{J},0}$ is \phiOverJReflect{} for reflect, \phiOverJKepler{} for the Kepler hold and \phiOverJFree{} for free escape.
   \item \textbf{Collisionless rates.} At the top boundary these are \anReflectOverJ{} (reflect), \anBallisticOverJ{} (ballistic) and \anFreeOverJTop{} (free escape).
   \item \textbf{Collisions raise escape.} At \profZtop{}~km, reflect escapes \collEnhanceTop{} times the collisionless rate. The exobase lies above $r_0$, so the effective source is larger than the lower boundary, at nearly the same temperature (Table~\ref{tab:exo}).
-  \item \textbf{Escape is steady in the window.} The window starts at \profWindowReflect{}~ks. Over the last third of each run ($t > $ \escLateStartKs{}~ks), escape differs from the window mean by \escDriftLo{} to \escDriftHi{}\%, with no common sign. (An earlier version of this report started each window where the particle inventory stopped drifting, as early as a few tens of ks, where escape was still rising. The fixed late window removes that transient. The campaign still uses inventory windows, but there the transient is a small part of a \campTend{}~s run.) Over the last third, reflect gives $\Phi/\phi_{\mathrm{J},0} = $ \escLateReflectRange{}, and \escLateCollEnhanceTop{} times the collisionless rate at the top. $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the same span is \sweepPhiRatioLateRange{}.
+  \item \textbf{Escape is steady in the window.} The window starts at \profWindowReflect{}~ks. Over the last third of each run ($t > $ \escLateStartKs{}~ks), escape differs from the window mean by \escDriftLo{} to \escDriftHi{}\%, with no common sign. (The window is fixed and late because escape is still rising during the first tens of ks. The campaign instead starts each window where the particle inventory stops drifting; there the early rise is a small part of a \campTend{}~s run.) Over the last third, reflect gives $\Phi/\phi_{\mathrm{J},0} = $ \escLateReflectRange{}, and \escLateCollEnhanceTop{} times the collisionless rate at the top. $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the same span is \sweepPhiRatioLateRange{}.
 \end{itemize}
 
+\pagebreak
 \para{Comparison with their Fig.~1.}
 \begin{itemize}
-  \item \textbf{Reflect does not grow with $\rtop$.} In \citet{cm21}, reflect escape grows with $r_\mathrm{max}$, because more exosphere is available for collisions that induce escape. Ours shows no such growth. The spread across tops is comparable to the $\Delta r$ effect (up to \drEffectMax{}\% between pairs with the same actual top), as expected when the exosphere above our lowest top is already collisionless. At \drSkipZtop{}~km the solver extends the last cell further for $\Delta r = $ 1000~km than for 250~km (Table~\ref{tab:sweep}), so that pair compares two tops, not two resolutions, and is left out of the $\Delta r$ effect.
-  \item \textbf{Free escape stays well above the others.} It falls from \phiOverJFreeLowZ{} at \phiOverJFreeLowZkm{}~km to \phiOverJFreeTop{} at the top. It can only meet the Kepler hold near $\rhill = $ \oHill{}\,$r_0$, far beyond our range. In their case $\rhill = $ \pHill{}\,$r_0$, inside the plotted range, so their free-escape curve meets UBC~(2) there.
+  \item \textbf{Reflect does not grow with $\rtop$.} In \citet{cm21}, reflect escape grows with $r_\mathrm{max}$, because more exosphere is available for collisions that induce escape. Ours shows no such growth. The spread across tops is comparable to the $\Delta r$ effect (up to \drEffectMax{}\% between pairs with the same actual top), as expected when the exosphere above our lowest top is already collisionless. At a requested top of \drSkipZtop{}~km the actual top differs between the two $\Delta r$ (Table~\ref{tab:sweep}), so that pair compares two tops, not two resolutions, and is left out of the $\Delta r$ effect.
+  \item \textbf{Free escape stays well above the others.} It falls from \phiOverJFreeLowZ{} at \phiOverJFreeLowZkm{}~km to \phiOverJFreeTop{} at the top. It can only meet the Kepler hold near $\rhill = $ \oHill{}\,$r_0$, far beyond our range. In their case $\rhill = $ \pHill{}\,$r_0$, inside the plotted range, so their free-escape curve meets their UBC~(2) (reflect below $v_\mathrm{HS}$) there.
 \end{itemize}
 
-\para{Kepler hold relative to reflect} (Fig.~\ref{fig:escape}b). $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ spans \sweepPhiRatioRange{} over all \nSweepPairs{} pairs; the largest Poisson pull from unity is \sweepPhiRatioPullMax{}$\sigma$.
+\para{Kepler hold relative to reflect} (Fig.~\ref{fig:escape}b). $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ spans \sweepPhiRatioRange{} over all \nSweepPairs{} pairs; the largest deviation from unity is \sweepPhiRatioPullMax{} Poisson $\sigma$.
 \begin{itemize}
-  \item \textbf{Intermediate tops.} The ratio is below unity. This is a Carberry-like suppression, but of a few per cent rather than tens.
+  \item \textbf{Intermediate tops.} The ratio is below unity. This is a suppression in the paper's direction, but of a few per cent rather than tens.
   \item \textbf{Highest top.} It is \sweepPhiRatioTop{}, consistent with the collisionless \anBallisticExcess{}\% Hill excess.
   \item \textbf{Systematic floor.} The suppression at intermediate tops is of the same size as the $\Delta r$ effect. We therefore treat it as suggestive, not established: the quoted $\sigma$ are statistical only.
-  \item \textbf{The collisional campaign shows no larger suppression.} Over the steady windows of the \campTend{}~s runs, $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect}$ is \campPhiRatioRange{} for both ballistic UBCs at the three tops (largest pull \campPhiRatioPullMax{}$\sigma$, \S\ref{sec:time}).
+  \item \textbf{The collisional campaign shows no larger suppression.} Over the steady windows of the \campTend{}~s runs, $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect}$ is \campPhiRatioRange{} for both ballistic UBCs at the three tops (largest deviation from unity \campPhiRatioPullMax{}$\sigma$, \S\ref{sec:time}).
 \end{itemize}
 
 \begin{table}[t]
-  \caption{Escape in the h2\_ubc\_rtop sweep. $t_0$: start of the averaging window (fixed, from the h2\_ubc\_rtop analysis). $k$: escaping computational particles counted in it. $\Phi/\phi_{\mathrm{J},0}$: $\pm$ Poisson $1\sigma$. “Coll.-less”: collisionless rate for the same UBC and $\rtop$. $\rtop/r_0$ is the actual top; at $z_\mathrm{top} = $ \drSkipZtop{}~km it differs between the two $\Delta r$.}
+  \caption{Escape in the sweep. $z_\mathrm{top}$: requested top. $\Delta r$: maximum radial cell width. $t_0$: start of the averaging window (fixed). $k$: escaping computational particles counted in it. $\Phi/\phi_{\mathrm{J},0}$: $\pm$ Poisson $1\sigma$. “Coll.-less”: collisionless rate for the same UBC and $\rtop$. $\rtop/r_0$ is the actual top; at $z_\mathrm{top} = $ \drSkipZtop{}~km it differs between the two $\Delta r$.}
   \label{tab:sweep}
   \footnotesize
   \setlength{\tabcolsep}{3.8pt}
@@ -397,12 +415,12 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
 \end{table}
 
 % ================================================================== 6
-\section{Profiles and exobase (Fig.~2 and Table~1 analogues)}\label{sec:profiles}
+\section{Profiles and exobase (cf.\ Fig.~2 and Table~1 of the paper)}\label{sec:profiles}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig2_profiles.pdf}
-  \caption{Time-mean profiles at $z_\mathrm{top} = $ \profZtop{}~km, $\Delta r = $ 250~km, from the sweep (\profWindowReflect{}~ks to \sweepTend{}~s), the analogue of Fig.~2 of \citet{cm21}. (a) $n/n_0$. (b) $T/T_0$ with the radial bulk flow removed. (c, d) The same, divided by reflect, with $\pm1\sigma$ bands. Horizontal lines: Kn\,=\,1 (dashed) and $\mathrm{Kn}_0$\,=\,1 (dash-dotted). Grey dashed: collisionless reflect. Explicit RK4 (dashed orange) comes from the \campTend{}~s campaign. In (c, d) it is divided by the campaign reflect run, and the thin solid orange line is the campaign Kepler hold divided by the same run, its like-for-like partner. Its distance from the thick (sweep, \sweepTend{}~s) Kepler curve is the further filling of the hold between \sweepTend{} and \campTend{}~s, not a difference between the two ballistic UBCs.}
+  \caption{Ballistic UBCs leave the upper exosphere less dense and cooler than reflect, and only above the exobase. Time-mean profiles at $z_\mathrm{top} = $ \profZtop{}~km, $\Delta r = $ 250~km, from the sweep (\profWindowReflect{}~ks to \sweepTend{}~s), the analogue of Fig.~2 of \citet{cm21}. (a) $n/n_0$. (b) $T/T_0$ with the radial bulk flow removed. (c, d) The same, divided by reflect, with $\pm1\sigma$ bands. Horizontal lines are the exobases: Kn\,=\,1 ($\ell = H$, dashed) and $\mathrm{Kn}_0$\,=\,1 ($\ell = r_0$, dash-dotted). Grey dashed: collisionless reflect. Explicit RK4 (dashed orange) comes from the \campTend{}~s campaign, and in (c, d) it is divided by the campaign reflect run. The thin solid orange line is the campaign Kepler hold divided by the same run. The gap between the thin and the thick (sweep, \sweepTend{}~s) Kepler curves is the further filling of the hold between \sweepTend{} and \campTend{}~s, not a difference between the two ballistic UBCs.}
   \label{fig:profiles}
 \end{figure}
 
@@ -416,10 +434,10 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
 \end{itemize}
 This is the pattern of their Fig.~2. Reflection keeps an artificially full, warm population of slow particles near the top, whereas the Kepler hold is still filling: \heldFracSweepEnd{}\% of steady state at \sweepTend{}~s. Unlike their case, the perturbed region is collisionless, and the profile change does not feed back on escape (\S\ref{sec:escape}).
 
-\para{Explicit RK4} (campaign, \campTend{}~s). Explicit and Kepler profiles agree. At the same run length, explicit/Kepler is \nRatioExplicitTop{} in $n$ and \TRatioExplicitTop{} in $T$ at the top, with max $|z|$ of \nZmaxExplicit{} and \TZmaxExplicit{} over the column, the same level as E7a/E7b (\verKvsEZ{}). Against the campaign reflect run, both ballistic UBCs are closer to reflect in $T$ at \campTend{}~s than the sweep Kepler hold is at \sweepTend{}~s: at the top, $T$ ratio \TRatioCampKeplerTop{} (Kepler) and \TRatioCampExplicitTop{} (explicit), against \TRatioKeplerTop{}. The $n$ ratios, \nRatioCampKeplerTop{} and \nRatioCampExplicitTop{} against \nRatioKeplerTop{}, are not significantly different. The reflect-induced warm excess shrinks as the hold fills.
+\para{Explicit RK4} (campaign, \campTend{}~s). Two comparisons. (i) Explicit against Kepler at the same run length: the profiles agree. Explicit/Kepler is \nRatioExplicitTop{} in $n$ and \TRatioExplicitTop{} in $T$ at the top, with max $|z|$ of \nZmaxExplicit{} and \TZmaxExplicit{} over the column, the same level as E7a/E7b (\verKvsEZ{}). (ii) Each ballistic UBC against the campaign reflect run: both are closer to reflect in $T$ at \campTend{}~s than the sweep Kepler hold is at \sweepTend{}~s: at the top, $T$ ratio \TRatioCampKeplerTop{} (Kepler) and \TRatioCampExplicitTop{} (explicit), against \TRatioKeplerTop{}. The $n$ ratios, \nRatioCampKeplerTop{} and \nRatioCampExplicitTop{} against \nRatioKeplerTop{}, are not significantly different. The reflect-induced warm excess shrinks as the hold fills.
 
 \begin{table}[t]
-  \caption{Exobase quantities per UBC at $z_\mathrm{top} = $ \profZtop{}~km, the analogue of Table~1 of \citet{cm21}. The Kn\,=\,1 exobase uses $\ell/H$ from the solver, and the $\mathrm{Kn}_0$\,=\,1 exobase uses $\ell/r_0$. Values are normalised to the source; $\phi_{\mathrm{J},x}$ is the Jeans rate at the exobase. An asterisk would mark an exobase in the bottom cell. Their profiles are taken after about one orbit, ours at \sweepTend{}~s (explicit RK4: campaign, \campTend{}~s).}
+  \caption{Exobase quantities per UBC at $z_\mathrm{top} = $ \profZtop{}~km, the analogue of Table~1 of \citet{cm21}. The Kn\,=\,1 exobase uses $\ell/H$ from the solver, and the $\mathrm{Kn}_0$\,=\,1 exobase uses $\ell/r_0$. Subscript $x$ marks a value at the exobase. Values are normalised to the source; $\phi_{\mathrm{J},x}$ is the Jeans rate at the exobase. An asterisk would mark an exobase in the bottom cell. Their profiles are taken after about one orbit, ours at \sweepTend{}~s (explicit RK4: campaign, \campTend{}~s).}
   \label{tab:exo}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
@@ -442,23 +460,24 @@ This is the pattern of their Fig.~2. Reflection keeps an artificially full, warm
 \para{DSMC escape against Jeans at the exobase.} $\Phi/\phi_{\mathrm{J},x}$ (Kn\,=\,1) is \exoPhiReflectKn{} (reflect), \exoPhiKeplerKn{} (Kepler), \exoPhiExplicitKn{} (explicit) and \exoPhiFreeKn{} (free escape). Jeans at the exobase therefore underestimates escape only modestly for the two physical UBCs. For \citet{cm21}, the escape rate after about one orbit is \pPhiOneTorbReflect{}~\sinv{} for UBC~(1) and \pPhiOneTorbBallistic{}~\sinv{} for UBC~(3), a ratio of \pPhiOneTorbRatio{}. A strongly collisional exosphere drives non-Jeans escape that a column this rarefied does not have.
 
 % ================================================================== 7
-\section{Hold filling and the ballistic/return ratio (Fig.~3 analogue)}\label{sec:time}
+\section{Hold filling and the ballistic/return ratio (cf.\ Fig.~3 of the paper)}\label{sec:time}
 
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{fig3_hold_time.pdf}
   \caption{Time dependence of the ballistic hold, the analogue of Fig.~3 of \citet{cm21}.
   (a) Rate into the hold (solid) and return rate (faint). Markers: verification ($\rtop = $ \verZtopKm{}~km, no collisions). Lines: campaign at $z_\mathrm{top} = $ \profZtop{}~km, with collisions, to \campTend{}~s. Dashed: collisionless $R_\mathrm{in}$.
-  (b) Ballistic rate over return rate against $t/\tauf$, with collisionless curves for the two tops. Crosses: \citet{cm21}, digitised, plotted against $t/\torb$.
+  (b) Rate into the hold over return rate (the ballistic/return ratio) against $t/\tauf$, with collisionless curves for the two tops. Crosses: \citet{cm21}, digitised, plotted against $t/\torb$.
   (c) Held inventory: E7a, E7b and E8, the sweep Kepler hold at three tops, the campaign at \profZtop{}~km, and the collisionless $N_\mathrm{held}(t)$.
   (d) $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect}$ against $t/\tauf$ for the sweep, verification and campaign. Crosses: \citet{cm21} against $t/\torb$.
-  (e) E8 (\texttt{main}, bug~2): the held count equals cumulative entries, against the fixed E7a.
-  (f) RK4 minus Kepler return delay per interval (E7b, E7c, E7d). Orange: mean, against $\Delta t/2$. Grey: s.d., against $\Delta t/\sqrt{12}$.}
+  (e) E8 (Kepler hold before the fix, the frozen hold): the held count equals cumulative entries, against the fixed E7a.
+  (f) RK4 minus Kepler return delay per output interval, for the explicit RK4 runs E7b, E7c (debug build) and E7d (restarted). Orange: mean, against $\Delta t/2$. Grey: s.d., against $\Delta t/\sqrt{12}$.
+  Curve labels 2.6k to 40k give the top altitude in km. Held inventories are in molecules.}
   \label{fig:time}
 \end{figure}
 
 \begin{table}[t]
-  \caption{Collisionless characteristic times per upper boundary (\texttt{dsmclib.exosphere}). $N_{\mathrm{held},\infty}$: steady held inventory (molecules). $R_\mathrm{in}$: rate of bound crossings into the hold. $\tauf$: time to 90\% of $N_{\mathrm{held},\infty}$ from empty. $t_\mathrm{ret,max}$: return time of the radial orbit with apoapsis at $\rhill$. “Excess”: collisionless ballistic over reflect escape, minus one.}
+  \caption{Collisionless characteristic times per upper boundary. $N_{\mathrm{held},\infty}$: steady held inventory (molecules). $R_\mathrm{in}$: rate of bound crossings into the hold. $\tauf$: time to 90\% of $N_{\mathrm{held},\infty}$ from empty. $t_\mathrm{ret,max}$: return time of the radial orbit with apoapsis at $\rhill$. “Excess”: collisionless ballistic over reflect escape, minus one.}
   \label{tab:times}
   \footnotesize
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}rr r r r r r r@{}}
@@ -494,7 +513,7 @@ This is the pattern of their Fig.~2. Reflection keeps an artificially full, warm
 \begin{itemize}
   \item \textbf{Collisionless.} Verification gives $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect} = $ \verPhiRatioKepler{} (Kepler) and \verPhiRatioExplicit{} (explicit), against the analytic \anPhiRatioVer{}.
   \item \textbf{Collisional sweep.} Over $t/\tauf \lesssim$ \sweepTendOverTau{}, the ratio stays within \sweepPhiRatioRange{}.
-  \item \textbf{Collisional campaign.} Out to $t/\tauf = $ \campTendOverTau{}, over each run's steady window, it is \campPhiRatioRange{} for both ballistic UBCs at all three tops (largest pull \campPhiRatioPullMax{}$\sigma$). Longer runs do not open up a Carberry-size suppression.
+  \item \textbf{Collisional campaign.} Out to $t/\tauf = $ \campTendOverTau{}, over each run's steady window, it is \campPhiRatioRange{} for both ballistic UBCs at all three tops (largest deviation from unity \campPhiRatioPullMax{}$\sigma$). Longer runs do not open up a suppression of the paper's size.
   \item \textbf{Paper.} The digitised curve of \citet{cm21} rises from \pPhiRatioStart{} to \pPhiRatioEnd{}.
 \end{itemize}
 
@@ -507,13 +526,13 @@ This is the pattern of their Fig.~2. Reflection keeps an artificially full, warm
   \item Where the region perturbed by the UBC is collisional, ballistic escape falls below reflect. Our perturbed region is collisionless, and the few-per-cent suppression at intermediate tops is not established (\S\ref{sec:escape}).
 \end{itemize}
 
-\para{Disagreement 1: the size of the escape suppression.} Theirs is \pPhiRatioStart{}–\pPhiRatioEnd{}; ours is \sweepPhiRatioRange{}.
+\para{Disagreement 1: the size of the escape suppression.} $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect}$ is \pPhiRatioStart{}–\pPhiRatioEnd{} for them and \sweepPhiRatioRange{} for us.
 \begin{itemize}
   \item \textbf{Collisionality.} Their returning particles re-enter a region that is collisional out to an exobase at \pExoKnZeroReflect{}–\pExoKnReflect{}\,$r_0$. There they are scattered onto escape trajectories, so a missing return population directly removes escape. Our returns re-enter above an exobase at \exoRReflectKn{}\,$r_0$ and mostly fall through to the source without a collision.
   \item \textbf{Hill cutoff.} It adds a fixed \anBallisticExcess{}\% to ballistic escape, which partly offsets any suppression.
 \end{itemize}
 
-\para{Disagreement 2: the ballistic/return ratio.} Ours relaxes to unity early; theirs stays above unity for several $\torb$. We have three candidate causes. Our data cannot yet separate them.
+\para{Disagreement 2: the ballistic/return ratio.} Ours relaxes to unity early; theirs stays above unity for several $\torb$. A ratio above unity means that particles are still entering the hold faster than they return. We have three candidate causes. Our data cannot yet separate them.
 \begin{itemize}
   \item \textbf{No Hill cutoff in their UBC~(3).} Return times diverge as $v \to v_\mathrm{esc}$, so a finite fraction of the inflow is always on orbits longer than the run. Our cutoff caps return times at \tReturnMax{}~s and removes that tail as escape.
   \item \textbf{Smaller $\lambda_{\mathrm{J},0}$} (\pLambdaZero{} against \oLambdaZero{}). This puts a larger share of the crossing flux close to escape speed, on long orbits.
@@ -529,20 +548,20 @@ A collisionless calculation without the Hill cutoff at their $\lambda_{\mathrm{J
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig5_production.pdf}
-  \caption{Explicit RK4 against the Kepler hold in the h2\_hold campaign (\campTend{}~s, collisions on), at each top; grey value marks the top. (a) Cumulative escapes, explicit/Kepler, with the Poisson $1\sigma$ band, from 50~ks on. (b) Molecules held above $\rtop$: Kepler solid, explicit dashed, collisionless $N_\mathrm{held}(t)$ grey dashed. (c) Time-mean density, explicit/Kepler, with $\pm1\sigma$.}
+  \caption{Explicit RK4 and the Kepler hold agree at every top. Campaign runs (\campTend{}~s, collisions on); curve labels (2.6k, 10k, 40k) give the top altitude in km. (a) Cumulative escapes, explicit/Kepler, with the Poisson $1\sigma$ band, from 50~ks on. (b) Molecules held above $\rtop$: Kepler solid, explicit dashed, collisionless $N_\mathrm{held}(t)$ grey dashed. (c) Time-mean density, explicit/Kepler, with $\pm1\sigma$.}
   \label{fig:prod}
 \end{figure}
 
 \para{Accuracy.} With point-mass gravity, the two UBCs are the same physics with the same escape decision.
 \begin{itemize}
   \item \textbf{Verification} (\S\ref{sec:verif}): escape, held inventory and profiles agree within statistics. The only systematic difference is the sub-step lag of \verDelayMean{}~s. This is irrelevant for any process slower than $\Delta t$.
-  \item \textbf{Collisional campaign} (\campTend{}~s, three tops; Fig.~\ref{fig:prod}, Table~\ref{tab:prod}). Explicit/Kepler escape is \prodEscRatioTop{} at the highest top. The time-mean held counts agree to \prodHeldRatioRange{}, and the density and temperature profiles to max $|z| = $ \prodZmaxN{} and \prodZmaxT{} over all tops, which is no more than the E7a/E7b verification pair (\verKvsEZ{}). The RK4 return delay keeps its $\Delta t/2$ value at every top (Table~\ref{tab:prod}), so collisions below $\rtop$ do not change the mover's behaviour above it. The hold balance closes exactly in every campaign run (largest violation \campViolMax{}), and in the reflect runs every interval has as many returns as entries (\campReflectInEqRet{}).
+  \item \textbf{Collisional campaign} (\campTend{}~s, three tops; Fig.~\ref{fig:prod}, Table~\ref{tab:prod}). Explicit/Kepler escape is \prodEscRatioTop{} at the highest top. The time-mean held counts agree to \prodHeldRatioRange{}, and the density and temperature profiles to max $|z| = $ \prodZmaxN{} and \prodZmaxT{} over all tops, which is no more than the E7a/E7b verification pair (\verKvsEZ{}). The RK4 return delay keeps its $\Delta t/2$ value at every top (Table~\ref{tab:prod}), so collisions below $\rtop$ do not change the mover's behaviour above it. The hold balance closes exactly in every campaign run (largest violation \campViolMax{}), and in the reflect runs every interval has as many returns as entries (check passed: \campReflectInEqRet{}).
 \end{itemize}
 
 \para{Cost.} The Kepler hold still revisits each held particle every step to test its release time. Explicit tracking adds one RK4 push per held particle per step. Wall times (Kepler / explicit) are \prodWallKeplerTop{} / \prodWallExplicitTop{}~h at \campZTop{}~km, \prodWallKeplerMid{} / \prodWallExplicitMid{}~h at \campZMid{}~km and \prodWallKeplerLow{} / \prodWallExplicitLow{}~h at \campZLow{}~km, ratios of \prodWallRatioTop{}, \prodWallRatioMid{} and \prodWallRatioLow{}. The extra time grows with the number of held computational particles, which is largest at the lowest top (Fig.~\ref{fig:prod}b), so the ratio is largest there. Each run had a core of its own, but the machine was shared with other jobs, so differences of a few per cent are within the timing noise.
 
 \begin{table}[t]
-  \caption{Kepler hold (UBC~2) against explicit RK4 (UBC~5) in the h2\_hold campaign, \campTend{}~s with collisions. Ratios are explicit/Kepler: escapes over the whole run ($\pm$ Poisson), time-mean held count over the steady window, entries into the hold. $|z|_n$, $|z|_T$: largest profile $z$-score over the column. Delay: RK4 minus Kepler return time [s], mean $\pm$ s.d. over all returns. $z_\mathrm{held,max}$: highest altitude reached by a held particle [km]. Wall: hours, Kepler / explicit, and their ratio.}
+  \caption{Kepler hold (UBC~2) against explicit RK4 (UBC~5) in the campaign, \campTend{}~s with collisions. Ratios are explicit/Kepler: escapes over the whole run ($\pm$ Poisson), time-mean held count over the steady window, entries into the hold. $|z|_n$, $|z|_T$: largest profile $z$-score over the column. Delay: RK4 minus Kepler return time [s], mean $\pm$ s.d. over all returns. $z_\mathrm{held,max}$: highest altitude reached by a held particle [km]. Wall: hours, Kepler / explicit, and their ratio.}
   \label{tab:prod}
   \footnotesize
   \setlength{\tabcolsep}{3pt}
@@ -569,22 +588,24 @@ A collisionless calculation without the Hill cutoff at their $\lambda_{\mathrm{J
 \end{itemize}
 
 % ================================================================== 9
-\section{Limitations and next steps}\label{sec:open}
+\section{Next steps and limitations}\label{sec:open}
 
+\para{Next steps.}
+\begin{enumerate}[leftmargin=1.6em, itemsep=1pt]
+  \item Compute the collisionless ballistic/return ratio with no Hill cutoff at $\lambda_{\mathrm{J},0} = $ \pLambdaZero{}. This tests the first two candidate causes of disagreement~2 (the ballistic/return ratio).
+  \item Run one collisional configuration at the $\mathrm{Kn}_0$ of \citet{cm21} (raise $n_0$ or lower the source altitude) with UBC~1, 2 and 5. This tests whether we reproduce the size of their suppression (disagreement~1).
+  \item Run the sweep tops the campaign does not cover on the current build, to complete the collisional in/return series.
+\end{enumerate}
+
+\para{Limitations.}
 \begin{itemize}
-  \item \textbf{The sweep has no hold diagnostics.} Sweep runs use the pre-diagnostic binary, so their in/return behaviour is not measured directly; the campaign measures it at three of the sweep's tops.
-  \item \textbf{Two averaging windows.} Sweep values use the fixed \profWindowReflect{}~ks to end window of the h2\_ubc\_rtop analysis, campaign values the steady window of each run's inventory. Comparisons are made only within one group, except where a figure or sentence says otherwise.
+  \item \textbf{The sweep has no hold diagnostics.} Sweep runs use the older solver build, so their in/return behaviour is not measured directly; the campaign measures it at three of the sweep's tops.
+  \item \textbf{Two averaging windows.} Sweep values use the fixed \profWindowReflect{}~ks to end window, campaign values the steady window of each run's inventory. Comparisons are made only within one group, except where a figure or sentence says otherwise.
   \item \textbf{None of the profiles is steady.} Every collisional profile describes a hold that is filling (\heldFracSweepEnd{}\% in the sweep, \heldFracCampEnd{}\% in the campaign at the highest top). The same holds for the profiles of \citet{cm21} after one orbit.
-  \item \textbf{Resolution systematic.} The $\Delta r$ effect (up to \drEffectMax{}\% in escape at matched tops) is comparable to the Kepler/reflect differences at intermediate tops.
+  \item \textbf{Resolution systematic.} The $\Delta r$ (cell width) effect (up to \drEffectMax{}\% in escape at matched tops) is comparable to the Kepler/reflect differences at intermediate tops.
   \item \textbf{One seed per configuration.} The explicit/Kepler agreement is tested against Poisson and batch-means errors, not against seed-to-seed scatter.
   \item \textbf{The paper values are digitised.} Their Fig.~3 curves and Table~1 exobase radii are read by eye, and the parsed Table~1 is partly garbled. Only text-stated or legible values are used.
-  \item \textbf{Weight.} \texttt{EXPERIMENT\_DESIGN.md} of the sweep quotes a different \Htwo{} particle weight. The run files and the campaign diagnostics agree on \oWeight{}, which is used throughout.
-  \item \textbf{Next steps.}
-    \begin{itemize}
-      \item Compute the collisionless ballistic/return ratio with no Hill cutoff at $\lambda_{\mathrm{J},0} = $ \pLambdaZero{}, to test disagreement~2.
-      \item Run one collisional configuration at Carberry Mogan's $\mathrm{Kn}_0$ (raise $n_0$ or lower the source altitude) with UBC~1, 2 and 5, to reproduce the size of their suppression.
-      \item Run the sweep tops the campaign does not cover on the new binary, to complete the collisional in/return series.
-    \end{itemize}
+  \item \textbf{Weight.} The sweep's design note (\texttt{EXPERIMENT\_DESIGN.md}) quotes a different \Htwo{} particle weight. The run files and the campaign diagnostics agree on \oWeight{}, which is used throughout.
 \end{itemize}
 
 % ================================================================== references
@@ -615,10 +636,12 @@ Volkov, A.N., Tucker, O.J., Erwin, J.T., Johnson, R.E., 2011. Kinetic simulation
 
 \section{Pipeline and provenance}\label{app:pipeline}
 
-\para{Solver commits} (branch \texttt{feature/ubc-hold-explicit}, draft PR~\#14 on \#13).
+This appendix is for reproducing the numbers; the physics does not depend on it.
+
+\para{Solver commits} (branch \texttt{feature/ubc-hold-explicit}, draft PR~\#14, built on PR~\#13). PR~\#13 fixed the two earlier bugs: the reflect duplication and the frozen hold, which is still present on the \texttt{main} branch. The UBC logic is in \texttt{MOD\_Boundary.f90} (\texttt{Escape}).
 \begin{itemize}
   \item \texttt{1c2c1a60}: E1–E6 experiments confirming the UBC fixes of \#13.
-  \item \texttt{1206efc6}: the per-interval ballistic-hold diagnostic (in / return / escape counts).
+  \item \texttt{1206efc6}: the per-interval ballistic-hold diagnostic (in / return / escape counts), written to\\ \texttt{Results/Diagnostics/*\_BallisticHold.ascii}.\\ The balance check is \texttt{verification/hold\_diagnostics.py}.
   \item \texttt{43064c24}: UBC~5, explicit RK4 tracking of ballistic particles above $\rtop$.
   \item \texttt{0272e60d}: E7–E9 hold diagnostics and explicit-tracking verification.
 \end{itemize}
@@ -626,8 +649,8 @@ Volkov, A.N., Tucker, O.J., Erwin, J.T., Johnson, R.E., 2011. Kinetic simulation
 \para{Binaries.}
 \begin{itemize}
   \item \textbf{Verification:} \texttt{DSMC}, \texttt{DSMC\_dbg} and \texttt{DSMC\_mainA} in \texttt{\~{}/MarsAtmos-UBC-explicit/}, as listed per run in \texttt{verification/experiments.tsv}. \texttt{DSMC\_dbg} is the \texttt{-fcheck=all} build. \texttt{DSMC\_mainA} is the pre-fix Kepler hold of \texttt{main} (E8).
-  \item \textbf{Sweep:} \texttt{\~{}/MarsAtmos-H2UBC-sweep/DSMC} at \texttt{64f21a1a}.
-  \item \textbf{Campaign:} \texttt{\~{}/MarsAtmos-H2Hold-campaign/DSMC} at \texttt{43064c24} (\texttt{DSMC.commit}).
+  \item \textbf{Sweep} (registry campaign \texttt{h2\_ubc\_rtop}): \texttt{\~{}/MarsAtmos-H2UBC-sweep/DSMC} at \texttt{64f21a1a}, the older build.
+  \item \textbf{Campaign} (registry campaign \texttt{h2\_hold}):\\ \texttt{\~{}/MarsAtmos-H2Hold-campaign/DSMC} at \texttt{43064c24} (\texttt{DSMC.commit}), the current build.
 \end{itemize}
 
 \para{Data tiers} (\texttt{refactored/docs/CONVENTIONS.md} 1.0).

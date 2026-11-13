@@ -201,7 +201,7 @@ setup_rows = [
     ("$r_\\mathrm{max}$ range [$r_0$]", f"{M['pRmaxLo']}--{M['pRmaxHi']}", f"{M['oRtopLo']}--{M['oRtopHi']}"),
     ("Integrator", "RK4, 3-D Cartesian", "RK4 in domain; Kepler hold or RK4 above $r_\\mathrm{top}$"),
     ("Collisions", "VHS + Larsen--Borgnakke", f"VHS elastic, $d_\\mathrm{{ref}}$ = {M['oDref']} \\AA, $\\omega$ = {M['oOmega']}"),
-    ("Escape at $r_\\mathrm{max}$", "$v>v_\\mathrm{esc}(r_\\mathrm{max})$ (UBC 1, 3); $v>v_\\mathrm{HS}$ (UBC 2)",
+    ("Escape at $r_\\mathrm{max}$", "$v>v_\\mathrm{esc}(r_\\mathrm{max})$ (their UBC (1), (3)); $v>v_\\mathrm{HS}$ (their UBC (2))",
      "$v>v_\\mathrm{esc}(r_\\mathrm{top})$ (reflect); unbound or apoapsis $>r_\\mathrm{Hill}$ (Kepler, explicit)"),
     ("Time step [s]", f"{M['pDtLo']}--{M['pDtHi']}", M["oDt"]),
     ("Duration [s]", M["pRunTime"], f"{M['verTend']} (verif.), {M['sweepTend']} (sweep), {M['campTend']} (campaign)"),
@@ -439,6 +439,8 @@ if "E7d_explicit_restart" in vh:
 for name, nm in (("E7a_kepler", "Kepler"), ("E7b_explicit", "Explicit")):
     if name in vh:
         put(f"verInRet{nm}", num(vh[name]["in_over_ret_late"], 3))
+VER_LABEL = {"E7a_kepler": "E7a Kepler hold", "E7b_explicit": "E7b explicit RK4", "E7c_explicit_dbg": "E7c explicit, debug build",
+             "E7d_explicit_restart": "E7d explicit, restarted", "E8_main_kepler": "E8 Kepler before fix", "E9_reflect": "E9 reflect"}
 ver_rows = []
 for name in an.VERIF:
     h = vh.get(name)
@@ -447,7 +449,7 @@ for name in an.VERIF:
         ver_rows.append(f"\\texttt{{{name.replace('_', '\\_')}}} & \\multicolumn{{9}}{{l}}{{{pend('hold diagnostics missing')}}} \\\\")
         continue
     delay = pm(h["delay_mean"], h["delay_std"], 3) if "delay_mean" in h else "--"
-    ver_rows.append(" & ".join([f"\\texttt{{{name.replace('_', '\\_')}}}", num(h["intervals"]), num(h["violation"]),
+    ver_rows.append(" & ".join([VER_LABEL.get(name, name.replace('_', '\\_')), num(h["intervals"]), num(h["violation"]),
                                 num(h["sum_in"]), num(h["sum_ret"]), num(h["sum_esc_direct"]), num(h["sum_esc_orbit"]),
                                 num(h["held_end"]), delay,
                                 num(x["esc_z"], 1) if x else "--"]) + " \\\\")

@@ -86,7 +86,7 @@ def fig_escape_rtop():
     xf = 2.3
     ax.text(xf * 0.94, float(np.interp(xf, x, AN.esc_free_escape.values)) / pj * 0.82, "collisionless\nfree escape",
             ha="right", va="top", fontsize=6.3, color=S.GREY, linespacing=1.15)
-    ax.text(1.3, 0.95, "collisionless reflect, ballistic", ha="left", va="top", fontsize=6.3, color=S.GREY)
+    ax.text(1.3, 0.88, "collisionless reflect, ballistic", ha="left", va="top", fontsize=6.3, color=S.GREY)
     ratio_pts = {}
     for u in (1, 2, 3):
         for dr in (250, 1000):
@@ -118,7 +118,7 @@ def fig_escape_rtop():
     else:
         S.pending(ax, "explicit RK4 (campaign)", x=0.80, y=0.60, size=6.2)
     ax.set_xscale("log"); ax.set_yscale("log")
-    ax.set_xlim(1.2, 16.5); ax.set_ylim(0.75, 200)
+    ax.set_xlim(1.2, 16.5); ax.set_ylim(0.62, 200)
     plain_log(ax, "x", [1.5, 2, 3, 5, 7, 10, 15])
     plain_log(ax, "y", [1, 2, 5, 10, 20, 50, 100, 200])
     hill = AN.attrs["hill"] / R0
@@ -168,8 +168,8 @@ def fig_escape_rtop():
                       mec=S.UBC[u]["ink"], label=S.UBC[u]["label"]) for u in (1, 2, 3)]
     handles += [Line2D([], [], color=S.GRAPHITE, marker="o", ms=3.0, mfc=S.PAPER, ls="none",
                        label="small hollow: $\\Delta r$ = 1000 km"),
-                Line2D([], [], **S.marker_kw(5, ms=4.2), label="explicit RK4 (campaign, 2e6 s)"),
-                Line2D([], [], color=S.GREY, lw=0.8, ls=S.ANALYTIC_LS, label="collisionless (dsmclib.exosphere)")]
+                Line2D([], [], **S.marker_kw(5, ms=4.2), label="explicit RK4 (campaign, $2\\times10^6$ s)"),
+                Line2D([], [], color=S.GREY, lw=0.8, ls=S.ANALYTIC_LS, label="collisionless (analytic)")]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.08, 0.995), ncol=3, fontsize=6.6,
                columnspacing=1.3, handletextpad=0.5)
     return S.save(fig, "fig1_escape_rtop")
@@ -257,11 +257,11 @@ def fig_profiles():
     handles += [Line2D([], [], color=S.GREY, lw=0.8, ls=S.ANALYTIC_LS, label="collisionless reflect")]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.08, 0.995), ncol=3, fontsize=6.6,
                columnspacing=1.3, handletextpad=0.5)
-    fig.text(0.985, 0.995, f"H$_2$, $z_\\mathrm{{top}}$ = {zc:,} km, $\\Delta r$ = 250 km, sweep (3e5 s)".replace(",", " "),
+    fig.text(0.985, 0.995, f"H$_2$, $z_\\mathrm{{top}}$ = {zc:,} km, $\\Delta r$ = 250 km, sweep ($3\\times10^5$ s)".replace(",", " "),
              ha="right", va="top", fontsize=6.6, color=S.GRAPHITE)
     if 5 in D:
-        fig.text(0.985, 0.955, "explicit RK4: campaign (2e6 s); in c, d against the campaign reflect run,\n"
-                 "with the campaign Kepler hold (thin solid) as its same-length partner",
+        fig.text(0.985, 0.955, "explicit RK4: campaign ($2\\times10^6$ s); in c, d divided by the campaign reflect run,\n"
+                 "thin solid: campaign Kepler hold divided by the same run",
                  ha="right", va="top", fontsize=6.0, color=S.GRAPHITE, linespacing=1.2)
     return S.save(fig, "fig2_profiles")
 
@@ -311,7 +311,7 @@ def fig_hold_time():
     ax_r.set_xlabel("time $t$ [s]"); ax_r.set_ylabel("rate [s$^{-1}$]")
     ax_r.set_title("a  rate into hold (solid) and return rate (faint)", fontsize=8.5)
     ax_r.text(0.03, 0.04, "markers: verification,\n$z_\\mathrm{top}$ 2 627 km, no collisions\n"
-              "lines: campaign,\n$z_\\mathrm{top}$ 40 127 km, 2e6 s", transform=ax_r.transAxes, ha="left",
+              "lines: campaign,\n$z_\\mathrm{top}$ 40 127 km, $2\\times10^6$ s", transform=ax_r.transAxes, ha="left",
               va="bottom", fontsize=5.9, color=S.GRAPHITE, linespacing=1.25)
 
     # (b) in / return ratio vs t / tau
@@ -362,7 +362,7 @@ def fig_hold_time():
             continue
         kw = S.line_kw(u, lw=1.1) if name != "E8_main_kepler" else dict(color=S.CHARCOAL, lw=1.0, ls=(0, (1, 1.2)))
         ax_h.plot(h.time.values, h.held_end.values * float(h.part_weight), **kw, zorder=3)
-    ax_h.text(1.6e3, 6e32, "E8 main (bug 2)", fontsize=6.0, color=S.CHARCOAL, ha="left")
+    ax_h.text(1.6e3, 6e32, "E8 (frozen hold)", fontsize=6.0, color=S.CHARCOAL, ha="left")
     for z in (10000, 20000, 40000):
         r = A.get("sweep", 2, z, 250)
         if r is None or not r.has_run:
@@ -389,7 +389,7 @@ def fig_hold_time():
     ax_h.set_xlim(1e3, 1e7); ax_h.set_ylim(1e30, 2e33)
     ax_h.xaxis.set_major_formatter(FuncFormatter(sci_fmt)); ax_h.yaxis.set_major_formatter(FuncFormatter(sci_fmt))
     ax_h.set_xlabel("time $t$ [s]"); ax_h.set_ylabel("molecules held above $r_\\mathrm{top}$")
-    ax_h.set_title("c  held reservoir", fontsize=8.5)
+    ax_h.set_title("c  held inventory", fontsize=8.5)
 
     # (d) Phi(ballistic) / Phi(reflect) vs t / tau
     for z in (10000, 20000, 40000):
@@ -404,8 +404,9 @@ def fig_hold_time():
             x = tc / tau90(a2.z_top_actual_km)
             ax_p.errorbar(x, rr, yerr=ee, **S.marker_kw(2, ms=3.0), elinewidth=0.6, alpha=0.9, zorder=3)
             ax_p.plot(x, rr, **S.line_kw(2, lw=0.7), alpha=0.6, zorder=2)
-            ax_p.text(x[-1] * 1.25, rr[-1], f"{z // 1000}k", fontsize=5.9, color=S.H2, va="center",
-                      fontproperties=S.mono(5.9))
+            ax_p.text(x[-1] * 1.35, rr[-1] + {10000: 0.045, 20000: -0.05, 40000: 0.04}.get(z, 0.0), f"{z // 1000}k",
+                      fontsize=5.9, color=S.H2, va="center", fontproperties=S.mono(5.9), zorder=6,
+                      bbox=dict(fc="white", ec="none", pad=0.6))
     s9 = A.escape_series(A.v("E9_reflect"))
     for name, u in ver.items():
         s = A.escape_series(A.v(name))
@@ -448,7 +449,7 @@ def fig_hold_time():
         ax_8.plot(h8.time.values / 1e3, np.cumsum(h8.n_hold_in.values), color=S.LIGHT, lw=2.6, zorder=1)
         ax_8.plot(h8.time.values / 1e3, h8.held_end.values, color=S.CHARCOAL, lw=1.0, ls=(0, (1, 1.2)), zorder=3)
         ax_8.plot(h7.time.values / 1e3, h7.held_end.values, **S.line_kw(2, lw=1.4), zorder=2)
-        ax_8.text(22, float(h8.held_end.values[-1]) * 0.92, "E8 main: held = cumulative entries\n(no returns, bug 2)",
+        ax_8.text(22, float(h8.held_end.values[-1]) * 0.92, "E8: held = cumulative entries\n(no returns: frozen hold)",
                   fontsize=6.0, color=S.CHARCOAL, ha="left", va="top", linespacing=1.2)
         ax_8.text(58, float(h7.held_end.values[-1]) * 1.12, "E7a fixed Kepler hold", fontsize=6.0, color=S.H2,
                   ha="right", va="bottom")
@@ -456,7 +457,7 @@ def fig_hold_time():
     else:
         S.pending(ax_8, "E8 / E7a hold diagnostics")
     ax_8.set_xlabel("time $t$ [ks]"); ax_8.set_ylabel("held computational particles")
-    ax_8.set_title("e  E8: main-branch Kepler hold never returns", fontsize=8.5)
+    ax_8.set_title("e  E8: the Kepler hold before the fix never returns", fontsize=8.5)
 
     # (f) RK4 - Kepler return delay
     dt = SP["dt"]
@@ -478,13 +479,13 @@ def fig_hold_time():
     ax_d.set_xlabel("time $t$ [ks]"); ax_d.set_ylabel("RK4 $-$ Kepler return [s]")
     ax_d.set_title("f  explicit return delay per interval", fontsize=8.5)
     ax_d.legend(handles=[Line2D([], [], color=S.H2, marker=m, ms=2.8, mfc=S.PAPER, ls="none", label=l)
-                         for m, l in (("D", "E7b"), ("o", "E7c -fcheck"), ("^", "E7d restart"))],
+                         for m, l in (("D", "E7b"), ("o", "E7c debug build"), ("^", "E7d restart"))],
                 loc="center right", fontsize=6.0, handletextpad=0.3, borderaxespad=0.3)
     for ax in axes.ravel():
         S.tick_mono(ax)
     handles = [Line2D([], [], **S.line_kw(u), marker=S.UBC[u]["marker"], ms=3.4, mfc=S.UBC[u]["mfc"],
                       mec=S.UBC[u]["ink"], label=S.UBC[u]["label"]) for u in (2, 5)]
-    handles += [Line2D([], [], color=S.GREY, lw=0.8, ls=S.ANALYTIC_LS, label="collisionless (dsmclib.exosphere)"),
+    handles += [Line2D([], [], color=S.GREY, lw=0.8, ls=S.ANALYTIC_LS, label="collisionless (analytic)"),
                 Line2D([], [], **S.PAPER_MARK, label=PAPER_LABEL)]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.095, 0.998), ncol=2, fontsize=6.6,
                columnspacing=1.5, handletextpad=0.5)
@@ -593,7 +594,7 @@ def fig_production():
     ax_n.set_xlim(0.8, 1.2); ax_n.set_yscale("log")
     plain_log(ax_n, "y", [1, 1.5, 2, 3, 5, 7, 10])
     ax_n.set_xlabel("$n_\\mathrm{explicit}\\,/\\,n_\\mathrm{Kepler}$"); ax_n.set_ylabel("radial distance $r/r_0$")
-    for ax, t in zip(axes, ("a  escapes", "b  held reservoir", "c  density")):
+    for ax, t in zip(axes, ("a  escapes", "b  held inventory", "c  density")):
         ax.set_title(t, fontsize=8.5)
         S.tick_mono(ax)
     handles = [Line2D([], [], **S.line_kw(u), label=S.UBC[u]["label"]) for u in (2, 5)]
@@ -601,7 +602,7 @@ def fig_production():
     handles += [Line2D([], [], color=greys[z], lw=1.0, label=f"ratio, {lab} km") for z, lab in tops]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.06, 0.995), ncol=3, fontsize=6.4,
                columnspacing=1.4, handletextpad=0.5)
-    fig.text(0.985, 0.995, "h2_hold campaign, 2e6 s, collisions on, $\\Delta r$ = 250 km", ha="right",
+    fig.text(0.985, 0.995, "campaign, $2\\times10^6$ s, collisions on, $\\Delta r$ = 250 km", ha="right",
              va="top", fontsize=6.4, color=S.GRAPHITE)
     return S.save(fig, "fig5_production")
 
