@@ -324,7 +324,7 @@ Table~\ref{tab:inputs} (Appendix~\ref{app:status}) gives the run status.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig4_verification.pdf}
-  \caption{Collisionless verification (collisions off) at $\rtop = $ \verZtopKm{}~km: each UBC against its own collisionless solution. Time-mean DSMC density (a) and bulk-flow-corrected temperature (b) over $t > $ \verTzero{}~ks, each divided by the cell-averaged collisionless solution for its UBC. E9 reflect is charcoal, E7a Kepler hold solid orange with squares, and E7b explicit RK4 dashed orange with diamonds. Bands are $\pm1$ standard error.}
+  \caption{Collisionless verification (collisions off) at $\rtop = $ \verZtopKm{}~km: each UBC against its own collisionless solution. Time-mean DSMC density (a) and bulk-flow-corrected temperature (b) over $t > $ \verTzero{}~ks, each divided by the cell-averaged collisionless solution for its UBC. Reflect (run E9) is charcoal with circles, the Kepler hold (E7a) solid orange with squares, and explicit RK4 (E7b) dashed orange with diamonds; these inks, dashes and marker shapes mean the same UBC in every figure. Half-filled markers mark the collisionless verification runs in every figure. Bands are $\pm1$ standard error.}
   \label{fig:verif}
 \end{figure}
 
@@ -373,7 +373,7 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig1_escape_rtop.pdf}
-  \caption{Reflect and Kepler-hold escape barely depend on the top; free escape does. (a) Escape rate $\Phi/\phi_{\mathrm{J},0}$ against $\rtop/r_0$ for the sweep, the analogue of Fig.~1 of \citet{cm21}. Large markers have maximum cell width $\Delta r = $ 250~km and small hollow markers $\Delta r = $ 1000~km. Grey dashed and dotted curves are the collisionless rates. The arrow points to $\rhill$, which lies off the axis. Hollow diamonds are the explicit RK4 runs of the \campTend{}~s campaign, averaged over their own steady windows; explicit RK4 is not part of the sweep. (b) $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the common steady window of each pair, with Poisson $1\sigma$ errors. The hollow square at the left is the collisionless verification pair (E7a Kepler hold over E9 reflect). The dashed line is the collisionless ratio, which exceeds unity only because of the Hill cutoff.}
+  \caption{Reflect and Kepler-hold escape barely depend on the top; free escape does. (a) Escape rate $\Phi/\phi_{\mathrm{J},0}$ against $\rtop/r_0$, the analogue of Fig.~1 of \citet{cm21}. Filled markers joined by lines are the sweep (\sweepTend{}~s): large markers have maximum cell width $\Delta r = $ 250~km and small markers $\Delta r = $ 1000~km. Open diamonds are the explicit RK4 runs of the \campTend{}~s campaign, averaged over their own steady windows; explicit RK4 is not part of the sweep. Grey dashed curves are the collisionless analytic rates. The arrow points to $\rhill$, which lies off the axis. (b) $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the common steady window of each sweep pair, with Poisson $1\sigma$ errors. The half-filled square is the collisionless verification pair (Kepler hold E7a over reflect E9). The dashed line is the collisionless analytic ratio, which exceeds unity only because of the Hill cutoff.}
   \label{fig:escape}
 \end{figure}
 
@@ -385,7 +385,6 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
   \item \textbf{Escape is steady in the window.} The window starts at \profWindowReflect{}~ks. Over the last third of each run ($t > $ \escLateStartKs{}~ks), escape differs from the window mean by \escDriftLo{} to \escDriftHi{}\%, with no common sign. (The window is fixed and late because escape is still rising during the first tens of ks. The campaign instead starts each window where the particle inventory stops drifting; there the early rise is a small part of a \campTend{}~s run.) Over the last third, reflect gives $\Phi/\phi_{\mathrm{J},0} = $ \escLateReflectRange{}, and \escLateCollEnhanceTop{} times the collisionless rate at the top. $\Phi_\mathrm{Kepler}/\Phi_\mathrm{reflect}$ over the same span is \sweepPhiRatioLateRange{}.
 \end{itemize}
 
-\pagebreak
 \para{Comparison with their Fig.~1.}
 \begin{itemize}
   \item \textbf{Reflect does not grow with $\rtop$.} In \citet{cm21}, reflect escape grows with $r_\mathrm{max}$, because more exosphere is available for collisions that induce escape. Ours shows no such growth. The spread across tops is comparable to the $\Delta r$ effect (up to \drEffectMax{}\% between pairs with the same actual top), as expected when the exosphere above our lowest top is already collisionless. At a requested top of \drSkipZtop{}~km the actual top differs between the two $\Delta r$ (Table~\ref{tab:sweep}), so that pair compares two tops, not two resolutions, and is left out of the $\Delta r$ effect.
@@ -420,7 +419,7 @@ In other words, every particle that entered the hold stayed there (Fig.~\ref{fig
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig2_profiles.pdf}
-  \caption{Ballistic UBCs leave the upper exosphere less dense and cooler than reflect, and only above the exobase. Time-mean profiles at $z_\mathrm{top} = $ \profZtop{}~km, $\Delta r = $ 250~km, from the sweep (\profWindowReflect{}~ks to \sweepTend{}~s), the analogue of Fig.~2 of \citet{cm21}. (a) $n/n_0$. (b) $T/T_0$ with the radial bulk flow removed. (c, d) The same, divided by reflect, with $\pm1\sigma$ bands. Horizontal lines are the exobases: Kn\,=\,1 ($\ell = H$, dashed) and $\mathrm{Kn}_0$\,=\,1 ($\ell = r_0$, dash-dotted). Grey dashed: collisionless reflect. Explicit RK4 (dashed orange) comes from the \campTend{}~s campaign, and in (c, d) it is divided by the campaign reflect run. The thin solid orange line is the campaign Kepler hold divided by the same run. The gap between the thin and the thick (sweep, \sweepTend{}~s) Kepler curves is the further filling of the hold between \sweepTend{} and \campTend{}~s, not a difference between the two ballistic UBCs.}
+  \caption{Ballistic UBCs leave the upper exosphere less dense and cooler than reflect, and only above the exobase. Time-mean profiles at $z_\mathrm{top} = $ \profZtop{}~km, $\Delta r = $ 250~km, the analogue of Fig.~2 of \citet{cm21}. Fine lines are the sweep (\profWindowReflect{}~ks to \sweepTend{}~s). Heavy lines, and the dashed explicit RK4 line, are the \campTend{}~s campaign. (a) $n/n_0$. (b) $T/T_0$ with the radial bulk flow removed. Grey dashed: collisionless reflect. (c, d) The same, each curve divided by the reflect run of its own dataset, with $\pm1\sigma$ bands. The dashed explicit RK4 line is drawn on top of the heavy campaign Kepler-hold line, and the two coincide. Horizontal lines are the exobases: Kn\,=\,1 ($\ell = H$, dashed) and $\mathrm{Kn}_0$\,=\,1 ($\ell = r_0$, dash-dotted). The gap between the fine (sweep, \sweepTend{}~s) and the heavy (campaign, \campTend{}~s) Kepler curves is the further filling of the hold between the two run lengths, not a difference between the two ballistic UBCs.}
   \label{fig:profiles}
 \end{figure}
 
@@ -465,14 +464,13 @@ This is the pattern of their Fig.~2. Reflection keeps an artificially full, warm
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth]{fig3_hold_time.pdf}
-  \caption{Time dependence of the ballistic hold, the analogue of Fig.~3 of \citet{cm21}.
-  (a) Rate into the hold (solid) and return rate (faint). Markers: verification ($\rtop = $ \verZtopKm{}~km, no collisions). Lines: campaign at $z_\mathrm{top} = $ \profZtop{}~km, with collisions, to \campTend{}~s. Dashed: collisionless $R_\mathrm{in}$.
-  (b) Rate into the hold over return rate (the ballistic/return ratio) against $t/\tauf$, with collisionless curves for the two tops. Crosses: \citet{cm21}, digitised, plotted against $t/\torb$.
-  (c) Held inventory: E7a, E7b and E8, the sweep Kepler hold at three tops, the campaign at \profZtop{}~km, and the collisionless $N_\mathrm{held}(t)$.
-  (d) $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect}$ against $t/\tauf$ for the sweep, verification and campaign. Crosses: \citet{cm21} against $t/\torb$.
-  (e) E8 (Kepler hold before the fix, the frozen hold): the held count equals cumulative entries, against the fixed E7a.
-  (f) RK4 minus Kepler return delay per output interval, for the explicit RK4 runs E7b, E7c (debug build) and E7d (restarted). Orange: mean, against $\Delta t/2$. Grey: s.d., against $\Delta t/\sqrt{12}$.
-  Curve labels 2.6k to 40k give the top altitude in km. Held inventories are in molecules.}
+  \caption{Time dependence of the ballistic hold, the analogue of Fig.~3 of \citet{cm21}. In every panel solid orange is the Kepler hold, dashed orange is explicit RK4 and grey dashed is the collisionless analytic solution. Lines with half-filled markers are the collisionless verification ($\rtop = $ \verZtopKm{}~km), fine lines and filled markers the sweep, and heavy lines and open markers the campaign at $z_\mathrm{top} = $ \profZtop{}~km (\campTend{}~s). Labels 2.6k to 40k give the top altitude in km.
+  (a) Rate into the hold (full ink) and return rate (faint). The grey lines are the collisionless $R_\mathrm{in}$ of the two tops.
+  (b) Rate into the hold over return rate (the ballistic/return ratio) against $t/\tauf$. Crosses: \citet{cm21}, digitised, plotted against $t/\torb$.
+  (c) Held inventory, in molecules. The broken orange line is the Kepler hold before the fix (E8).
+  (d) $\Phi_\mathrm{ballistic}/\Phi_\mathrm{reflect}$ against $t/\tauf$, with Poisson $1\sigma$ errors. Crosses: \citet{cm21} against $t/\torb$.
+  (e) The frozen hold: before the fix (E8) the held count equals the cumulative entries (grey band); after the fix (E7a) it levels off.
+  (f) RK4 minus Kepler return delay per output interval, for the explicit RK4 runs E7b, E7c (debug build) and E7d (restarted). Full ink: mean, against $\Delta t/2$. Faint: standard deviation, against $\Delta t/\sqrt{12}$.}
   \label{fig:time}
 \end{figure}
 
@@ -548,7 +546,7 @@ A collisionless calculation without the Hill cutoff at their $\lambda_{\mathrm{J
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{fig5_production.pdf}
-  \caption{Explicit RK4 and the Kepler hold agree at every top. Campaign runs (\campTend{}~s, collisions on); curve labels (2.6k, 10k, 40k) give the top altitude in km. (a) Cumulative escapes, explicit/Kepler, with the Poisson $1\sigma$ band, from 50~ks on. (b) Molecules held above $\rtop$: Kepler solid, explicit dashed, collisionless $N_\mathrm{held}(t)$ grey dashed. (c) Time-mean density, explicit/Kepler, with $\pm1\sigma$.}
+  \caption{Explicit RK4 and the Kepler hold agree at every top. Campaign runs (\campTend{}~s, collisions on); curve labels (2.6k, 10k, 40k) give the top altitude in km. (a) Cumulative escapes, explicit/Kepler, with the Poisson $1\sigma$ band, from 50~ks on. (b) Molecules held above $\rtop$: the Kepler hold is the heavy solid line and explicit RK4 the dashed line drawn on top of it; grey dashed is the collisionless $N_\mathrm{held}(t)$. (c) Time-mean density, explicit/Kepler, with the $\pm1\sigma$ band.}
   \label{fig:prod}
 \end{figure}
 

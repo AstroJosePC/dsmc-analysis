@@ -1,13 +1,15 @@
-"""Graphite Telemetry figure style for the ubc_hold_carberry report (see ../../oh2_escape_rerun/design_philosophy.md).
+"""Graphite Telemetry figure style for the ubc_hold_carberry report (see ../design_philosophy.md).
 
 The palette, rcParams and font helpers are shared with the simulation cards and the oh2_escape_rerun report
-(dsmclib.graphite). H2 orange is the only species ink; upper boundary conditions are told apart by line style,
-marker and grey value through the fixed UBC map below, never by a second colour.
+(dsmclib.graphite). H2 orange is the only species ink. Boundary conditions are told apart by ink, dash and marker shape,
+datasets by stroke weight and marker fill, and grid resolution by marker size (maps below).
 """
 
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 
 from dsmclib.graphite import (BAND_ALPHA, CHARCOAL, COL, FONTS, GRAPHITE, GREY, LABEL, LIGHT,  # noqa: F401
                               PAPER, RAW_ALPHA, RULE, WIDTH, mono, setup, tick_mono)
@@ -16,34 +18,117 @@ REPORT = Path(__file__).resolve().parents[1]
 FIGDIR = REPORT / "figures"
 H2 = COL["H2"]
 
-# Fixed UBC style map. Key = solver UBC code. 'ink' is the stroke colour: H2 orange for the two ballistic
-# treatments (the subject of the report), charcoal for reflect (the reference), grey for free escape.
+# Visual grammar (design_philosophy.md, "Visual grammar"). Three orthogonal channels:
+#   boundary condition -> ink + dash + marker shape   (UBC, key = solver UBC code)
+#   dataset            -> stroke weight + marker fill (DATASET)
+#   grid resolution    -> marker size                 (MS)
 UBC = {
-    1: dict(name="reflect", label="reflect ($v<v_\\mathrm{esc}$ specular)", short="reflect",
-            ink=CHARCOAL, ls="-", marker="o", mfc=PAPER, lw=1.4),
-    2: dict(name="kepler", label="ballistic, Kepler hold", short="Kepler",
-            ink=H2, ls="-", marker="s", mfc=H2, lw=1.6),
-    5: dict(name="explicit", label="ballistic, explicit RK4", short="explicit",
-            ink=H2, ls=(0, (4, 1.8)), marker="D", mfc=PAPER, lw=1.6),
-    3: dict(name="free", label="free escape", short="free escape",
-            ink=GREY, ls=(0, (1, 1.4)), marker="v", mfc=PAPER, lw=1.3),
+    1: dict(name="reflect", label="reflect", ink=CHARCOAL, ls="-", marker="o"),
+    2: dict(name="kepler", label="Kepler hold", ink=H2, ls="-", marker="s"),
+    5: dict(name="explicit", label="explicit RK4", ink=H2, ls=(0, (4, 1.8)), marker="D"),
+    3: dict(name="free", label="free escape", ink=GREY, ls=(0, (1, 1.4)), marker="v"),
 }
+DATASET = {
+    "sweep": dict(lw=1.0, fill="full", label="sweep, $3\\times10^5$ s"),                  # collisional, 3e5 s
+    "campaign": dict(lw=2.0, fill="none", label="campaign, $2\\times10^6$ s"),            # collisional, 2e6 s
+    "verification": dict(lw=1.1, fill="bottom", label="collisionless verification"),     # collisions off, 6e4 s
+}
+MS = {250: 4.6, 1000: 2.8}    # marker size for the maximum cell width in km
+KEY_LW = 1.4                  # stroke of a legend entry that names a boundary condition only
 ANALYTIC_LS = (0, (5, 2.5))   # collisionless analytic references: thin grey dashed
+ANALYTIC = dict(color=GREY, lw=0.8, ls=ANALYTIC_LS)
 PAPER_MARK = dict(marker="x", ms=4.2, mew=1.0, color=GRAPHITE, ls="none")   # Carberry Mogan et al. (2021) markers
+LEG_FS = 6.3                  # legend font size
+LEG_ROW = 9.0                 # height of one legend row in points
 
 
-def line_kw(code, **over):
+def line_kw(code, ds="sweep", **over):
+    """Stroke of boundary condition `code` in dataset `ds`. Explicit RK4 in the campaign is drawn at half weight
+    (see plot)."""
     s = UBC[code]
-    kw = dict(color=s["ink"], ls=s["ls"], lw=s["lw"])
+    lw = DATASET[ds]["lw"] if ds else KEY_LW
+    if code == 5 and ds == "campaign":
+        lw *= 0.5
+    kw = dict(color=s["ink"], ls=s["ls"], lw=lw)
     kw.update(over)
     return kw
 
 
-def marker_kw(code, ms=4.2, **over):
+def marker_kw(code, ds="sweep", ms=4.2, **over):
+    """Marker of boundary condition `code` (shape, ink) in dataset `ds` (fill), without a line."""
     s = UBC[code]
-    kw = dict(color=s["ink"], marker=s["marker"], ms=ms, mfc=s["mfc"], mec=s["ink"], mew=0.9, ls="none")
+    fill = DATASET[ds]["fill"]
+    kw = dict(color=s["ink"], marker=s["marker"], ms=ms, mec=s["ink"], mew=0.9, ls="none")
+    if fill == "full":
+        kw["mfc"] = s["ink"]
+    elif fill == "none":
+        kw["mfc"] = PAPER
+    else:
+        kw.update(fillstyle=fill, mfc=s["ink"], markerfacecoloralt=PAPER)
     kw.update(over)
     return kw
+
+
+def plot(ax, x, y, code, ds, ms=None, markevery=None, **over):
+    """Draw one curve in the grammar. The campaign explicit RK4 curve is a slim dashed stroke on a paper-coloured
+    core, so that it stays visible when it lies on the heavier Kepler-hold line."""
+    kw = line_kw(code, ds, **over)
+    if code == 5 and ds == "campaign":
+        ax.plot(x, y, color=PAPER, lw=kw["lw"], ls="-", zorder=kw.get("zorder", 3))
+    if ms:
+        m = marker_kw(code, ds, ms=ms)
+        m.pop("ls")
+        kw.update(m, markevery=markevery)
+    return ax.plot(x, y, **kw)
+
+
+def handle(code, ds=None, label=None, line=True, ms=None, **over):
+    """Legend entry for a boundary condition (ds=None: key stroke) or for a boundary condition in a dataset."""
+    kw = line_kw(code, ds) if line else dict(color=UBC[code]["ink"], ls="none")
+    if ms:
+        m = marker_kw(code, ds or "sweep", ms=ms)
+        m.pop("ls")
+        kw.update(m)
+    kw.update(over)
+    return Line2D([], [], label=label or UBC[code]["label"], **kw)
+
+
+def analytic_handle(label="collisionless, analytic"):
+    return Line2D([], [], label=label, **ANALYTIC)
+
+
+def band_handle(label="$\\pm1\\sigma$", color=GREY):
+    return Patch(fc=color, ec="none", alpha=0.25, label=label)
+
+
+def header(fig, text, left, right=0.985):
+    """Setup line at the top of a figure: what experiment the reader is looking at. Only facts true of every panel."""
+    h = fig.get_figheight()
+    fig.text(left, 1 - 0.05 / h, text, ha="left", va="top", fontsize=6.6, color=GRAPHITE)
+    y = 1 - 0.20 / h
+    fig.add_artist(Line2D([left, right], [y, y], color=RULE, lw=0.6))
+
+
+def panel(ax, title, handles=None, ncol=1, rows=0, **kw):
+    """Panel title, with an optional legend between the title and the axes. A legend that describes a whole row is
+    attached to the left panel; the other panels of the row get the same `rows` so their titles line up."""
+    ax.set_title(title, fontsize=8.5, pad=5 + (rows * LEG_ROW + 3 if rows else 0))
+    if handles:
+        opt = dict(loc="lower left", bbox_to_anchor=(0, 1), ncol=ncol, fontsize=LEG_FS, borderaxespad=0.3,
+                   borderpad=0, columnspacing=1.4, handletextpad=0.5, labelspacing=0.32, handlelength=2.1)
+        opt.update(kw)
+        return ax.legend(handles=handles, **opt)
+
+
+def inset_legend(ax, handles, loc, **kw):
+    """Legend inside an axes, on a paper-coloured box so that grid lines do not run through the text."""
+    opt = dict(loc=loc, fontsize=6.0, handletextpad=0.5, labelspacing=0.32, borderaxespad=0.5, borderpad=0.4,
+               handlelength=2.1, frameon=True, framealpha=1.0, facecolor=PAPER, edgecolor="none")
+    opt.update(kw)
+    leg = ax.legend(handles=handles, **opt)
+    ax.add_artist(leg)     # keep it when the panel legend is created afterwards
+    ax.legend_ = None
+    return leg
 
 
 def pending(ax, text, x=0.5, y=0.5, size=7.2):

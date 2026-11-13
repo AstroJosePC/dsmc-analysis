@@ -8,13 +8,14 @@ reference.*
 
 **Graphite Telemetry** treats the page as an instrument readout. Everything is graphite, like the ink of a sharp pencil on calibrated paper. Charcoal marks what is measured. Mid-greys mark what is inferred. The palest greys are scaffolding: grids, guides and the lines that help the eye find a value without competing with it. This report has one subject, H₂, so it admits exactly one ink, H₂ orange. That ink is not decoration. It marks the subject of the report, the ballistic treatment of particles above the upper boundary. When orange appears it means *a ballistic hold*, and nothing else.
 
-**The boundary condition is told by stroke, not by hue.** Four upper-boundary conditions share the page. They are distinguished the way a draughtsman separates lines on a single plate: by weight, dash and marker, never by a second colour.
-- **Reflect** is the reference against which everything is compared. It is drawn in charcoal: a solid line with hollow circles.
-- **The Kepler hold** is the ballistic treatment in production use. It is a solid orange line with filled squares.
-- **Explicit RK4 tracking** is the same physics computed another way. It shares the orange of the Kepler hold, with a dashed line and hollow diamonds. When the two agree, the dashed line lies on the solid one. That overlap is the verification result, made visible.
-- **Free escape** is the limiting case. It is a grey dotted line with hollow triangles, recessive because it is the bound and not the subject.
+**Three questions, three channels.** Every mark on these plates answers three questions, and each answer has its own channel, so that no mark needs a sentence to explain it.
+- *Which boundary condition?* Ink, dash and marker shape. **Reflect**, the reference, is charcoal, solid, a circle. **The Kepler hold** is orange, solid, a square. **Explicit RK4** is the same physics computed another way: the same orange, dashed, a diamond. **Free escape**, the limiting case, is grey, dotted, a downward triangle.
+- *Which runs?* Stroke weight and marker fill. The collisionless verification runs carry half-filled markers. The collisional sweep is drawn with fine lines and filled markers. The longer collisional campaign is drawn with heavy lines and open markers.
+- *Which grid?* Marker size. The standard marker is the 250 km grid, the small one the 1000 km grid.
 
-A reader who learns this key once can read every panel without the legend.
+Where the explicit RK4 line lies on the Kepler-hold line, it is drawn as a slim dashed stroke on a paper-coloured core inside the heavier solid line. Both remain visible, and their coincidence is the result.
+
+**A key belongs to the marks it explains.** Each figure opens with one quiet line that states the experiment: species, run group, top, window. Only facts true of every panel go there. Keys sit directly above the panel or row whose marks they name, or inside the panel where the paper is empty. No key lists a mark that its panels do not draw, and every figure reintroduces the encoding it uses. Run identifiers follow the plain name in brackets and never stand alone.
 
 **Theory and literature are drawn quieter than measurement.** The collisionless solution is the analytic exosphere computed from the same source parameters. It is a thin grey dashed line throughout: the baseline the DSMC departs from. Values from Carberry Mogan et al. (2021) are digitised from another body, another species setup and another time normalisation. They appear only as small graphite crosses: present, legible, and plainly not ours. No line joins them, because a line would claim a continuity we did not measure. Where a figure puts their axis beside ours (*t*/*t*<sub>orb</sub> beside *t*/τ<sub>90</sub>), the axis label states both, so the comparison is offered and never hidden.
 
@@ -44,15 +45,23 @@ A reader who learns this key once can read every panel without the legend.
   - Rule grey `#e6e5e1`: grid lines and table rules.
   - Paper `#ffffff`.
 - **Subject ink.** H₂ `#eb6834`, used for the ballistic UBCs (Kepler hold and explicit RK4) only. Bands are the same ink at 18% opacity. The O ink of the template (`#2a78d6`) is defined in the LaTeX preamble for consistency but is not used.
-- **UBC key** (`scripts/style.py`, `UBC`):
+- **Visual grammar** (`scripts/style.py`: `UBC`, `DATASET`, `MS`):
 
-  | UBC | Ink | Line | Marker |
+  | Boundary condition | Ink | Dash | Marker |
   |---|---|---|---|
-  | 1 reflect | charcoal | solid, 1.4 pt | hollow circle |
-  | 2 Kepler hold | H₂ orange | solid, 1.6 pt | filled square |
-  | 5 explicit RK4 | H₂ orange | dashed (4, 1.8), 1.6 pt | hollow diamond |
-  | 3 free escape | grey | dotted (1, 1.4), 1.3 pt | hollow triangle |
+  | 1 reflect | charcoal | solid | circle |
+  | 2 Kepler hold | H₂ orange | solid | square |
+  | 5 explicit RK4 | H₂ orange | dashed (4, 1.8) | diamond |
+  | 3 free escape | grey | dotted (1, 1.4) | downward triangle |
 
+  | Dataset | Stroke | Marker fill |
+  |---|---|---|
+  | collisionless verification (6e4 s) | 1.1 pt | half-filled |
+  | collisional sweep (3e5 s) | 1.0 pt (fine) | filled |
+  | collisional campaign (2e6 s) | 2.0 pt (heavy); explicit RK4 1.0 pt on a paper core | open |
+
+  Marker size: 4.6 pt for Δ*r* = 250 km, 2.8 pt for Δ*r* = 1000 km. A ratio of two ballistic runs (explicit/Kepler) is a fine solid orange line. The Kepler hold before the fix (E8) keeps the Kepler ink with a broken dash. "Faint" (42% opacity) marks the second quantity of a pair in one panel (return rate, standard deviation).
+- **Keys.** `style.header` writes the setup line; `style.panel` puts a key between a panel title and its axes; `style.inset_legend` puts one inside the axes on a paper patch.
 - **References.** The collisionless analytic solution (`dsmclib.exosphere`) is a grey dashed line (5, 2.5). The paper's values are graphite crosses with no connecting line, labelled "digitised" in captions. An *r*<sub>Hill</sub> arrow marks the Mars Hill radius when it lies off the axis.
 - **Pending.** In figures, `style.pending()` draws a dashed light-grey box with grey text. In LaTeX, `\pending{reason}` prints `[pending: reason]` in grey monospace. In wide tables it is shortened locally to `[pending]`, and the caption gives the reason.
 - **Type.**
@@ -63,9 +72,9 @@ A reader who learns this key once can read every panel without the legend.
 - **Strokes.**
   - Axes 0.6 pt.
   - References 0.9 pt.
-  - Data 1.3–1.8 pt.
+  - Data 1.0–2.0 pt, by dataset (table above).
   - Raw traces 0.5 pt at 45% opacity.
-  - Markers 3.5–4.5 pt.
+  - Markers 2.8–4.6 pt.
 - **Geometry.**
   - Full-width figures are 6.5 in wide.
   - Radial axes are *r*/*r*₀ on a log scale, with *r*₀ at 100 km altitude.
