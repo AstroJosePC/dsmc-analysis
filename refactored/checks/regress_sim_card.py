@@ -107,7 +107,7 @@ def main():
             "N_part last (ncrun)": np.allclose([s["npart_final"] for s in c["species"]], npart_last, rtol=1e-9),
         })
         del run
-        if r.alias.startswith("OH2_") and macros:
+        if r.campaign == "oh2_escape_rerun" and macros:   # the O+H2 report's runs (not drift_mb's OH2_s*)
             ab = "A" if r.alias == "OH2_A" else "B"
             sp = {s["name"]: s for s in c["species"]}
             exp = {f"topAlt{ab}": round(d["upper_alt_km"]), f"nOut{ab}": tm["n_outputs"],

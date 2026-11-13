@@ -19,6 +19,7 @@ Species-aware modules for multi-species 1-D runs read from the run file (<alias>
     profiles    time-mean profiles with batch-means errors, isothermal reference, exobase, replicate stats
     escape      DSMC escape count + Poisson limit, Jeans escape (exobase, lower boundary), mass balance
     wave        1-D forcing response: harmonic fit with drift term, amplitude/phase vs altitude
+    drift       drifting-Maxwellian boundary theory, output/phase schedule, reload_inputs restart-rate correction
 
 Pipeline and presentation:
     runfile     build <alias>_run.nc for registered runs (dsmc_netcdf_webapp builder), then their cards
@@ -26,7 +27,7 @@ Pipeline and presentation:
     graphite    Graphite Telemetry style (palette, rcParams, bundled fonts) shared by reports and cards
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 from .run_data import DSMCRun
 

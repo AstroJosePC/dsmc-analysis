@@ -28,6 +28,8 @@ from .constants import MARS_MASS, MARS_RADIUS
 
 RUN_SUFFIX = "_run.nc"
 GROUPS = ("macroscopic", "rates_surface", "rates_escape", "info_surface", "info_radial")
+# Optional diagnostics groups (builder >= 1.2.1, drift/escape-histogram solver builds); loaded when present.
+DIAGNOSTIC_GROUPS = ("diagnostics_drift", "diagnostics_histogram", "diagnostics_escape_speed_histogram")
 
 
 def _load_group(path: Path, group: str) -> Optional[xr.Dataset]:
@@ -91,6 +93,7 @@ class NcRun:
     info_surface: Optional[xr.Dataset]
     info_radial: Optional[xr.Dataset]
     attrs: Dict[str, object] = field(default_factory=dict)
+    diagnostics: Dict[str, xr.Dataset] = field(default_factory=dict)  # DIAGNOSTIC_GROUPS present in the file
 
     # ---- run parameters -------------------------------------------------------------
     @property
@@ -183,8 +186,14 @@ def open_run_nc(target: Union[str, Path], squeeze_1d: bool = True) -> NcRun:
                          "boundary indices stored as radii); rebuild it")
     if squeeze_1d:
         macro = _squeeze_1d(macro)
+    import netCDF4
+
+    with netCDF4.Dataset(path) as root:
+        present = [g for g in DIAGNOSTIC_GROUPS if g in root.groups]
+    diagnostics = {g: _label_species(_load_group(path, g)) for g in present}
     run = NcRun(path=path, alias=alias, macro=macro, surface=groups["rates_surface"],
                 escape=groups["rates_escape"], info_surface=groups["info_surface"],
-                info_radial=groups["info_radial"], attrs=attrs)
+                info_radial=groups["info_radial"], attrs=attrs,
+                diagnostics={g: d for g, d in diagnostics.items() if d is not None})
     return run
 

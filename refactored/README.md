@@ -37,6 +37,9 @@ dsmclib/          shared code, one module per step
                   transit_expected_count (exobase-to-top travel time), lower_boundary_balance
   wave            1-D forcing response: harmonic fit with drift term, amplitude/phase vs altitude
                   (dn, dT relative; dv_r absolute in m/s), pre-forcing noise floor (null fit at omega)
+  drift           drifting-Maxwellian boundary theory (f(y|s), CDF, closed-form moments, flux-weighted mixtures,
+                  exact moment SEs), per-output/phase schedule, reload_inputs restart-interval rate correction
+                  (ncrun also loads the diagnostics_* groups into run.diagnostics when present)
   -- pipeline and presentation --
   runfile         python -m dsmclib.runfile --campaign X | --runs A B: build <Results>/<alias>_run.nc, then cards
   tiers           CONVENTION_VERSION, analysis_path(), analysis_attrs(): required analysis-file metadata
@@ -55,6 +58,8 @@ campaigns/
   oh2_escape_rerun/ compile_netcdf.py (raw ASCII -> <Results>/<alias>_run.nc + card; wraps dsmclib.runfile),
                     compute_analysis.py (-> outputs/.../analysis/<alias>_analysis.nc, oh2_escape_rerun_analysis.nc, tables/*.csv),
                     oh2_escape.ipynb (figures: inventory, profiles, escape, wave response)
+  drift_mb/         compute_analysis.py (VDFs, flux budgets, escape, wave response, heating, ring-down -> analysis/, tables/),
+                    make_figures.py (17 diagnostic figures), README.md (definitions, caveats)
   synthetic_methods/  (not ported yet)
 checks/           regress_density_growth.py: staging vs frozen root, number for number
                   regress_resolution_fit.py: Fig 7 / Table 4 legacy path vs zenodo_release
@@ -65,6 +70,8 @@ checks/           regress_density_growth.py: staging vs frozen root, number for 
                   regress_oh2_rerun_vs_2025.py: B reruns vs archived Results_20250216_153021.481 (exact Info, stochastic z)
                   regress_oh2_wave_series.py: OH2_A wave series vs raw ASCII, shot noise, noise floor calibration
                   regress_sim_card.py: card values vs raw Info/Simulation_Parameters, ncrun and the O+H2 report Table 1
+                  validate_drift_mb.py: drift_mb analysis outputs (completeness, provenance, bookkeeping, mass balance,
+                  injection vs theory, VDF statistics, controls, linearity) -> outputs/drift_mb/tables/validation.csv
 outputs/          gitignored: outputs/<campaign>/{analysis,figures,tables} (+ cache/ for legacy runs); outputs/cards/ (card copies + cards.csv)
 ```
 

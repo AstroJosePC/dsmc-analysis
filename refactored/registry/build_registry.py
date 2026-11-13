@@ -132,6 +132,41 @@ def _h2hold_aliases():
 
 ALIASES += _h2hold_aliases()
 
+# drift_mb campaign (Nov 2026): 1-D drifting-Maxwellian (VEL_WAVE_LINEAR) lower-boundary forcing in pure O and O+H2.
+# Two spin-ups (SPIN_O, SPIN_OH2; role "spinup") and 20 forced runs restarted from them (role "current").
+CAMPAIGNS["drift_mb"] = (
+    "Mars 1-D drifting-Maxwellian lower-boundary forcing (Nov 2026): atmosphere {O, O+H2} x s_O {0, 0.05, 0.1, 0.2} "
+    "x P {165, 330, 660 s}, 20 forcing + 5 ring-down periods restarted from a 1e5 s spin-up; 270 K, z_top 2500 km, "
+    "UBC_FREE_ESCAPE. MarsAtmos feature/velwave-1d (9088aab3), builder 1.2.1. "
+    "Design: ~/MarsAtmos-DriftMB-sweep/EXPERIMENT_DESIGN.md")
+DRIFTMB_ROOT = Path.home() / "MarsAtmos-DriftMB-sweep"
+
+
+def _driftmb_aliases():
+    import csv
+    matrix = DRIFTMB_ROOT / "matrix.csv"
+    if not matrix.exists():
+        return []
+    rows = []
+    for r in csv.DictReader(open(matrix)):
+        results = DRIFTMB_ROOT / "runs" / r["id"] / "Results"
+        if not (results / "Info" / "Simulation_Parameters.ascii").exists():
+            continue
+        common = (f"{r['species']}, {r['n_cells']} cells, z_top {r['z_top_actual_km']} km actual, "
+                  f"dt {float(r['dt_expected']):.6g} s, {r['n_outputs']} outputs")
+        if r["stage"] == "spin":
+            rows.append((r["id"], "drift_mb", str(results), "spinup",
+                         f"Spin-up from empty, no forcing, {r['n_steps']} steps ({r['t_run_s']} s); {common}"))
+        else:
+            rows.append((r["id"], "drift_mb", str(results), "current",
+                         f"Restart of {r['spin_id']}: VEL_WAVE_LINEAR s_O {r['s_O']} (w' {r['w_mps']} m/s, "
+                         f"s_H2 {r['s_H2']}), P {r['period_s']} s, {r['n_force']} forcing + 5 ring-down periods, "
+                         f"avg {r['avg_steps']} steps (P/16), steps {r['step0_inject']}-{r['n_steps']}; {common}"))
+    return rows
+
+
+ALIASES += _driftmb_aliases()
+
 
 def add_missing_run(conn: sqlite3.Connection, results_base: str) -> None:
     """Insert a minimal simulation_runs row for a run folder the root DB lacks."""
