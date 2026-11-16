@@ -1,0 +1,48 @@
+# Rarefied Order: locked figure style for the NSBP/NSHP 2026 deck and related repos.
+# Sizes below are for the "deck" target at final placed size. deckstyle.use("paper") rescales them.
+font.family: sans-serif
+font.sans-serif: Open Sans, DejaVu Sans
+font.size: 14
+text.color: 5F6062
+mathtext.fontset: stixsans
+
+axes.labelsize: 16
+axes.titlesize: 16
+axes.labelcolor: 5F6062
+axes.edgecolor: 5F6062
+axes.linewidth: 0.8
+axes.spines.top: False
+axes.spines.right: False
+axes.grid: False
+axes.facecolor: none
+axes.prop_cycle: cycler('color', ['003A63', '2A6EBB', '5C3160', '5F6062'])
+
+xtick.labelsize: 14
+ytick.labelsize: 14
+xtick.color: 5F6062
+ytick.color: 5F6062
+xtick.direction: out
+ytick.direction: out
+xtick.major.size: 4
+ytick.major.size: 4
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+xtick.minor.visible: False
+ytick.minor.visible: False
+
+lines.linewidth: 2.0
+lines.markersize: 6
+errorbar.capsize: 0
+
+legend.fontsize: 13
+legend.frameon: False
+legend.handlelength: 2.4
+
+figure.facecolor: none
+figure.constrained_layout.use: True
+savefig.facecolor: none
+savefig.transparent: True
+savefig.dpi: 300
+pdf.fonttype: 42
+ps.fonttype: 42
+svg.fonttype: none
