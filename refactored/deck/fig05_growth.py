@@ -4,6 +4,10 @@ FIG 5a: G(z) = A(z)/A(150 km), the per-cycle peak density perturbation relative 
   1D spherical: last forcing cycle of run 1D_5p (the Icarus 2026 run), from the radial_1d cache.
   1D Cartesian: Tian et al. (2023), digitised table dsmclib.constants.TIAN_GROW.
   These are the curves behind the slide's x4.8 vs x5.8 near 300 km.
+
+  A single cycle's peak carries cell-to-cell noise (cycle 5 steps back from 4.50 at 285 km to 4.46
+  at 294 km; the five cycles scatter by ~15% there). The spherical line is therefore a 3-cell
+  (+/- 9 km) geometric running mean, end cells raw, and the raw cycle-5 cell values are drawn as dots.
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -35,15 +39,27 @@ def load_curves():
     return (z_sph, g_sph), (z_t, g_t), path
 
 
+def running_geomean(g, half=1):
+    """Centred (2*half+1)-cell geometric mean; the end cells are left raw."""
+    lg = np.log(g)
+    out = lg.copy()
+    for i in range(half, g.size - half):
+        out[i] = lg[i - half: i + half + 1].mean()
+    return np.exp(out)
+
+
 def fig5a():
-    (z_s, g_s), (z_t, g_t), path = load_curves()
+    (z_s, g_raw), (z_t, g_t), path = load_curves()
+    g_s = running_geomean(g_raw)
     gs300, gt300 = np.interp(Z_MARK, z_s, g_s), np.interp(Z_MARK, z_t, g_t)
-    print(f"G at {Z_MARK:.0f} km: spherical {gs300:.2f}, Cartesian {gt300:.2f}, "
+    print(f"G at {Z_MARK:.0f} km: spherical {gs300:.2f} (raw cell interp "
+          f"{np.interp(Z_MARK, z_s, g_raw):.2f}), Cartesian {gt300:.2f}, "
           f"deficit {100 * (1 - gs300 / gt300):.0f}%")
 
     fig, ax = ds.figure("evidence")
     ax.plot(g_t, z_t, color=ds.ROLE["prior_work"], ls=ds.LINESTYLE["prior_work"], lw=1.5)
     ax.plot(g_s, z_s, color=ds.ROLE["this_work"], lw=2.4)
+    ax.plot(g_raw, z_s, "o", ms=4.2, mew=0, color=ds.ROLE["this_work"], zorder=4)
 
     ax.set_xscale("log")
     ax.set_xlim(0.94, 7.0)

@@ -3,7 +3,9 @@
   L_att:    lock-in amplitude |Z| vs arc distance s past the patch edge at the exobase cell, with
             the Table S3 exponential fit and the dashed 3-sigma noise floor.
   lambda_h: crest-arrival lag vs column distance with the ODR line (points cached by
-            deck/compute_phase_lag_cache.py).
+            deck/compute_phase_lag_cache.py). The ODR alone gives 450.4 +/- 7.6 km; the card's
+            450 +/- 14 km is the rev5 total (statistical +/-11 = ODR error x 1.4 from injection
+            tests, combined with +/-9 km for fit-window and single-edge choices).
 
     conda run -n dsmc python deck/fig06_sparklines.py [latt] [lambdah]
 """

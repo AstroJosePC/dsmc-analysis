@@ -15,11 +15,14 @@ STEPS = [("Move", ["free flight for $\\Delta t$"]),
          ("Boundaries", ["wave input at base", "escape at top"]),
          ("Sample", ["average to $n$, $T$, $u$"])]
 N_DOTS, SEED, NCELL = 44, 7, 3
-BOX = 1.45                     # pictogram side, inches
-Y_BOX = 2.03                   # bottom of the pictograms
+# Content is packed into the top ~3.3 in of the slot: on slide 4 the bottom 0.9 in sits above the
+# constraint chips and the measure card (slides/build_deck.py).
+BOX = 1.30                     # pictogram side, inches
+Y_BOX = 2.31                   # bottom of the pictograms
 X_FIRST, PITCH = 1.42, 2.345   # centre of the first pictogram, spacing
-Y_LABEL, Y_TEXT, Y_RETURN = 3.84, 1.43, 0.50   # Y_TEXT: baseline of the first caption line
+Y_LABEL, Y_TEXT, Y_RETURN = 3.97, 1.71, 0.90   # Y_TEXT: baseline of the first caption line
 LINE_GAP = 0.27
+Y_FROM = Y_TEXT - 0.51         # where the return path leaves Sample and re-enters Move
 
 
 def dots():
@@ -111,7 +114,7 @@ def main():
                                         shrinkA=0, shrinkB=0))
 
     # return path: Sample -> Move, once per time step
-    xa, xb, r, y_from = centres[-1], centres[0], 0.16, 0.92
+    xa, xb, r, y_from = centres[-1], centres[0], 0.16, Y_FROM
     t = np.linspace(0, np.pi / 2, 20)
     path_x = np.r_[xa, xa - r + r * np.cos(-t), xb + r + r * np.cos(-np.pi / 2 - t), xb]
     path_y = np.r_[y_from, Y_RETURN + r + r * np.sin(-t), Y_RETURN + r + r * np.sin(-np.pi / 2 - t), y_from - 0.12]
