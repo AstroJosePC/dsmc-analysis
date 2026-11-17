@@ -31,7 +31,7 @@ import numpy as np
 from matplotlib.patches import Arc, Circle, FancyArrowPatch, Polygon, Wedge
 
 import fig07_wheel_sector as w7
-from _deck import R_MARS_KM, ds, save
+from _deck import R_MARS_KM, ds, r_label, save
 from slots import SLOTS
 
 DATA = Path(__file__).resolve().parent / "data"
@@ -301,11 +301,13 @@ def sector_labels(ax, lat_f, notes=True):
     """Altitudes at the right seam, the polar-band bracket at the left end, and (notes) the width
     caption and the 3D-flight note under the sector. Returns the caption's lowest y."""
     # altitude labels beside the right seam's front edge (as in FIG 7a)
-    for z, lab, kw in ((G["base_km"], f"{G['base_km']:.0f} km", dict(fontsize=13)),
-                       (G["top_edge_km"], f"{G['top_edge_km']:.0f} km", dict(fontsize=13)),
-                       (230.0, "EXOBASE", dict(fontsize=11, fontweight="semibold", color=ds.GRANITE))):
+    # the italic r leans into the seam's slanted edge, so the r labels sit 0.06 in further out
+    for z, lab, dx, kw in ((G["base_km"], r_label(G["base_km"]), 0.18, dict(fontsize=13)),
+                           (G["top_edge_km"], r_label(G["top_edge_km"]), 0.18, dict(fontsize=13)),
+                           (230.0, "EXOBASE", 0.12,
+                            dict(fontsize=11, fontweight="semibold", color=ds.GRANITE))):
         p = view(world(r_of(z), lat_f, A_HALF))[0]
-        ax.text(p[0] + 0.12, p[1], lab, ha="left", va="center", **kw)
+        ax.text(p[0] + dx, p[1], lab, ha="left", va="center", **kw)
     # polar band thickness: bracket across the outer face at its left end
     e0 = view(world(R1, -B_HALF, -A_HALF))[0]
     e1 = view(world(R1, B_HALF, -A_HALF))[0]

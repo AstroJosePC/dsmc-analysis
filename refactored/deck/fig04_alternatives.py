@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Polygon, Rectangle, Wedge
 
-from _deck import R_MARS_KM, ds, save
+from _deck import R_MARS_KM, ds, r_label, save
 from dsmclib import registry
 from dsmclib.paths import output_dir
 from dsmclib.run_data import DSMCRun
@@ -188,10 +188,10 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
     arrow(ax, pe, (pe[0] + 0.08, pe[1] + 0.36), ds.MIDNIGHT, lw=1.3, ms=9)
     badge(ax, pe[0] + 0.36, pe[1] + 0.20, 3, badge_r)
     xt, yt = xy(r_top, a_edges[-2])
-    top = f"{num['z_top']:.0f} km" if short_labels else f"top boundary, {num['z_top']:.0f} km"
+    top = r_label(num["z_top"]) if short_labels else f"top boundary, {r_label(num['z_top'])}"
     ax.text(xt + 0.05, yt + 0.10, top, ha="left", va="bottom", fontsize=12)
     xb_, yb_ = xy(R0, a_edges[0])
-    bot = f"{num['z_bot']:.0f} km" if short_labels else f"lower boundary\n{num['z_bot']:.0f} km"
+    bot = r_label(num["z_bot"]) if short_labels else f"lower boundary\n{r_label(num['z_bot'])}"
     ax.text(xb_ - 0.10, yb_ + 0.02, bot, ha="right", va="center", fontsize=12, linespacing=1.3)
 
     # dr, dphi on one cell

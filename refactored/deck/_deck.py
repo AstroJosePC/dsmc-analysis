@@ -43,6 +43,13 @@ def save(fig, name: str, *inputs, png: bool = True) -> Path:
     return path
 
 
+def r_label(alt_km: float, bound: bool = True) -> str:
+    """Shell label on curved-geometry figures. r is the radial altitude above the surface,
+    r = R - R_Mars (defined on slide 3, FIG 3): the bounds of a domain read 'r = 100 km' with an
+    italic r (mathtext, stixsans), interior shells just '230 km'."""
+    return (r"$r$ = " if bound else "") + f"{alt_km:.0f} km"
+
+
 def wedge_xy(alt_km, phi, phi0: float = 0.0, r0_km: float = R_MARS_KM):
     """Altitude x azimuth -> true-scale (x, y) in km; y = 0 at the surface under phi0, up positive."""
     r = r0_km + np.asarray(alt_km, dtype=float)

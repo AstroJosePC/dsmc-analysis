@@ -31,7 +31,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-from _deck import R_MARS_KM, ds, save
+from _deck import R_MARS_KM, ds, r_label, save
 from dsmclib import attenuation as att
 from dsmclib.paths import output_dir
 from slots import size_in
@@ -160,9 +160,10 @@ def wedge_figure(stem, f, k, *, margin_in, colorbar_at, scale_at, labels, centre
     wd.arc(ds.EXOBASE_KM, a_lo, a_hi, color=ds.ROLE["exobase"], ls=ds.LINESTYLE["exobase"], lw=1.5)
 
     # altitude labels on the left cut; the exobase is named there, clear of the field
-    for z in labels.get("alts", (z_edges[0], ds.EXOBASE_KM, 300.0, z_top)):
+    alts = labels.get("alts", (z_edges[0], ds.EXOBASE_KM, 300.0, z_top))
+    for z in alts:
         x, y = wd.xy(z, a_lo)
-        t = f"{round(z, -1):.0f} km"
+        t = r_label(round(z, -1), bound=z in (min(alts), max(alts)))
         ax.text(x - 8 * pt, y, t, ha="right", va="center", fontsize=13)
         if z == ds.EXOBASE_KM:
             ax.text(x - 8 * pt, y - 13 * pt, "EXOBASE", ha="right", va="center", fontsize=11,

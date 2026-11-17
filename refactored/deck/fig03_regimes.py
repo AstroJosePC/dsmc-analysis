@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Polygon
 
-from _deck import ds, save
+from _deck import ds, r_label, save
 
 Z0, Z1 = 100.0, 700.0
 H_KM = 40.0
@@ -21,7 +21,7 @@ KN_TEXT = {"collisional": r"$\mathrm{Kn} < 0.1$", "transition": r"$0.1 < \mathrm
 LABEL_Z = {"collisional": 119.0, "transition": 338.0, "exosphere": 520.0}
 
 # sector geometry in inches on the 7.22 x 4.17 canvas
-CX, CY = 3.12, -2.10          # centre of curvature
+CX, CY = 3.37, -2.10          # centre of curvature
 RHO0, THICK = 3.20, 2.75      # radius at 100 km, radial thickness of 100-700 km
 ALPHA = np.deg2rad(22.0)
 N_DOTS, DOT_EFOLD_KM, SEED = 2600, 150.0, 2026
@@ -73,7 +73,13 @@ def main():
     # altitude scale, left
     for zt in (Z0, ds.EXOBASE_KM, Z1):
         x, y = xy(zt, -ALPHA)
-        ax.text(x - 0.10, y, f"{zt:.0f} km", ha="right", va="center", fontsize=12)
+        ax.text(x - 0.10, y, r_label(zt, bound=zt in (Z0, Z1)), ha="right", va="center", fontsize=12)
+    # what r means: altitude above the surface (introduced here, used on slides 4, 6, 7)
+    x_def, y_def = 0.04, 0.5 * (xy(ds.EXOBASE_KM, -ALPHA)[1] + xy(Z1, -ALPHA)[1]) + 0.20
+    ax.text(x_def, y_def, r"$r = R - R_{\mathrm{Mars}}$", ha="left", va="center", fontsize=12,
+            color=ds.GRANITE)
+    ax.text(x_def, y_def - 0.17, "altitude above\nthe surface", ha="left", va="top", fontsize=11,
+            color=ds.GRANITE, linespacing=1.2)
 
     # regime names, right
     for name, zt in LABEL_Z.items():
