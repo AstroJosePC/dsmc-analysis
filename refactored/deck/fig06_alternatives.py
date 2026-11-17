@@ -31,7 +31,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-from _deck import R_MARS_KM, ds, r_label, save
+from _deck import R_MARS_KM, SVG_ONLY, ds, r_label, save
 from dsmclib import attenuation as att
 from dsmclib.paths import output_dir
 from slots import size_in
@@ -351,6 +351,8 @@ def latt_profile(stem):
 
 def write_facts():
     """Slide 6 hero numbers for slides/build_deck.py (deck/data/slide06_facts.json)."""
+    if SVG_ONLY:                     # SVG render for the pptx export: leave deck/data alone
+        return
     import json
     from datetime import date
     from pathlib import Path

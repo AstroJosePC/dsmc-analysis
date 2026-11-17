@@ -33,52 +33,73 @@ def thousands(v, _=None):
 
 
 # ================================================================= B1 run table
-def figB1():
+def b1_table():
+    """Content and geometry of the B1 run table, in figure inches (y up, strip slot): drawn by figB1 and
+    rebuilt as a native table by slides/export_pptx.py, so the two cannot differ."""
     b = F["B1"]
-    fig, ax = ds.figure("strip")
-    fig.set_layout_engine("none")
-    ax.set_position([0, 0, 1, 1])
-    ax.set_axis_off()
     w, h = ds.SIZES["strip"]
-    ax.set_xlim(0, w)
-    ax.set_ylim(0, h)
     cols = [("Run", ""), ("Azimuth", "cells"), ("Cell width", "at 231 km (km)"), ("Cells per", r"$\lambda_h$"),
             ("Particles", "in total"), ("Particles per", "cell at 231 km"), ("Peak growth", r"$G_{\max}$"),
             (r"$L_{\mathrm{att}}$ at", "231 km (km)")]
     xc = [0.62, 2.02, 3.55, 5.02, 6.55, 8.15, 9.70, 11.20]
     y_h1, y_h2, y_rule = 2.98, 2.74, 2.60
-    for (a, b2), x in zip(cols, xc):
-        ha = "left" if x == xc[0] else "center"
-        x0 = 0.18 if x == xc[0] else x
-        ax.text(x0, y_h1, a, ha=ha, va="baseline", fontsize=14, fontweight="semibold")
-        if b2:
-            ax.text(x0, y_h2, b2, ha=ha, va="baseline", fontsize=14, fontweight="semibold")
-    ax.plot([0.12, w - 0.12], [y_rule] * 2, color=ds.GRANITE, lw=0.8)
+    header = [dict(x=0.18 if x == xc[0] else x, ha="left" if x == xc[0] else "center",
+                   lines=[(y, t) for y, t in ((y_h1, a), (y_h2, b2)) if t]) for (a, b2), x in zip(cols, xc)]
     pitch, y0 = 0.31, 2.36
+    rows, rules = [], [dict(y=y_rule, lw=0.8, alpha=1.0)]
     for i, r in enumerate(b["rows"]):
         y = y0 - i * pitch - (0.08 if i >= 3 else 0)
         last = r["run"] == "S6"
-        kw = dict(fontsize=15, va="baseline", ha="center", color=ds.MIDNIGHT if last else ds.GRANITE,
-                  fontweight="semibold" if last else "normal")
-        ax.add_patch(mpl.patches.Circle((0.27, y + 0.055), 0.055, fc=ds.RUN_RAMP[r["run"]], lw=0))
-        ax.text(0.42, y, r["run"], **(kw | dict(ha="left", fontweight="semibold")))
+        color, weight = (ds.MIDNIGHT, "semibold") if last else (ds.GRANITE, "normal")
         mant, exp = f"{r['particles']:.2e}".split("e")
         dag = "†" if r["ensemble"] else ""
         L = "—" if r["L_att_km"] is None else f"{r['L_att_km']:.0f} ± {r['sigma_L_km']:.0f}"
         vals = [f"{r['n_azi']:,}", f"{r['cell_km']:.1f}", f"{r['cells_per_lambda']:.1f}",
                 rf"${float(mant):.1f}\times10^{{{int(exp)}}}${dag}", f"{r['ppc_230']:,}{dag}",
                 f"{r['g_max']:.2f}", L + ("‡" if r["L_att_km"] is None else "")]
-        for x, v in zip(xc[1:], vals):
-            ax.text(x, y, v, **kw)
+        rows.append(dict(y=y, color=color, weight=weight, dot=(0.27, y + 0.055, 0.055, ds.RUN_RAMP[r["run"]]),
+                         cells=[(0.42, "left", r["run"], "semibold")]
+                               + [(x, "center", v, weight) for x, v in zip(xc[1:], vals)]))
         if i == 2:
-            ax.plot([0.12, w - 0.12], [y - 0.13] * 2, color=ds.GRANITE, lw=0.5, alpha=0.45)
-    ax.plot([0.12, w - 0.12], [y0 - 5 * pitch - 0.2] * 2, color=ds.GRANITE, lw=0.8)
+            rules.append(dict(y=y - 0.13, lw=0.5, alpha=0.45))
+    rules.append(dict(y=y0 - 5 * pitch - 0.2, lw=0.8, alpha=1.0))
     notes = ("† S1–S3 are ten-member ensemble means; particle counts are per member.   "
              "‡ No accepted fit: at most 3 points outside the forced wedge.",
              rf"$G_{{\max}}$: peak of $A(z)/A_{{150}}$ up to 315 km.   Cells per $\lambda_h$ use "
              rf"$\lambda_h$ = {b['lambda_h_km']:.0f} km at 231 km (S6).")
-    for k, t in enumerate(notes):
-        ax.text(0.18, 0.40 - 0.24 * k, t, ha="left", va="baseline", fontsize=13, fontweight=300)
+    return dict(size=(w, h), x_span=(0.12, w - 0.12), xc=xc, header=header, header_size=14, row_size=15,
+                rows=rows, rules=rules, notes=[(0.18, 0.40 - 0.24 * k, t) for k, t in enumerate(notes)],
+                note_size=13, note_weight=300)
+
+
+def figB1():
+    b = F["B1"]
+    t = b1_table()
+    fig, ax = ds.figure("strip")
+    fig.set_layout_engine("none")
+    ax.set_position([0, 0, 1, 1])
+    ax.set_axis_off()
+    w, h = t["size"]
+    ax.set_xlim(0, w)
+    ax.set_ylim(0, h)
+    x0, x1 = t["x_span"]
+    for c in t["header"]:
+        for y, text in c["lines"]:
+            ax.text(c["x"], y, text, ha=c["ha"], va="baseline", fontsize=t["header_size"], fontweight="semibold")
+    rules = iter(t["rules"])
+    rule = lambda r: ax.plot([x0, x1], [r["y"]] * 2, color=ds.GRANITE, lw=r["lw"],
+                             **({} if r["alpha"] == 1.0 else dict(alpha=r["alpha"])))
+    rule(next(rules))
+    for i, r in enumerate(t["rows"]):
+        cx, cy, rad, fc = r["dot"]
+        ax.add_patch(mpl.patches.Circle((cx, cy), rad, fc=fc, lw=0))
+        for x, ha, v, weight in r["cells"]:
+            ax.text(x, r["y"], v, fontsize=t["row_size"], va="baseline", ha=ha, color=r["color"], fontweight=weight)
+        if i == 2:
+            rule(next(rules))
+    rule(next(rules))
+    for x, y, text in t["notes"]:
+        ax.text(x, y, text, ha="left", va="baseline", fontsize=t["note_size"], fontweight=t["note_weight"])
     save(fig, "figB1_run_table", FACTS + " B1", *b["sources"])
 
 

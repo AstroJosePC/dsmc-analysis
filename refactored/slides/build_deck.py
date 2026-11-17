@@ -35,7 +35,8 @@ sources by deck/cache_slide02.py, deck/cache_slides78.py and deck/cache_backups.
 e.g. when the last Stage 1B replicates finish).
 
 Outputs (refactored/slides/build/): NSBP2026_deck_full.pdf, preview/slide-N.png (page order);
-NSBP2026_deck_progressive.pdf, preview_progressive/page-N.png.
+NSBP2026_deck_progressive.pdf, preview_progressive/page-N.png. slides/export_pptx.py writes the same 15
+slides as an editable PowerPoint file from these Slide objects (Slide.para and Slide.card_eqs exist for it).
 """
 from __future__ import annotations
 
@@ -45,6 +46,7 @@ import re
 import shutil
 import subprocess
 import sys
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -138,7 +140,11 @@ class Slide:
     layers: list = field(default_factory=list)     # (stem, x, y_top, w, h, first, last) incl. build variants
     step: int = 0                                  # build step of what is drawn now (0: every page)
     art_step: dict = field(default_factory=dict)   # chrome artist -> build step
+    para_of: dict = field(default_factory=dict)    # text artist -> paragraph id (slides/export_pptx.py only)
+    card_eqs: dict = field(default_factory=dict)   # text artist -> (card label, equation row source)
     _group: itertools.count = field(default_factory=itertools.count)
+    _paras: itertools.count = field(default_factory=itertools.count)
+    _para: int | None = None
 
     def __post_init__(self):
         self.fig = plt.figure(figsize=(W / 72, H / 72), dpi=72)
@@ -190,10 +196,24 @@ class Slide:
         return w
 
     # ---- drawing
+    @contextmanager
+    def para(self):
+        """Lines drawn inside belong to one paragraph: the editable PowerPoint export writes them as one
+        text box with their leading. Drawing and the collision check do not see it."""
+        outer = self._para
+        if outer is None:
+            self._para = next(self._paras)
+        try:
+            yield
+        finally:
+            self._para = outer
+
     def text(self, x, y, s, prop, color=None, ha="left", va="baseline", alpha=1.0, name=None, group=None):
         t = self.ax.text(x, y, s, fontproperties=prop, color=color or ds.GRANITE, ha=ha, va=va,
                          alpha=alpha, math_fontfamily=MATH, zorder=5)
         self.texts.append((t, next(self._group) if group is None else group, name or s))
+        if self._para is not None:
+            self.para_of[t] = self._para
         return t
 
     def tracked(self, x, y, s, prop, tracking, color=None, alpha=1.0, ha="left"):
@@ -233,8 +253,9 @@ class Slide:
         lines = self.wrap(s, prop, max_w)
         if max_lines and len(lines) > max_lines:
             raise ValueError(f"slide {self.number}: '{s[:40]}...' needs {len(lines)} lines (max {max_lines})")
-        for i, line in enumerate(lines):
-            self.text(x, y + i * leading, line, prop, color=color, alpha=alpha)
+        with self.para():
+            for i, line in enumerate(lines):
+                self.text(x, y + i * leading, line, prop, color=color, alpha=alpha)
         return y + (len(lines) - 1) * leading
 
     def place(self, stem, x, y_top, builds=0):
@@ -266,8 +287,9 @@ def header(s: Slide, kicker: str, headline: str):
     lines = s.wrap(headline, fp(SERIF, 32), RIGHT - M)
     if len(lines) > 2:
         raise ValueError(f"slide {s.number}: headline needs {len(lines)} lines (max 2)")
-    for i, line in enumerate(lines):
-        s.text(M, 88 + 34 * i, line, fp(SERIF, 32), color=ds.MIDNIGHT)
+    with s.para():
+        for i, line in enumerate(lines):
+            s.text(M, 88 + 34 * i, line, fp(SERIF, 32), color=ds.MIDNIGHT)
     s.rule(M, 139, 0.9 * 72, 2.5, ds.CRIMSON)
 
 
@@ -353,7 +375,12 @@ class Card:
                 raise ValueError(f"slide {s.number}: hero '{self.hero}' runs into the sparkline")
         for k, line in enumerate(self.eq):
             parts = line if isinstance(line, list) else [(line, fp(SANS, 20), ds.MIDNIGHT)]
+            n0 = len(s.texts)
             s.runs(tx, y + base[f"eq{k}"], parts)
+            src = "".join(p[0] for p in parts)
+            if "$" in src:
+                for t in s.texts[n0:]:
+                    s.card_eqs[t[0]] = (self.label, src)
         for k, (t, size, color, weight) in enumerate(self.lines):
             if s.width(t, fp(SANS, size, weight)) > text_w:
                 raise ValueError(f"slide {s.number}: card line too long: {t}")
@@ -379,8 +406,9 @@ def slide1():
               color=ds.CULTURED, alpha=0.6)
     title = ["Molecular Kinetic", "Simulations of", "Acoustic-Gravity Wave",
              "Energy Transport into the", "Martian Exosphere"]
-    for i, line in enumerate(title):
-        s.text(x, 140 + 31.5 * i, line, fp(SERIF, 30), color=ds.CULTURED)
+    with s.para():
+        for i, line in enumerate(title):
+            s.text(x, 140 + 31.5 * i, line, fp(SERIF, 30), color=ds.CULTURED)
     s.rule(x, 284, 48, 2.5, ds.CRIMSON)
     s.text(x, 322, "José Ángel Pérez Chávez", fp(SANS, 15), color=ds.CULTURED)
     s.text(x, 340, "O. J. Tucker · R. E. Johnson · S. Carberry Mogan · C. Boxe", fp(SANS, 11, 300),
@@ -607,11 +635,12 @@ def metric(s: Slide, x, y0, label, hero, units, lines, width, size=40.0):
     if hw + 10 + max(s.width(u, fp(SANS, 17, 300)) for u in units) > width:
         raise ValueError(f"slide {s.number}: metric '{label}' units run past the column")
     y = y0 + 40
-    for t in lines:
-        if s.width(t, fp(SANS, 14, 300)) > width:
-            raise ValueError(f"slide {s.number}: metric line too long: {t}")
-        y += 18.5 + (4 if y == y0 + 40 else 0)
-        s.text(x, y, t, fp(SANS, 14, 300))
+    with s.para():
+        for t in lines:
+            if s.width(t, fp(SANS, 14, 300)) > width:
+                raise ValueError(f"slide {s.number}: metric line too long: {t}")
+            y += 18.5 + (4 if y == y0 + 40 else 0)
+            s.text(x, y, t, fp(SANS, 14, 300))
     return y
 
 
@@ -753,11 +782,12 @@ def backup(k: int) -> Slide:
 
 def lines14(s: Slide, x, y, texts, width, lead=18.5):
     """Light 14 pt lines under a hero row; returns the last baseline."""
-    for t in texts:
-        if s.width(t, fp(SANS, 14, 300)) > width:
-            raise ValueError(f"slide {s.counter}: line too long: {t}")
-        y += lead
-        s.text(x, y, t, fp(SANS, 14, 300))
+    with s.para():
+        for t in texts:
+            if s.width(t, fp(SANS, 14, 300)) > width:
+                raise ValueError(f"slide {s.counter}: line too long: {t}")
+            y += lead
+            s.text(x, y, t, fp(SANS, 14, 300))
     return y
 
 

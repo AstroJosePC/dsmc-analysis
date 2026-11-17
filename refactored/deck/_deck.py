@@ -8,6 +8,7 @@ No colours or sizes are defined here.
 """
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -22,6 +23,11 @@ import deckstyle as ds  # noqa: E402
 ds.use("deck", font_dir=REFACTORED / "style" / "fonts")
 
 OUT = REFACTORED / "figures" / "deck"
+# DECK_SVG=1 (slides/export_pptx.py --render-svg): write only figures/deck/svg/<name>_deck.svg, with
+# text kept as text (svg.fonttype: none), for the editable PowerPoint export. No PDF or PNG is touched,
+# and scripts that also write deck/data files skip those writes.
+SVG_ONLY = os.environ.get("DECK_SVG") == "1"
+SVG_OUT = OUT / "svg"
 MONO = "IBM Plex Mono"
 R_MARS_KM = 3389.5  # dsmclib.constants.MARS_RADIUS
 
@@ -38,6 +44,12 @@ def source(*inputs) -> str:
 
 def save(fig, name: str, *inputs, png: bool = True) -> Path:
     """ds.save into refactored/figures/deck with provenance (PNG alongside as a preview)."""
+    if SVG_ONLY:
+        SVG_OUT.mkdir(parents=True, exist_ok=True)
+        path = SVG_OUT / f"{name}_deck.svg"
+        fig.savefig(path, metadata={"Creator": f"deckstyle {ds.STYLE_VERSION}", "Source": source(*inputs)})
+        print(path)
+        return path
     path = ds.save(fig, name, target="deck", outdir=OUT, png=png, source=source(*inputs))
     print(path)
     return path
@@ -69,6 +81,8 @@ class Build:
     def save(self, name: str, *inputs) -> list[Path]:
         self._sweep()
         n = max(self.tag.values())
+        if SVG_ONLY:                     # the editable export uses the finished figure only
+            return [save(self.fig, name, *inputs)]
         shown = {a: a.get_visible() for a in self.tag}
         paths = []
         for k in range(1, n):

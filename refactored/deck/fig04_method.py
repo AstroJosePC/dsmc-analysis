@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Rectangle, Wedge
 
-from _deck import R_MARS_KM, Build, commit, ds
+from _deck import R_MARS_KM, SVG_ONLY, Build, commit, ds
 from fig04_alternatives import TRANSPORT, draw_plate, s6_numbers, sci
 
 STEM = "fig04d_scales_and_step"
@@ -39,6 +39,8 @@ STEP = {"domain": 1, "cells": 2, "move": 3, "collide": 4, "boundaries": 5, "part
 
 
 def write_facts(num):
+    if SVG_ONLY:                     # SVG render for the pptx export: leave deck/data alone
+        return
     keys = ("W", "dt", "tau_100", "z_bot", "z_top", "n_r", "n_phi", "n_part", "ppc_exo", "dr_exo",
             "dphi_exo_km")
     out = {"created": date.today().isoformat(), "run": "S6",
