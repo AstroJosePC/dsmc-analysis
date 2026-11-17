@@ -1,0 +1,282 @@
+{
+ "created": "2026-11-17",
+ "dsmc_analyzer_commit": "b7369e99",
+ "B1": {
+  "rows": [
+   {
+    "run": "S1",
+    "n_azi": 128,
+    "cell_km": 177.73831191101135,
+    "cells_per_lambda": 2.5340822308007303,
+    "particles": 27100000.0,
+    "ppc_230": 2692,
+    "weight": 1.1459999999999999e+26,
+    "g_max": 5.2519,
+    "L_att_km": null,
+    "sigma_L_km": null,
+    "ensemble": true
+   },
+   {
+    "run": "S2",
+    "n_azi": 256,
+    "cell_km": 88.86599616329391,
+    "cells_per_lambda": 5.068344669411929,
+    "particles": 54200000.0,
+    "ppc_230": 2678,
+    "weight": 2.865e+25,
+    "g_max": 5.5963,
+    "L_att_km": null,
+    "sigma_L_km": null,
+    "ensemble": true
+   },
+   {
+    "run": "S3",
+    "n_azi": 384,
+    "cell_km": 59.24610397033711,
+    "cells_per_lambda": 7.602246692402192,
+    "particles": 81300000.0,
+    "ppc_230": 2685,
+    "weight": 1.273e+25,
+    "g_max": 5.7287,
+    "L_att_km": null,
+    "sigma_L_km": null,
+    "ensemble": true
+   },
+   {
+    "run": "S4",
+    "n_azi": 512,
+    "cell_km": 44.43299808164696,
+    "cells_per_lambda": 10.136689338823858,
+    "particles": 542000000.0,
+    "ppc_230": 13540,
+    "weight": 1.433e+24,
+    "g_max": 5.7015,
+    "L_att_km": 101.6675399685153,
+    "sigma_L_km": 3.876311888545608,
+    "ensemble": false
+   },
+   {
+    "run": "S5",
+    "n_azi": 640,
+    "cell_km": 35.54766238220227,
+    "cells_per_lambda": 12.670411154003652,
+    "particles": 678000000.0,
+    "ppc_230": 13466,
+    "weight": 9.169e+23,
+    "g_max": 5.9025,
+    "L_att_km": 106.90571444800568,
+    "sigma_L_km": 3.252561837428922,
+    "ensemble": false
+   },
+   {
+    "run": "S6",
+    "n_azi": 1024,
+    "cell_km": 22.219658833035233,
+    "cells_per_lambda": 20.270495660202087,
+    "particles": 1080000000.0,
+    "ppc_230": 13443,
+    "weight": 3.582e+23,
+    "g_max": 5.7258,
+    "L_att_km": 118.94702582702732,
+    "sigma_L_km": 3.009391318029816,
+    "ensemble": false
+   }
+  ],
+  "fit": {
+   "A": 5.908411938579653,
+   "A_err": 0.05915372090156583,
+   "B": 82.04959259342839,
+   "B_err": 15.249265035529415
+  },
+  "z_exobase_km": 231.3551574331592,
+  "lambda_h_km": 450.40349794621164,
+  "sources": [
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/exports/table_s1_manuscript.csv",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/s1_s6_azimuthal/tables/table4_resolution_staging.csv",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/s1_s6_azimuthal/tables/table_s3_lockin_attenuation_azimean_preforcing.csv"
+  ]
+ },
+ "B2": {
+  "numbers": {
+   "preNA": -1.51,
+   "preNB": -4.03,
+   "preNC": -5.75,
+   "fixNA": -0.03,
+   "fixNB": -0.04,
+   "fixNC": 0.4,
+   "modelNA": -1.43,
+   "modelNB": -4.07,
+   "modelNC": -6.57,
+   "fixXIITA": 0.16,
+   "fixXIITSEA": 0.05,
+   "fixXIITB": 0.35,
+   "fixXIITSEB": 0.12,
+   "fixXIINChi": 1.14,
+   "preXIINChi": 2638.36,
+   "fixXIITChi": 3.35,
+   "expCos": 0.9843,
+   "preEscRel": -9.0,
+   "fixEscRel": -1.1
+  },
+  "beta_deg": 7.2,
+  "levels_km": [
+   192,
+   292,
+   392
+  ],
+  "offset_tests": {
+   "estimator": "same excess in temp_kin (no per-cell mean subtraction)",
+   "collision_frame": "local-frame 2-D collisions: indistinguishable (+0.04%)",
+   "band": "band halved 14.4 -> 7.2 deg: +0.24% vs +0.23%"
+  },
+  "sources": [
+   "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/reports/wheel_fix/numbers.tex",
+   "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/analysis/out/null0c_ref12.json",
+   "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/analysis/out/nullfix_ref12.json",
+   "/Users/josepc/MarsAtmos-Temp2D/campaigns/truncation_baseline/reports/temp2d_offset_explore.md"
+  ],
+  "commit": "2f0b136b"
+ },
+ "B3": {
+  "twins": [
+   [
+    "Sector width",
+    "two wavelengths: 800 km, 100 cells"
+   ],
+   [
+    "Band thickness",
+    "0.26\u00b0 and 2.0\u00b0 instead of 14.4\u00b0"
+   ],
+   [
+    "Azimuthal cell width",
+    "4 km cells instead of 8 km"
+   ],
+   [
+    "Domain top",
+    "600 km instead of 500 km"
+   ]
+  ],
+  "K": 3.0,
+  "delta_phys": 0.05,
+  "n_rep": 5,
+  "score_cut": 0.1,
+  "scored_top_km": {
+   "n": 232.11,
+   "T": 207.11,
+   "u": 252.11,
+   "w": 267.11
+  },
+  "z_N_km": 292.11,
+  "term_base_pct": {
+   "n": 2.067870944232255,
+   "T": 1.818459922021929,
+   "u": 1.7151535814614385,
+   "w": 2.1078518396699515
+  },
+  "c": {
+   "n": 1.09,
+   "T": 1.01,
+   "u": 1.01,
+   "w": 1.07
+  },
+  "meas_over_model": [
+   1.01,
+   1.09
+  ],
+  "n_wave": 5,
+  "n_nowave": 3,
+  "status": "measured 1B floor; Stage 2 tolerances proposed, awaiting approval (prereg not tagged)",
+  "sources": [
+   "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/analysis/out/floor1b_levels.csv",
+   "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/reports/1B_noise_floor.md",
+   "/Users/josepc/MarsAtmos-TruncBase/docs/truncation_baseline_prereg.md"
+  ],
+  "commit": "2f0b136b"
+ },
+ "B4": {
+  "u_peak_m_s": -6.08021111239583,
+  "u_peak_z_km": 97.25,
+  "u_peak_t_h": 12.0,
+  "dphase_obs_deg": 10.163461403881547,
+  "dphase_lin_deg": 10.75588427289728,
+  "uB_max_m_s": 0.0623693224674029,
+  "period_min": 60,
+  "lambda_x_km": 400.0,
+  "amp_weak_m_s": 0.1,
+  "n_weak_streams": 24,
+  "sources": [
+   "/Users/josepc/MAGNUSP-isoO-baseline/output/analysis/s01/meanflow/meanflow_S01A8.npz",
+   "/Users/josepc/MAGNUSP-isoO-baseline/output/analysis/s01/isoo_doppler.json",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/advisor_update_plates/plate_01_magnusp_isoo.json"
+  ],
+  "commit": "03fb7e22"
+ },
+ "B5": {
+  "res_band_offset_pct_min": 10.632379201109,
+  "res_band_offset_pct_max": 13.823338924172868,
+  "res_max_dn_pct_min": 11.31772685817757,
+  "res_max_dn_pct_max": 13.99569014113655,
+  "exo_all_min_km": 587.7382538344368,
+  "exo_all_max_km": 643.3820615288611,
+  "res_band_lo_km": 400.0,
+  "res_band_hi_km": 1800.0,
+  "dr_fine_km": 250,
+  "dr_coarse_km": 1000,
+  "conv_thresh_n_pct": 5.0,
+  "n_runs": 60,
+  "z_top_min_km": 2500,
+  "z_top_ratio_km": 20000,
+  "ubcs": {
+   "1": "specular reflection",
+   "2": "ballistic hold",
+   "3": "free escape"
+  },
+  "atms": {
+   "H2": "pure H2",
+   "H2O": "coupled O + H2"
+  },
+  "sources": [
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/advisor_update_plates/build_plate_03.py",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/advisor_update_plates/plate_03_dsmc_ubc_sweep.json",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/h2_ubc_rtop"
+  ]
+ },
+ "B6": {
+  "lambda_h_km": 450.40349794621164,
+  "sigma_odr_km": 7.606572379037655,
+  "n": 28,
+  "reduced_chi2": 0.12402653571178417,
+  "altitude_km": 231.35515743315918,
+  "max_distance_km": 311.0849973063307,
+  "max_lag_periods": 0.6397835562753349,
+  "sigma_stat_km": 11.0,
+  "sigma_syst_km": 9.0,
+  "sigma_total_km": 14.212670403551895,
+  "left": [
+   443.6,
+   12.6
+  ],
+  "right": [
+   458.7,
+   6.0
+  ],
+  "lag_ceiling_periods": 0.7,
+  "lambda_z_colmean_km": 441.3365695169204,
+  "lambda_z_colstd_km": 3.8946280837687266,
+  "lambda_z_ncol": 11,
+  "sweep_200_800_km": [
+   431.3357227799332,
+   482.4544333075513
+  ],
+  "sweep_200_400_km": [
+   443.7235046605593,
+   450.40349794621164
+  ],
+  "sources": [
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/.claude/worktrees/deck-figures-nsbp2026/refactored/outputs/s1_s6_azimuthal/analysis/phase_lag_S6_mad_column0.npz",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/horizontal_phase_lag_figures/s6_max_distance_sweep_results.npz",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/manuscript_review/phase_lag_reviewer_QA.md",
+   "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/exports/fig5c_lambda_z_summary.csv"
+  ]
+ }
+}

@@ -1,9 +1,10 @@
-"""Assemble the NSBP/NSHP 2026 deck, slides 1 and 3-9, as one 13.333 x 7.5 in PDF.
+"""Assemble the NSBP/NSHP 2026 deck, slides 1 and 3-9 plus backups B1-B6, as one 13.333 x 7.5 in PDF.
 
     cd refactored && conda run -n dsmc python slides/build_deck.py
 
 Slide 2 waits for the reduced NGIMS data. Page numbers and progress dots already count the full
-nine-slide talk, so these pages drop into the final deck unchanged.
+nine-slide talk, so these pages drop into the final deck unchanged. Backup slides B1-B6 (Q&A) follow
+slide 9: their counter reads B1-B6 and all nine talk dots show as done.
 
 Pipeline
   1. Audit. style/deckstyle.py is the one canonical style module: if docs/deckstyle.py or the
@@ -20,11 +21,11 @@ Pipeline
      vector, no scaling, embedded fonts untouched.
   5. Verification. Page count and size, embedded-font whitelist (no substitutes), PNG previews.
 
-Numbers on slides 7 and 8 are read from deck/data/*.json, written and checked against their sources
-by deck/cache_slides78.py (rerun it, then the figure scripts, before rebuilding when a source changes,
+Numbers on slides 7, 8 and B1-B6 are read from deck/data/*.json, written and checked against their
+sources by deck/cache_slides78.py and deck/cache_backups.py (rerun it, then the figure scripts, before rebuilding when a source changes,
 e.g. when the last Stage 1B replicates finish).
 
-Outputs (refactored/slides/build/): NSBP2026_slides_1-9.pdf, preview/slide-N.png (page order).
+Outputs (refactored/slides/build/): NSBP2026_deck_full.pdf, preview/slide-N.png (page order).
 """
 from __future__ import annotations
 
@@ -60,7 +61,7 @@ FIGS = REFACTORED / "figures" / "deck"
 DOCS = REFACTORED / "docs"
 OUT = REFACTORED / "slides" / "build"
 WORK = OUT / "_work"
-DECK_PDF = OUT / "NSBP2026_slides_1-9.pdf"
+DECK_PDF = OUT / "NSBP2026_deck_full.pdf"
 DECK_DATA = REFACTORED / "deck" / "data"
 
 # ---------------------------------------------------------------- page geometry (points, y down)
@@ -94,7 +95,9 @@ SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
             "fig05a_amplitude_growth": "evidence", "fig05b_slab_vs_shell": "inset",
             "fig06a_s6_wedge": "evidence", "fig06_spark_latt": "spark", "fig06_spark_lambdah": "spark",
             "fig07a_wheel_sector": "evidence", "fig08a_coupling_baseline": "evidence",
-            "fig08b_escape_vs_top": "narrow", "fig09_maven_roadmap": "strip"}
+            "fig08b_escape_vs_top": "narrow", "fig09_maven_roadmap": "strip",
+            "figB1_run_table": "strip", "figB2_wheel_fix": "evidence", "figB3_noise_floor": "evidence",
+            "figB4_westward_wind": "evidence", "figB5_radial_grid": "evidence", "figB6_phase_lag": "evidence"}
 ALLOWED_FONTS = re.compile(r"^(OpenSans|PlayfairDeckLF|IBMPlexMono|STIX)")
 
 
@@ -114,6 +117,7 @@ def advance(ch: str, prop: FontProperties) -> float:
 class Slide:
     number: int
     dark: bool = False
+    counter: str | None = None                     # "B1" on backup slides
     fig: plt.Figure = None
     ax: plt.Axes = None
     texts: list = field(default_factory=list)      # (artist, group, name)
@@ -213,7 +217,7 @@ def footer(s: Slide, parts):
     s.runs(M, FOOT_BASE, [(t, p, ds.GRANITE) for t, p in parts])
     for t in s.texts[-len(parts):]:
         t[0].set_alpha(MUTED)
-    num = f"{s.number:02d} / {N_SLIDES:02d}"
+    num = s.counter or f"{s.number:02d} / {N_SLIDES:02d}"
     w = s.width(num, fp(SANS, 12))
     s.text(RIGHT, FOOT_BASE, num, fp(SANS, 12), color=ds.MIDNIGHT, ha="right")
     x_last = RIGHT - w - 16
@@ -621,6 +625,198 @@ def slide9():
     return s
 
 
+# ================================================================= backup slides (Q&A)
+def backup(k: int) -> Slide:
+    """Backup slide Bk: numbered after the talk so every progress dot reads as done."""
+    return Slide(N_SLIDES + k, counter=f"B{k}")
+
+
+def lines14(s: Slide, x, y, texts, width, lead=18.5):
+    """Light 14 pt lines under a hero row; returns the last baseline."""
+    for t in texts:
+        if s.width(t, fp(SANS, 14, 300)) > width:
+            raise ValueError(f"slide {s.counter}: line too long: {t}")
+        y += lead
+        s.text(x, y, t, fp(SANS, 14, 300))
+    return y
+
+
+def card_bottom(s: Slide, card: Card, last_y: float):
+    """Measure card on the evidence baseline; raises if it would meet the text above it."""
+    _, ch = card.layout()
+    top = EVID_BOTTOM - ch
+    if top < last_y + 10:
+        raise ValueError(f"slide {s.counter}: card '{card.label}' meets the text above ({last_y:.0f} vs {top:.0f})")
+    card.draw(s, WORD_X, top)
+
+
+def backup1():
+    """S1-S6 resolution runs: the run table (FIG B1) over three metrics, as on slide 7."""
+    s = backup(1)
+    b = facts("backup_facts")["B1"]
+    rows = {r["run"]: r for r in b["rows"]}
+    header(s, "BACKUP · RESOLUTION CONVERGENCE",
+           f"Peak wave growth converges as azimuthal cells shrink, levelling off near {b['fit']['A']:.1f}.")
+    y_fig = 148.0
+    _, fh = s.place("figB1_run_table_deck", M, y_fig)
+    gap = 28.0
+    col_w = (RIGHT - M - 2 * gap) / 3
+    y0 = y_fig + fh + 24
+    s4, s6 = rows["S4"], rows["S6"]
+    off = max(abs(rows[r]["g_max"] / b["fit"]["A"] - 1) for r in ("S4", "S5", "S6"))
+    ends = [metric(s, M, y0, "CONVERGED GROWTH", f"{b['fit']['A']:.2f} ± {b['fit']['A_err']:.2f}",
+                   ["asymptote of", r"$A - B/N_\phi$"],
+                   [f"S4–S6 lie within {100 * off:.1f}% of it;",
+                    f"S1 is {100 * (1 - rows['S1']['g_max'] / b['fit']['A']):.0f}% below"], col_w, size=34),
+            metric(s, M + col_w + gap, y0, "CELLS PER WAVELENGTH", f"{s6['cells_per_lambda']:.0f}",
+                   [r"cells per $\lambda_h$", "in S6"],
+                   [f"S1 had {rows['S1']['cells_per_lambda']:.1f}: one cell spanned",
+                    f"{rows['S1']['cell_km']:.0f} km at the exobase"], col_w),
+            metric(s, M + 2 * (col_w + gap), y0, "TWO PARTICLE BUDGETS",
+                   f"{s4['ppc_230'] / rows['S3']['ppc_230']:.0f}×", ["more particles", "per cell"],
+                   ["in S4–S6 than in S1–S3;",
+                    f"S4 and S6 match to {100 * abs(s4['ppc_230'] / s6['ppc_230'] - 1):.1f}%"], col_w)]
+    for k in range(2):
+        s.rule(M + (k + 1) * (col_w + gap) - gap / 2, y0 - 10, 0.6, 96, ds.GRANITE, alpha=0.35)
+    if max(ends) + 8 > FOOT_RULE_Y:
+        raise ValueError("slide B1: metrics run into the footer")
+    footer(s, cite("Pérez Chávez et al., to be submitted, JGR Planets (Table S1, Table 4)"))
+    return s
+
+
+def backup2():
+    """Wheel-sector cone reflection: profiles before/after (FIG B2), the residual T offset, derivation card."""
+    s = backup(2)
+    b = facts("backup_facts")["B2"]
+    n = b["numbers"]
+    header(s, "BACKUP · WHEEL-SECTOR BOUNDARY",
+           "Reflecting particles off the cone, not a flat plane, removed the wheel sector's density deficit.")
+    s.place("figB2_wheel_fix_deck", EVID_X, EVID_Y)
+    y = EVID_Y + 31
+    neg = lambda v: f"{v:+.1f}".replace("-", "−")
+    hero_row(s, WORD_X, y, WORD_W, neg(n['fixNC']), "%", ["DENSITY OFFSET", "AT 392 KM"], size=40)
+    y = lines14(s, WORD_X, y + 4, [f"cone wall; plane wall {neg(n['preNC'])}% (model {neg(n['modelNC'])}%)"], WORD_W)
+    y += 46
+    hero_row(s, WORD_X, y, WORD_W, f"+{n['fixXIITA']:.2f}–{n['fixXIITB']:.2f}", "%", ["TEMPERATURE", "ABOVE 260 KM"],
+             size=30)
+    y = lines14(s, WORD_X, y + 4, ["Not the estimator, collision frame or band", "width; common to all twins, so it cancels."],
+                WORD_W)
+    eq = fp(SANS, 18)
+    card = Card("WHY THE PLANE WALL PUSHED GAS DOWN",
+                eq=[[(r"$f_R = -p\,\cos^2\!\beta\,/\,R$", eq, ds.MIDNIGHT)],
+                    [(r"$d\ln n/dR = -1/H - \cos^2\!\beta\,/\,R$", eq, ds.MIDNIGHT)],
+                    [(r"$n_{\mathrm{2D}}/n_{\mathrm{1D}} = (R_0/R)^{\cos^2\beta}$", eq, ds.MIDNIGHT)]],
+                lines=[(f"R from Mars' centre; band half-width β = {b['beta_deg']:.1f}°", 14, ds.GRANITE, 300)])
+    card_bottom(s, card, y)
+    footer(s, cite("Wheel-sector boundary fix: 2-D sector against twelve 1-D DSMC replicates (truncation-baseline campaign)"))
+    return s
+
+
+def backup3():
+    """Truncation twins and the Stage 2 pass rule proposed from the measured Stage 1B floor (FIG B3)."""
+    s = backup(3)
+    b = facts("backup_facts")["B3"]
+    header(s, "BACKUP · TRUNCATION TWINS",
+           "Four one-factor twins will test the one-wavelength sector against a measured noise floor.")
+    s.place("figB3_noise_floor_deck", EVID_X, EVID_Y)
+    s.tracked(WORD_X, EVID_Y + 10, "FOUR TWINS, ONE CHANGE EACH", fp(SANS, 11), TRACK_LABEL)
+    y = EVID_Y + 36
+    for name, change in b["twins"]:
+        for t, p in ((name, fp(SANS, 15, "semibold")), (change, fp(SANS, 13, 300))):
+            if s.width(t, p) > WORD_W:
+                raise ValueError(f"slide B3: twin text too long: {t}")
+        s.text(WORD_X, y, name, fp(SANS, 15, "semibold"), color=ds.MIDNIGHT)
+        s.text(WORD_X, y + 17, change, fp(SANS, 13, 300))
+        y += 40
+    last = y - 40 + 17
+    card = Card("PASS RULE · PROPOSED",
+                eq=[[(r"$\delta_q \leq \max(3\,\delta_{\mathrm{floor}}/\sqrt{5},\ 5\%)$", fp(SANS, 18), ds.MIDNIGHT)]],
+                lines=[("scored below the 10% crossing; pass if at", 14, ds.GRANITE, 300),
+                       ("most 5% of scored levels fail", 14, ds.GRANITE, 300)])
+    card_bottom(s, card, last)
+    footer(s, cite(f"Truncation-baseline preregistration (draft); Stage 1B floor from {b['n_wave']} wave and "
+                   f"{b['n_nowave']} no-wave replicates"))
+    return s
+
+
+def backup4():
+    """Plate 1 panel B restyled: the wind a strong wave drives (FIG B4)."""
+    s = backup(4)
+    b = facts("backup_facts")["B4"]
+    header(s, "BACKUP · STRONG FORCING",
+           f"At 1 m/s forcing the wave drives its own westward wind and shifts its phase by "
+           f"{b['dphase_obs_deg']:.0f}° at 140 km.")
+    s.place("figB4_westward_wind_deck", EVID_X, EVID_Y)
+    y = EVID_Y + 31
+    hero_row(s, WORD_X, y, WORD_W, f"{b['u_peak_m_s']:.1f}".replace("-", "−"), "m/s",
+             [f"MEAN WIND AT {b['u_peak_z_km']:.0f} KM", f"AFTER {b['u_peak_t_h']:.0f} HOURS"], size=40)
+    y = lines14(s, WORD_X, y + 4, ["westward, and still growing"], WORD_W)
+    y += 46
+    hero_row(s, WORD_X, y, WORD_W, f"{b['dphase_obs_deg']:.0f}°", None, ["PHASE SHIFT", "AT 140 KM"], size=40)
+    y = lines14(s, WORD_X, y + 4, [f"linear theory with the same wind: {b['dphase_lin_deg']:.0f}°"], WORD_W)
+    card = Card(f"WEAK FORCING · {b['amp_weak_m_s']:g} M/S",
+                eq=[[(r"$|\bar u|$ < " + f"{np.ceil(b['uB_max_m_s'] * 100) / 100:.2f} m/s", fp(SANS, 20), ds.MIDNIGHT)]],
+                lines=[(f"so the {b['n_weak_streams']} weak streams are the", 14, ds.GRANITE, 300),
+                       ("input to the DSMC runs", 14, ds.GRANITE, 300)])
+    card_bottom(s, card, y)
+    footer(s, cite(f"MAGNUS-P fluid model, isothermal pure O: {b['period_min']} min, "
+                   f"{b['lambda_x_km']:.0f} km wave"))
+    return s
+
+
+def backup5():
+    """Plate 3 panel B restyled: coarse/fine radial cells across the H2 exobase (FIG B5)."""
+    s = backup(5)
+    b = facts("backup_facts")["B5"]
+    lo, hi = round(b["res_band_offset_pct_min"]), round(b["res_band_offset_pct_max"])
+    header(s, "BACKUP · RADIAL GRID",
+           f"Radial cells wider than {b['dr_fine_km']} km across the hydrogen exobase bias the density "
+           f"{lo}–{hi}% high.")
+    s.place("figB5_radial_grid_deck", EVID_X, EVID_Y)
+    y = EVID_Y + 31
+    hero_row(s, WORD_X, y, WORD_W, f"+{lo}–{hi}", "%",
+             ["DENSITY BIAS", f"{b['res_band_lo_km']:,.0f}–{b['res_band_hi_km']:,.0f} KM"], size=40)
+    y = lines14(s, WORD_X, y + 4,
+                [f"{b['dr_coarse_km']:,} km against {b['dr_fine_km']} km cells, {b['z_top_ratio_km']:,} km top",
+                 f"H₂ exobase at {b['exo_all_min_km']:.0f}–{b['exo_all_max_km']:.0f} km",
+                 "Thick lines: pure H₂; thin: coupled O + H₂"], WORD_W)
+    card = Card("ADOPTED FOR THE MULTI-SPECIES RUNS",
+                eq=[[(rf"$\Delta r \leq {b['dr_fine_km']}$ km,  top ≥ {b['z_top_min_km']:,} km", fp(SANS, 20),
+                      ds.MIDNIGHT)]],
+                lines=[(f"from the {b['n_runs']}-run upper-boundary sweep", 14, ds.GRANITE, 300)])
+    card_bottom(s, card, y)
+    footer(s, cite("DSMC upper-boundary sweep: pure H₂ and coupled O + H₂ columns"))
+    return s
+
+
+def backup6():
+    """Phase-lag retrieval of lambda_h: the fit and the baseline sweep (FIG B6), error budget, lambda_z."""
+    s = backup(6)
+    b = facts("backup_facts")["B6"]
+    header(s, "BACKUP · HORIZONTAL WAVELENGTH",
+           f"The {b['lambda_h_km']:.0f} km horizontal wavelength is one straight-line phase fit over "
+           f"{b['n']} columns.")
+    s.place("figB6_phase_lag_deck", EVID_X, EVID_Y)
+    y = EVID_Y + 31
+    hero_row(s, WORD_X, y, WORD_W, f"{b['lambda_h_km']:.0f} ± {b['sigma_total_km']:.0f}", "km",
+             ["HORIZONTAL", "WAVELENGTH"], size=40)
+    y = lines14(s, WORD_X, y + 4, [f"±{b['sigma_stat_km']:.0f} statistical (ODR, calibrated ×1.4)",
+                                   f"±{b['sigma_syst_km']:.0f} fit window and construction"], WORD_W)
+    y += 46
+    (lv, le), (rv, re_) = b["left"], b["right"]
+    hero_row(s, WORD_X, y, WORD_W, f"{lv:.0f} / {rv:.0f}", "km", ["LEFT / RIGHT", "EDGE ALONE"], size=32)
+    sig = abs(rv - lv) / np.hypot(le, re_)
+    y = lines14(s, WORD_X, y + 4, [f"±{le:.0f} / ±{re_:.0f} km: consistent at {sig:.1f}σ"], WORD_W)
+    card = Card("SAME WAVE, VERTICAL",
+                eq=[[(rf"$\lambda_z = {b['lambda_z_colmean_km']:.0f} \pm {b['lambda_z_colstd_km']:.0f}$ km",
+                      fp(SANS, 20), ds.MIDNIGHT)]],
+                lines=[(f"mean over {b['lambda_z_ncol']} columns, so", 14, ds.GRANITE, 300),
+                       (r"$\lambda_h \approx \lambda_z$: phase fronts tilt about 45°", 14, ds.GRANITE, 300)])
+    card_bottom(s, card, y)
+    footer(s, cite("Pérez Chávez et al., to be submitted, JGR Planets; S6 at 231 km"))
+    return s
+
+
 # ================================================================= audit and checks
 def figure_size(stem: str):
     """MediaBox of a figure PDF in points."""
@@ -767,7 +963,7 @@ def compose(slides, commit: str, out_pdf: Path = DECK_PDF, subject: str | None =
             shutil.copy(FIGS / f"{stem}.pdf", work / f"{stem}.pdf")
             page.append(rf"\AddToShipoutPictureFG*{{\put({x:.3f},{H - y - h:.3f}){{\includegraphics{{{stem}.pdf}}}}}}")
         body.append("\n".join(page) + "\n\\null\\newpage\n")
-    subject = subject or f"NSBP/NSHP 2026, slides 1, 3-9; figures/deck @ {commit}"
+    subject = subject or f"NSBP/NSHP 2026, slides 1, 3-9 and backups B1-B6; figures/deck @ {commit}"
     tex = TEX_HEAD % (TITLE, subject, ds.STYLE_VERSION)
     tex += "".join(body) + r"\end{document}" + "\n"
     (work / "deck.tex").write_text(tex)
@@ -797,7 +993,8 @@ def main():
         print(note)
     commit = subprocess.run(["git", "-C", str(REFACTORED), "rev-parse", "--short", "HEAD"],
                             capture_output=True, text=True, check=True).stdout.strip()
-    slides = [slide1(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8(), slide9()]
+    slides = [slide1(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8(), slide9(),
+              backup1(), backup2(), backup3(), backup4(), backup5(), backup6()]
     for s in slides:
         for stem, *_ in s.placed:
             audit_figure(stem)
