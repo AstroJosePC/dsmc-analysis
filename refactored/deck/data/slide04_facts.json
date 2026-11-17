@@ -4,7 +4,7 @@
  "sources": {
   "parameters": "/Volumes/MyBook/ArchiveSims/Results_20240722_041906.318/Info/Simulation_Parameters.ascii",
   "transport_cache": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/s1_s6_azimuthal/analysis/preforcing_transport_S6_azimean_preforcing.npz",
-  "dsmc_analyzer_commit": "d549836"
+  "dsmc_analyzer_commit": "160ccb0"
  },
  "W": 3.581526756485562e+23,
  "dt": 0.13069995325516598,
