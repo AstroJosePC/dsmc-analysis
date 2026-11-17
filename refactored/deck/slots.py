@@ -18,6 +18,8 @@ SLOTS = {
     "fig04b_powers_of_ten": (12.22, 3.00),
     # slide 7A: full-width zoom strip (full ring -> wheel sector -> polar band) over three callouts
     "fig07b_zoom_strip": (12.22, 3.10),
+    # slide 7B-2: full-width strip (full ring, sector, particle budget as tiles) over three metrics
+    "fig07e_sector_strip": (12.22, 3.15),
     # slide 6B: full-width wedge band over three plots with hero numbers
     "fig06a_s6_wedge_band": (12.22, 2.30),
     "fig06b_latt_fit_row": (3.87, 1.80),

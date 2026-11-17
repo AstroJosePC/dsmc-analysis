@@ -185,7 +185,8 @@ def fig_a():
 A_HALF, B_HALF = np.deg2rad(20.0), np.deg2rad(5.0)      # drawn azimuth and polar half-widths
 R0, R1 = 1.85, 2.95                                      # drawn radii of 140 km and the top edge
 YAW, PITCH = np.deg2rad(-14.0), np.deg2rad(22.0)
-SCALE, OX, OY = 1.62, 2.66, -1.28                        # world -> figure inches
+PLACE = {"scale": 1.62, "ox": 2.66, "oy": -1.28}         # world -> figure inches; set per figure
+PLACE_7B = dict(PLACE)
 
 
 def world(r, lat, az):
@@ -199,7 +200,7 @@ def view(p):
     x, y, z = p[..., 0], p[..., 1], p[..., 2]
     x1, z1 = cy * x + sy * z, -sy * x + cy * z
     y2, z2 = cp * y - sp * z1, sp * y + cp * z1
-    return np.stack([OX + SCALE * x1, OY + SCALE * y2], -1), z2
+    return np.stack([PLACE["ox"] + PLACE["scale"] * x1, PLACE["oy"] + PLACE["scale"] * y2], -1), z2
 
 
 def r_of(z_km):
@@ -292,12 +293,9 @@ def sector_3d(ax):
     return dict(lat_front=lat_f)
 
 
-def fig_b():
-    stem = "fig07c_sector_3d"
-    w, h = ds.SIZES["evidence_tall"]
-    fig, ax = canvas(w, h)
-    info = sector_3d(ax)
-    lat_f = info["lat_front"]
+def sector_labels(ax, lat_f, notes=True):
+    """Altitudes at the right seam, the polar-band bracket at the left end, and (notes) the width
+    caption and the 3D-flight note under the sector. Returns the caption's lowest y."""
     # altitude labels beside the right seam's front edge (as in FIG 7a)
     for z, lab, kw in ((G["base_km"], f"{G['base_km']:.0f} km", dict(fontsize=13)),
                        (G["top_edge_km"], f"{G['top_edge_km']:.0f} km", dict(fontsize=13)),
@@ -317,8 +315,20 @@ def fig_b():
     bm = np.array([base[len(base) // 2][0], base[:, 1].min()])
     ax.text(bm[0], bm[1] - 0.20, rf"one $\lambda_h$ = {G['sector_width_km']:.0f} km wide, "
             f"{G['n_azi']} cells × {G['azi_cell_km']:.0f} km", ha="center", va="top", fontsize=13)
+    if not notes:
+        return bm[1] - 0.20
     ax.text(bm[0], bm[1] - 0.50, "particles fly straight in 3D; only the grid is cut", ha="center", va="top",
             fontsize=12, style="italic")
+    return bm[1] - 0.70
+
+
+def fig_b():
+    stem = "fig07c_sector_3d"
+    w, h = ds.SIZES["evidence_tall"]
+    fig, ax = canvas(w, h)
+    PLACE.update(PLACE_7B)
+    lat_f = sector_3d(ax)["lat_front"]
+    sector_labels(ax, lat_f)
     ax.text(0.10, h - 0.10, "NOT TO SCALE", ha="left", va="top", fontsize=11, fontweight="semibold",
             color=ds.GRANITE)
 
@@ -340,9 +350,77 @@ def fig_b():
     plt.close(fig)
 
 
+# ================================================================= 7B-1, 7B-2: the sector and the ring only
+def sci_parts(x):
+    e = int(np.floor(np.log10(x)))
+    return f"{x / 10 ** e:.1f} × 10", str(e)
+
+
+def fig_b1():
+    """7B-1: the sector large, the full ring at true scale top right, zoom lines between them."""
+    stem = "fig07d_sector_ring"
+    w, h = ds.SIZES["evidence_tall"]
+    fig, ax = canvas(w, h)
+    PLACE.update(scale=1.95, ox=3.22, oy=-2.08)
+    lat_f = sector_3d(ax)["lat_front"]
+    sector_labels(ax, lat_f)
+    rx, ry, rm = 6.45, 1.68, 0.50
+    ring(ax, rx, ry, rm, angle_deg=90.0)
+    ax.text(w - 0.02, ry - 0.70, "FULL RING, TRUE SCALE", ha="right", va="top", fontsize=11,
+            fontweight="semibold", color=ds.GRANITE)
+    ax.text(w - 0.02, ry - 0.90, "dark slice: the sector", ha="right", va="top", fontsize=12, color=ds.GRANITE)
+    ax.text(0.10, h - 0.10, "SECTOR NOT TO SCALE", ha="left", va="top", fontsize=11, fontweight="semibold",
+            color=ds.GRANITE)
+    save(fig, stem, *SOURCES, f"schematic + true-scale ring; MarsAtmos {F7['sources']['marsatmos_commit']}")
+    plt.close(fig)
+
+
+def tiles(ax, x0, y0, tile, gap, n, cols):
+    """n tiles (the full ring's particle count in sector units), the bottom-left one dark."""
+    rows = n // cols
+    for i in range(n):
+        r, k = divmod(i, cols)
+        x, y = x0 + k * (tile + gap), y0 + (rows - 1 - r) * (tile + gap)
+        dark = i == n - cols
+        ax.add_patch(plt.Rectangle((x, y), tile, tile, fc=ds.MIDNIGHT if dark else ds.GRANITE,
+                                   alpha=1.0 if dark else 0.16, lw=0, zorder=2))
+    return x0 + cols * (tile + gap) - gap, y0 + rows * (tile + gap) - gap
+
+
+def fig_b2():
+    """7B-2: full-width strip; the ring (true scale), the sector, and the particle budget as tiles."""
+    stem = "fig07e_sector_strip"
+    w, h = SLOTS[stem]
+    fig, ax = canvas(w, h)
+    # 1 the full ring
+    rx, ry, rm = 1.05, 1.80, 0.80
+    ring(ax, rx, ry, rm, angle_deg=90.0)
+    ax.text(rx, 0.34, "FULL RING, TRUE SCALE", ha="center", va="bottom", fontsize=12, fontweight="semibold")
+    ax.text(rx, 0.30, "dark slice: the sector", ha="center", va="top", fontsize=13)
+    # 2 the sector
+    PLACE.update(scale=1.42, ox=4.55, oy=-1.62)
+    lat_f = sector_3d(ax)["lat_front"]
+    sector_labels(ax, lat_f, notes=False)
+    ax.text(2.45, h - 0.05, "NOT TO SCALE", ha="left", va="top", fontsize=11, fontweight="semibold",
+            color=ds.GRANITE)
+    # 3 the particle budget: the full ring = n sector-sized tiles
+    ratio = F7["s6"]["particles"] / F7["stage1b"]["particles"]
+    n = 10 * round(ratio / 10)
+    cols = n // 10
+    x0, y0, tile, gap = 8.30, 0.78, 0.172, 0.030
+    x1, y1 = tiles(ax, x0, y0, tile, gap, n, cols)
+    ax.plot([x0 - 0.40, x0 - 0.40], [0.30, h - 0.15], color=ds.GRANITE, lw=0.5, alpha=0.35)
+    ax.text(x0, y1 + 0.10, "PARTICLES PER RUN", ha="left", va="bottom", fontsize=12, fontweight="semibold")
+    mant, exp = sci_parts(F7["s6"]["particles"])
+    ax.text(x0, 0.26, rf"full ring: {mant}$^{{{exp}}}$ = {n} sectors", ha="left", va="top", fontsize=13)
+    mant, exp = sci_parts(F7["stage1b"]["particles"])
+    ds.takeaway(ax, rf"one sector: {mant}$^{{{exp}}}$", xy=(x0 + tile / 2, y0 - 0.03),
+                xytext=(x0 + tile + 0.25, y0 - 0.30), ha="left", va="center")
+    save(fig, stem, *SOURCES, f"schematic + true-scale ring; MarsAtmos {F7['sources']['marsatmos_commit']}")
+    plt.close(fig)
+
+
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["a", "b"]
-    if "a" in which:
-        fig_a()
-    if "b" in which:
-        fig_b()
+    which = sys.argv[1:] or ["a", "b", "b1", "b2"]
+    for name in which:
+        {"a": fig_a, "b": fig_b, "b1": fig_b1, "b2": fig_b2}[name]()

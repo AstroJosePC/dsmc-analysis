@@ -42,6 +42,18 @@
   "particles": 1080000000.0,
   "azi_cell_km": 21.4
  },
+ "runs_1b": {
+  "n": 8,
+  "n_wave": 5,
+  "n_nowave": 3,
+  "np": 5,
+  "wall_h_min": 7.215833333333333,
+  "wall_h_max": 8.169444444444444,
+  "core_h_min": 36.079166666666666,
+  "core_h_max": 40.84722222222222,
+  "span_h": 22.9925,
+  "wave_runs_coupled": true
+ },
  "null_test": {
   "chi2_density_12x1d_fix": 1.14,
   "chi2_density_12x1d_pre": 2638.36,

@@ -1,4 +1,4 @@
-# /Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/h2_ubc_rtop/tables/escape_summary.csv (H2 rows; atmosphere H2O = O+H2) @ dsmc_analyzer 608dbc9f, 2026-11-17
+# /Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/h2_ubc_rtop/tables/escape_summary.csv (H2 rows; atmosphere H2O = O+H2) @ dsmc_analyzer e412d4b9, 2026-11-17
 # free-escape overcount at 2500 km, 250 km cells: H2 89.3x, O+H2 49.5x (both cell widths: 42.4-89.3x; at 40000 km 1.9x and up)
 atmosphere,ubc_num,ubc,z_top_nominal_km,dr_max_km,z_top_actual_km,dsmc_escape_rate_s,dsmc_escape_rate_se_s
 H2,1,reflect,2500,1000,3133.555476193103,4.1917071535906246e+26,5.569668040908362e+24

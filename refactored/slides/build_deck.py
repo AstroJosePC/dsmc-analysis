@@ -86,7 +86,7 @@ TRACK_KICKER, TRACK_LABEL = 0.15, 0.16     # letter-spacing in em ("+120" and wi
 # Figures drawn at a deckstyle SIZES key; review-only alternatives have a layout slot in deck/slots.py.
 SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
             "fig06a_s6_halfwedge": "evidence_tall", "fig06b_latt_fit_col": "column",
-            "fig06c_lambdah_fit_col": "column", "fig07c_sector_3d": "evidence_tall",
+            "fig06c_lambdah_fit_col": "column", "fig07c_sector_3d": "evidence_tall", "fig07d_sector_ring": "evidence_tall",
             "fig03_regime_schematic": "evidence", "fig03a_regime_windows": "evidence",
             "fig03b_kn_profile": "evidence", "fig04_harrah_loop": "full",
             "fig04a_timestep_plate": "evidence", "fig04c_split_step": "evidence",

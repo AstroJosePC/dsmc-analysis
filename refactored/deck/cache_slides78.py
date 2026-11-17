@@ -85,6 +85,30 @@ def macro_particle_total(run: Path) -> tuple[int, float, int]:
     return last, total, cells
 
 
+def run_costs(dirs: list[Path]) -> dict:
+    """Wall time, ranks and span of the finished Stage 1B runs, from each run's provenance.txt and
+    wall_seconds (written by jobs/run_1b_local.sh), plus whether the wave runs feed their stream
+    through the fluid-coupling boundary (Input/Boundaries/FluidCoupling.input, enable = 1)."""
+    if not dirs:
+        return {"n": 0}
+    prov = [dict(kv.split("=", 1) for kv in (d / "provenance.txt").read_text().split()) for d in dirs]
+    wall = np.array([float((d / "wall_seconds").read_text()) for d in dirs])
+    nps = {int(p["np"]) for p in prov}
+    assert len(nps) == 1 and all(p["rc"] == "0" for p in prov), "1B runs: mixed np or nonzero rc"
+    t = [dt.datetime.fromisoformat(p[k].replace("Z", "+00:00")) for p in prov for k in ("start", "end")]
+    coupled = [bool(re.search(r"^\s*enable\s*=\s*1\b", (d / "Input" / "Boundaries" / "FluidCoupling.input")
+                              .read_text(), re.M)) for d in dirs if d.name.startswith("wave")]
+    np_ = nps.pop()
+    out = {"n": len(dirs), "n_wave": sum(d.name.startswith("wave") for d in dirs),
+           "n_nowave": sum(d.name.startswith("nowave") for d in dirs), "np": np_,
+           "wall_h_min": wall.min() / 3600, "wall_h_max": wall.max() / 3600,
+           "core_h_min": np_ * wall.min() / 3600, "core_h_max": np_ * wall.max() / 3600,
+           "span_h": (max(t) - min(t)).total_seconds() / 3600, "wave_runs_coupled": all(coupled)}
+    close(out["wall_h_min"], 7.2, 0.05, "1B wall time, shortest run (h)")
+    close(out["wall_h_max"], 8.2, 0.05, "1B wall time, longest run (h)")
+    return out
+
+
 def slide07():
     deck = TB / "decks" / "wave1b" / "Input"
     grid = tomllib.loads((deck / "Grid" / "Grid.toml").read_text())
@@ -112,6 +136,7 @@ def slide07():
 
     reps = {f"{case}_r{k}": (RUNS_1B / f"{case}_r{k}" / "COMPLETE.ascii").exists()
             for case, n in (("wave1b", 5), ("nowave1b", 3)) for k in range(1, n + 1)}
+    runs = run_costs([RUNS_1B / name for name, done in reps.items() if done])
 
     num = tex_numbers(TB / "reports" / "wheel_fix" / "numbers.tex")
     card = {"chi2_density_12x1d_fix": num["fixXIINChi"], "chi2_density_12x1d_pre": num["preXIINChi"],
@@ -144,6 +169,7 @@ def slide07():
         "stage1b": {"particles": n_part, "macro_output": out_n, "cells": n_cells, "weight": weight,
                     "dt_s": dt_s, "replicates": reps, "finished": sum(reps.values()), "planned": len(reps)},
         "s6": {"particles": s6_total, "azi_cell_km": s6_cell},
+        "runs_1b": runs,
         "null_test": card,
     }
     path = DATA / "slide07_facts.json"
