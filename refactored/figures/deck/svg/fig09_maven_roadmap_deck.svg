@@ -6,9 +6,9 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-11-17T15:11:35.960150</dc:date>
+    <dc:date>2026-11-17T15:36:45.755278</dc:date>
     <dc:format>image/svg+xml</dc:format>
-    <dc:source>schematic (no data); deck/data/slide08_facts.json: z_top_min_km @ d070d5c</dc:source>
+    <dc:source>schematic (no data); deck/data/slide08_facts.json: z_top_min_km @ 46f2ad3</dc:source>
     <dc:creator>
      <cc:Agent>
       <dc:title>deckstyle 1.2 (2026-11-17)</dc:title>
@@ -34,97 +34,97 @@ z
    <g id="line2d_1">
     <path d="M 73.32 54 
 L 219.96 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #003a63; stroke-width: 2"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #003a63; stroke-width: 2"/>
    </g>
    <g id="line2d_2">
     <path d="M 219.96 54 
 L 366.6 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #003a63; stroke-width: 2"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #003a63; stroke-width: 2"/>
    </g>
    <g id="line2d_3">
     <path d="M 366.6 54 
 L 513.24 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.45; stroke-width: 1.5"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.45; stroke-width: 1.5"/>
    </g>
    <g id="line2d_4">
     <path d="M 513.24 54 
 L 659.88 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.45; stroke-width: 1.5"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.45; stroke-width: 1.5"/>
    </g>
    <g id="line2d_5">
     <path d="M 659.88 54 
 L 806.52 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.45; stroke-width: 1.5"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.45; stroke-width: 1.5"/>
    </g>
    <g id="line2d_6">
     <path d="M 11.7312 30.24 
 L 11.7312 25.2 
 L 428.1888 25.2 
 L 428.1888 30.24 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.6; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.6; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="line2d_7">
     <path d="M 451.6512 30.24 
 L 451.6512 25.2 
 L 868.1088 25.2 
 L 868.1088 30.24 
-" clip-path="url(#p496b3ef7df)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.6; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; stroke: #5f6062; stroke-opacity: 0.6; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_2">
     <path d="M 142.162852 54 
 Q 146.642282 54 151.121711 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none"/>
     <path d="M 145.921711 51.4 
 L 151.121711 54 
 L 145.921711 56.6 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #003a63"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #003a63"/>
    </g>
    <g id="patch_3">
     <path d="M 288.802852 54 
 Q 293.282282 54 297.761711 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none"/>
     <path d="M 292.561711 51.4 
 L 297.761711 54 
 L 292.561711 56.6 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #003a63"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #003a63"/>
    </g>
    <g id="patch_4">
     <path d="M 435.442852 54 
 Q 439.922282 54 444.401711 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; opacity: 0.45"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; opacity: 0.45"/>
     <path d="M 439.201711 51.4 
 L 444.401711 54 
 L 439.201711 56.6 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #5f6062; opacity: 0.45"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #5f6062; opacity: 0.45"/>
    </g>
    <g id="patch_5">
     <path d="M 582.082852 54 
 Q 586.562282 54 591.041711 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; opacity: 0.45"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; opacity: 0.45"/>
     <path d="M 585.841711 51.4 
 L 591.041711 54 
 L 585.841711 56.6 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #5f6062; opacity: 0.45"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #5f6062; opacity: 0.45"/>
    </g>
    <g id="patch_6">
     <path d="M 728.722852 54 
 Q 733.202282 54 737.681711 54 
-" clip-path="url(#p496b3ef7df)" style="fill: none; opacity: 0.45"/>
+" clip-path="url(#p929a5e3bec)" style="fill: none; opacity: 0.45"/>
     <path d="M 732.481711 51.4 
 L 737.681711 54 
 L 732.481711 56.6 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #5f6062; opacity: 0.45"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #5f6062; opacity: 0.45"/>
    </g>
    <g id="text_1">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="219.96" y="12.24" transform="rotate(-0 219.96 12.24)">FORWARD MODELS</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="219.96" y="12.24" transform="rotate(-0 219.96 12.24)">FORWARD MODELS</text>
    </g>
    <g id="text_2">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="659.88" y="12.24" transform="rotate(-0 659.88 12.24)">MAVEN INVERSION</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="659.88" y="12.24" transform="rotate(-0 659.88 12.24)">MAVEN INVERSION</text>
    </g>
    <g id="patch_7">
     <path d="M 73.32 61.56 
@@ -137,13 +137,13 @@ C 66.556569 50.071976 65.76 51.995065 65.76 54
 C 65.76 56.004935 66.556569 57.928024 67.974273 59.345727 
 C 69.391976 60.763431 71.315065 61.56 73.32 61.56 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #5c8727"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #5c8727"/>
    </g>
    <g id="text_3">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="73.32" y="80.64" transform="rotate(-0 73.32 80.64)">HAVE</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="73.32" y="80.64" transform="rotate(-0 73.32 80.64)">HAVE</text>
    </g>
    <g id="text_4">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="73.32" y="113.22" transform="rotate(-0 73.32 113.22)">Fluid streams</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="73.32" y="113.22" transform="rotate(-0 73.32 113.22)">Fluid streams</text>
    </g>
    <g id="text_5">
     <text style="font-size: 14px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="73.32" y="145.08" transform="rotate(-0 73.32 145.08)">MAGNUS-P waves</text>
@@ -165,16 +165,16 @@ C 213.196569 50.071976 212.4 51.995065 212.4 54
 C 212.4 56.004935 213.196569 57.928024 214.614273 59.345727 
 C 216.031976 60.763431 217.955065 61.56 219.96 61.56 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #ea7125"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #ea7125"/>
    </g>
    <g id="text_8">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="219.96" y="80.64" transform="rotate(-0 219.96 80.64)">IN PROGRESS</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="219.96" y="80.64" transform="rotate(-0 219.96 80.64)">IN PROGRESS</text>
    </g>
    <g id="text_9">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="219.96" y="104.4" transform="rotate(-0 219.96 104.4)">Wheel-sector</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="219.96" y="104.4" transform="rotate(-0 219.96 104.4)">Wheel-sector</text>
    </g>
    <g id="text_10">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="219.96" y="122.04" transform="rotate(-0 219.96 122.04)">DSMC</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="219.96" y="122.04" transform="rotate(-0 219.96 122.04)">DSMC</text>
    </g>
    <g id="text_11">
     <text style="font-size: 14px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="219.96" y="145.08" transform="rotate(-0 219.96 145.08)">One-wavelength</text>
@@ -196,37 +196,194 @@ C 359.836569 50.071976 359.04 51.995065 359.04 54
 C 359.04 56.004935 359.836569 57.928024 361.254273 59.345727 
 C 362.671976 60.763431 364.595065 61.56 366.6 61.56 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #003a63"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #003a63"/>
    </g>
    <g id="text_14">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="366.6" y="80.64" transform="rotate(-0 366.6 80.64)">NEXT</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="366.6" y="80.64" transform="rotate(-0 366.6 80.64)">NEXT</text>
    </g>
    <g id="text_15">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="366.6" y="104.4" transform="rotate(-0 366.6 104.4)">Multi-species</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="366.6" y="104.4" transform="rotate(-0 366.6 104.4)">Multi-species</text>
    </g>
    <g id="text_16">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="366.6" y="122.04" transform="rotate(-0 366.6 122.04)">runs</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="366.6" y="122.04" transform="rotate(-0 366.6 122.04)">runs</text>
    </g>
    <g id="text_17">
     <!-- CO$_2$, Ar, O, H$_2$; -->
-    <g style="fill: #5f6062" transform="translate(320.68 145.08)">
-     <text>
-      <tspan x="0" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">C</tspan>
-      <tspan x="8.818359" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">O</tspan>
-      <tspan x="25.143486" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">,</tspan>
-      <tspan x="28.766533" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="32.403252" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">A</tspan>
-      <tspan x="41.255791" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">r</tspan>
-      <tspan x="46.977471" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">,</tspan>
-      <tspan x="50.600518" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="54.237236" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">O</tspan>
-      <tspan x="65.126885" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">,</tspan>
-      <tspan x="68.749932" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="72.386651" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">H</tspan>
-      <tspan x="88.144395" y="-0.84375" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">;</tspan>
-      <tspan x="19.928508" y="1.25625" style="font-size: 9.8px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-      <tspan x="82.929416" y="1.25625" style="font-size: 9.8px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-     </text>
+    <g style="fill: #5f6062" transform="translate(320.68 145.08) scale(0.14 -0.14)">
+     <defs>
+      <path id="OpenSans-Regular-26" d="M 2578 4166 
+Q 2075 4166 1709 3937 
+Q 1344 3709 1147 3287 
+Q 950 2866 950 2288 
+Q 950 1422 1353 912 
+Q 1756 403 2563 403 
+Q 2869 403 3139 454 
+Q 3409 506 3666 584 
+L 3666 122 
+Q 3416 28 3141 -17 
+Q 2866 -63 2488 -63 
+Q 1791 -63 1323 226 
+Q 856 516 623 1044 
+Q 391 1572 391 2291 
+Q 391 2981 647 3509 
+Q 903 4038 1392 4336 
+Q 1881 4634 2584 4634 
+Q 3297 4634 3834 4369 
+L 3622 3919 
+Q 3403 4019 3142 4092 
+Q 2881 4166 2578 4166 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-32" d="M 4588 2291 
+Q 4588 1584 4350 1056 
+Q 4113 528 3647 232 
+Q 3181 -63 2494 -63 
+Q 1784 -63 1317 234 
+Q 850 531 620 1061 
+Q 391 1591 391 2297 
+Q 391 2997 622 3525 
+Q 853 4053 1323 4347 
+Q 1794 4641 2503 4641 
+Q 3181 4641 3645 4350 
+Q 4109 4059 4348 3532 
+Q 4588 3006 4588 2291 
+z
+M 950 2291 
+Q 950 1419 1326 908 
+Q 1703 397 2494 397 
+Q 3288 397 3658 906 
+Q 4028 1416 4028 2291 
+Q 4028 3175 3658 3673 
+Q 3288 4172 2503 4172 
+Q 1706 4172 1328 3669 
+Q 950 3166 950 2291 
+z
+" transform="scale(0.015625)"/>
+      <path id="STIXGeneral-Regular-cc1" d="M 3002 454 
+L 2816 0 
+L 224 0 
+L 224 134 
+L 1344 1504 
+L 1344 1498 
+L 1702 1933 
+Q 1952 2234 2054 2365 
+Q 2157 2496 2253 2685 
+Q 2349 2874 2349 3040 
+Q 2349 3437 2134 3654 
+Q 1920 3872 1549 3872 
+Q 1254 3872 1008 3629 
+Q 762 3386 698 2938 
+L 237 3046 
+Q 339 3616 716 3971 
+Q 1094 4326 1594 4326 
+Q 2150 4326 2502 3980 
+Q 2854 3635 2854 3142 
+Q 2854 2784 2720 2525 
+Q 2586 2266 2157 1728 
+L 1133 454 
+L 3002 454 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-f" d="M 1141 744 
+L 1181 672 
+Q 1097 331 948 -75 
+Q 800 -481 647 -825 
+L 259 -825 
+Q 359 -450 446 -23 
+Q 534 403 584 744 
+L 1141 744 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-3" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-24" d="M 3491 0 
+L 2928 1450 
+L 1097 1450 
+L 538 0 
+L 0 0 
+L 1788 4588 
+L 2266 4588 
+L 4041 0 
+L 3491 0 
+z
+M 2769 1922 
+L 2234 3363 
+Q 2216 3419 2173 3547 
+Q 2131 3675 2087 3812 
+Q 2044 3950 2016 4034 
+Q 1969 3844 1912 3659 
+Q 1856 3475 1819 3363 
+L 1275 1922 
+L 2769 1922 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-55" d="M 2103 3488 
+Q 2325 3488 2519 3447 
+L 2453 2966 
+Q 2266 3013 2072 3013 
+Q 1797 3013 1569 2867 
+Q 1341 2722 1205 2458 
+Q 1069 2194 1069 1838 
+L 1069 0 
+L 547 0 
+L 547 3425 
+L 978 3425 
+L 1034 2794 
+L 1056 2794 
+Q 1213 3081 1475 3284 
+Q 1738 3488 2103 3488 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-2b" d="M 4088 0 
+L 3556 0 
+L 3556 2153 
+L 1156 2153 
+L 1156 0 
+L 625 0 
+L 625 4569 
+L 1156 4569 
+L 1156 2622 
+L 3556 2622 
+L 3556 4569 
+L 4088 4569 
+L 4088 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-1e" d="M 456 3097 
+Q 456 3322 562 3414 
+Q 669 3506 822 3506 
+Q 988 3506 1094 3414 
+Q 1200 3322 1200 3097 
+Q 1200 2884 1094 2787 
+Q 988 2691 822 2691 
+Q 669 2691 562 2787 
+Q 456 2884 456 3097 
+z
+M 1088 744 
+L 1131 672 
+Q 1047 334 897 -75 
+Q 747 -484 597 -825 
+L 203 -825 
+Q 300 -453 392 -25 
+Q 484 403 534 744 
+L 1088 744 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#OpenSans-Regular-26" transform="translate(0 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-32" transform="translate(62.988281 0.484375)"/>
+     <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(142.346484 -14.515625) scale(0.7)"/>
+     <use xlink:href="#OpenSans-Regular-f" transform="translate(179.596452 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-3" transform="translate(205.475359 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-24" transform="translate(231.451921 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-55" transform="translate(294.684343 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-f" transform="translate(335.553484 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-3" transform="translate(361.43239 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-32" transform="translate(387.408952 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-f" transform="translate(465.192155 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-3" transform="translate(491.071062 0.484375)"/>
+     <use xlink:href="#OpenSans-Regular-2b" transform="translate(517.047624 0.484375)"/>
+     <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(592.353093 -14.515625) scale(0.7)"/>
+     <use xlink:href="#OpenSans-Regular-1e" transform="translate(629.603061 0.484375)"/>
     </g>
    </g>
    <g id="text_18">
@@ -246,13 +403,13 @@ C 507.120706 50.446074 506.4 52.186011 506.4 54
 C 506.4 55.813989 507.120706 57.553926 508.40339 58.83661 
 C 509.686074 60.119294 511.426011 60.84 513.24 60.84 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #f5f5f0; stroke: #5f6062; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #f5f5f0; stroke: #5f6062; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="text_20">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="513.24" y="80.64" transform="rotate(-0 513.24 80.64)">TO BUILD</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="513.24" y="80.64" transform="rotate(-0 513.24 80.64)">TO BUILD</text>
    </g>
    <g id="text_21">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="513.24" y="113.22" transform="rotate(-0 513.24 113.22)">ML emulator</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="513.24" y="113.22" transform="rotate(-0 513.24 113.22)">ML emulator</text>
    </g>
    <g id="text_22">
     <text style="font-size: 14px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="513.24" y="145.08" transform="rotate(-0 513.24 145.08)">Fast surrogate</text>
@@ -274,13 +431,13 @@ C 653.760706 50.446074 653.04 52.186011 653.04 54
 C 653.04 55.813989 653.760706 57.553926 655.04339 58.83661 
 C 656.326074 60.119294 658.066011 60.84 659.88 60.84 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #f5f5f0; stroke: #5f6062; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #f5f5f0; stroke: #5f6062; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="text_25">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="659.88" y="80.64" transform="rotate(-0 659.88 80.64)">TO BUILD</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="659.88" y="80.64" transform="rotate(-0 659.88 80.64)">TO BUILD</text>
    </g>
    <g id="text_26">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="659.88" y="113.22" transform="rotate(-0 659.88 113.22)">Synthetic NGIMS</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="659.88" y="113.22" transform="rotate(-0 659.88 113.22)">Synthetic NGIMS</text>
    </g>
    <g id="text_27">
     <text style="font-size: 14px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="659.88" y="145.08" transform="rotate(-0 659.88 145.08)">Sampled along a</text>
@@ -305,32 +462,185 @@ C 797.824161 48.949684 796.8 51.422226 796.8 54
 C 796.8 56.577774 797.824161 59.050316 799.646922 60.873078 
 C 801.469684 62.695839 803.942226 63.72 806.52 63.72 
 z
-" clip-path="url(#p496b3ef7df)" style="fill: #f5f5f0; stroke: #e51937; stroke-width: 2.4; stroke-linejoin: miter"/>
+" clip-path="url(#p929a5e3bec)" style="fill: #f5f5f0; stroke: #e51937; stroke-width: 2.4; stroke-linejoin: miter"/>
    </g>
    <g id="text_31">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="806.52" y="80.64" transform="rotate(-0 806.52 80.64)">GOAL</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #5f6062" x="806.52" y="80.64" transform="rotate(-0 806.52 80.64)">GOAL</text>
    </g>
    <g id="text_32">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="806.52" y="104.4" transform="rotate(-0 806.52 104.4)">Invert wave</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="806.52" y="104.4" transform="rotate(-0 806.52 104.4)">Invert wave</text>
    </g>
    <g id="text_33">
-    <text style="font-weight: 600; font-size: 16px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="806.52" y="122.04" transform="rotate(-0 806.52 122.04)">properties</text>
+    <text style="font-size: 16px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #003a63" x="806.52" y="122.04" transform="rotate(-0 806.52 122.04)">properties</text>
    </g>
    <g id="text_34">
     <!-- Recover $\omega$, -->
-    <g style="fill: #5f6062" transform="translate(772.36 145.08)">
-     <text>
-      <tspan x="0" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">R</tspan>
-      <tspan x="8.640625" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">e</tspan>
-      <tspan x="16.501953" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">c</tspan>
-      <tspan x="23.208008" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">o</tspan>
-      <tspan x="31.629883" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">v</tspan>
-      <tspan x="38.623047" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">e</tspan>
-      <tspan x="46.484375" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">r</tspan>
-      <tspan x="52.206055" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="64.662735" y="-0" style="font-size: 14px; font-family: 'Open Sans'; fill: #5f6062">,</tspan>
-      <tspan x="55.842773" y="-0" style="font-style: italic; font-size: 14px; font-family: 'STIXNonUnicode'; fill: #5f6062"></tspan>
-     </text>
+    <g style="fill: #5f6062" transform="translate(772.36 145.08) scale(0.14 -0.14)">
+     <defs>
+      <path id="OpenSans-Regular-35" d="M 1859 4569 
+Q 2703 4569 3111 4255 
+Q 3519 3941 3519 3281 
+Q 3519 2919 3387 2676 
+Q 3256 2434 3043 2284 
+Q 2831 2134 2591 2053 
+L 3844 0 
+L 3225 0 
+L 2106 1906 
+L 1156 1906 
+L 1156 0 
+L 625 0 
+L 625 4569 
+L 1859 4569 
+z
+M 1828 4109 
+L 1156 4109 
+L 1156 2356 
+L 1881 2356 
+Q 2441 2356 2705 2584 
+Q 2969 2813 2969 3256 
+Q 2969 3722 2689 3915 
+Q 2409 4109 1828 4109 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-48" d="M 1866 3488 
+Q 2303 3488 2615 3294 
+Q 2928 3100 3093 2751 
+Q 3259 2403 3259 1938 
+L 3259 1616 
+L 894 1616 
+Q 903 1013 1193 697 
+Q 1484 381 2013 381 
+Q 2338 381 2588 440 
+Q 2838 500 3106 616 
+L 3106 159 
+Q 2847 44 2592 -9 
+Q 2338 -63 1991 -63 
+Q 1250 -63 803 389 
+Q 356 841 356 1688 
+Q 356 2241 542 2645 
+Q 728 3050 1067 3269 
+Q 1406 3488 1866 3488 
+z
+M 1859 3063 
+Q 1444 3063 1197 2791 
+Q 950 2519 903 2031 
+L 2716 2031 
+Q 2713 2491 2505 2777 
+Q 2297 3063 1859 3063 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-46" d="M 1919 -63 
+Q 1456 -63 1103 128 
+Q 750 319 553 709 
+Q 356 1100 356 1694 
+Q 356 2316 564 2711 
+Q 772 3106 1137 3297 
+Q 1503 3488 1969 3488 
+Q 2225 3488 2464 3436 
+Q 2703 3384 2856 3306 
+L 2700 2872 
+Q 2544 2934 2339 2984 
+Q 2134 3034 1956 3034 
+Q 1422 3034 1158 2692 
+Q 894 2350 894 1700 
+Q 894 1078 1150 733 
+Q 1406 388 1916 388 
+Q 2188 388 2406 445 
+Q 2625 503 2803 581 
+L 2803 119 
+Q 2631 31 2420 -16 
+Q 2209 -63 1919 -63 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-52" d="M 3500 1719 
+Q 3500 875 3076 406 
+Q 2653 -63 1916 -63 
+Q 1459 -63 1106 148 
+Q 753 359 554 757 
+Q 356 1156 356 1719 
+Q 356 2563 779 3025 
+Q 1203 3488 1938 3488 
+Q 2406 3488 2757 3278 
+Q 3109 3069 3304 2673 
+Q 3500 2278 3500 1719 
+z
+M 894 1719 
+Q 894 1097 1142 733 
+Q 1391 369 1928 369 
+Q 2463 369 2713 734 
+Q 2963 1100 2963 1719 
+Q 2963 2334 2714 2692 
+Q 2466 3050 1925 3050 
+Q 1391 3050 1142 2697 
+Q 894 2344 894 1719 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-Regular-59" d="M 1300 0 
+L 0 3425 
+L 556 3425 
+L 1309 1353 
+Q 1388 1141 1469 884 
+Q 1550 628 1581 472 
+L 1603 472 
+Q 1641 628 1728 886 
+Q 1816 1144 1888 1353 
+L 2641 3425 
+L 3197 3425 
+L 1894 0 
+L 1300 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="STIXNonUnicode-Italic-6d" d="M 3200 2560 
+L 3482 2906 
+Q 3763 2810 3916 2509 
+Q 4070 2208 4070 1824 
+Q 4070 1619 4019 1395 
+Q 3846 685 3440 310 
+Q 3034 -64 2598 -64 
+Q 2362 -64 2195 83 
+Q 2029 230 1978 493 
+Q 1798 230 1561 83 
+Q 1325 -64 1088 -64 
+Q 742 -64 531 153 
+Q 320 371 320 819 
+Q 320 1197 483 1625 
+Q 646 2054 969 2422 
+Q 1293 2790 1690 2906 
+L 1792 2560 
+L 1773 2470 
+Q 1517 2362 1321 2157 
+Q 1126 1952 1027 1721 
+Q 928 1491 880 1286 
+Q 832 1082 832 909 
+Q 832 640 941 515 
+Q 1050 390 1203 390 
+Q 1395 390 1612 649 
+Q 1830 909 1965 1427 
+L 2131 2080 
+L 2630 2272 
+L 2662 2227 
+L 2464 1427 
+Q 2394 1146 2394 915 
+Q 2394 653 2486 521 
+Q 2579 390 2714 390 
+Q 2931 390 3155 620 
+Q 3379 851 3507 1363 
+Q 3558 1555 3558 1741 
+Q 3558 2259 3181 2470 
+L 3200 2560 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#OpenSans-Regular-35" transform="translate(0 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-48" transform="translate(61.71875 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-46" transform="translate(117.871094 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-52" transform="translate(165.771484 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-59" transform="translate(225.927734 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-48" transform="translate(275.878906 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-55" transform="translate(332.03125 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-3" transform="translate(372.900391 0.609375)"/>
+     <use xlink:href="#STIXNonUnicode-Italic-6d" transform="translate(398.876953 0.609375)"/>
+     <use xlink:href="#OpenSans-Regular-f" transform="translate(461.876892 0.609375)"/>
     </g>
    </g>
    <g id="text_35">
@@ -348,7 +658,7 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="p496b3ef7df">
+  <clipPath id="p929a5e3bec">
    <rect x="0" y="0" width="879.84" height="226.8"/>
   </clipPath>
  </defs>

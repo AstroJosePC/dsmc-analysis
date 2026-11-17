@@ -6,9 +6,9 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-11-17T15:11:34.469108</dc:date>
+    <dc:date>2026-11-17T15:36:44.261356</dc:date>
     <dc:format>image/svg+xml</dc:format>
-    <dc:source>deck/data/fig08b_escape.csv; outputs/h2_ubc_rtop/tables/escape_summary.csv (campaign h2_ubc_rtop) @ d070d5c</dc:source>
+    <dc:source>deck/data/fig08b_escape.csv; outputs/h2_ubc_rtop/tables/escape_summary.csv (campaign h2_ubc_rtop) @ 46f2ad3</dc:source>
     <dc:creator>
      <cc:Agent>
       <dc:title>deckstyle 1.2 (2026-11-17)</dc:title>
@@ -44,12 +44,12 @@ z
     <g id="xtick_1">
      <g id="line2d_1">
       <defs>
-       <path id="mddb7e6817c" d="M 0 0 
+       <path id="m8dd3583d4c" d="M 0 0 
 L 0 4 
 " style="stroke: #5f6062; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#mddb7e6817c" x="75.483346" y="131.845268" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
+       <use xlink:href="#m8dd3583d4c" x="75.483346" y="131.845268" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_1">
@@ -59,7 +59,7 @@ L 0 4
     <g id="xtick_2">
      <g id="line2d_2">
       <g>
-       <use xlink:href="#mddb7e6817c" x="193.429728" y="131.845268" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
+       <use xlink:href="#m8dd3583d4c" x="193.429728" y="131.845268" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_2">
@@ -69,7 +69,7 @@ L 0 4
     <g id="xtick_3">
      <g id="line2d_3">
       <g>
-       <use xlink:href="#mddb7e6817c" x="311.37611" y="131.845268" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
+       <use xlink:href="#m8dd3583d4c" x="311.37611" y="131.845268" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_3">
@@ -84,64 +84,371 @@ L 0 4
     <g id="ytick_1">
      <g id="line2d_4">
       <defs>
-       <path id="mf28f1008a3" d="M 0 0 
+       <path id="m1935003834" d="M 0 0 
 L -4 0 
 " style="stroke: #5f6062; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#mf28f1008a3" x="60.649303" y="99.405983" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
+       <use xlink:href="#m1935003834" x="60.649303" y="99.405983" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_5">
       <!-- $10^{27}$ -->
-      <g style="fill: #5f6062" transform="translate(28.789303 106.887916)">
-       <text>
-        <tspan x="0" y="-0.589875" style="font-size: 14px; font-family: 'STIXGeneral'; fill: #5f6062">𝟣</tspan>
-        <tspan x="6.999969" y="-0.589875" style="font-size: 14px; font-family: 'STIXGeneral'; fill: #5f6062">𝟢</tspan>
-        <tspan x="14.220439" y="-6.371875" style="font-size: 9.8px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-        <tspan x="19.120418" y="-6.371875" style="font-size: 9.8px; font-family: 'STIXGeneral'; fill: #5f6062">𝟩</tspan>
-       </text>
+      <g style="fill: #5f6062" transform="translate(28.789303 106.887916) scale(0.14 -0.14)">
+       <defs>
+        <path id="STIXGeneral-Regular-cc0" d="M 1933 0 
+L 1427 0 
+L 1427 3648 
+Q 1286 3584 1008 3440 
+Q 730 3296 691 3277 
+L 691 3744 
+L 1843 4333 
+L 1933 4301 
+L 1933 0 
+z
+" transform="scale(0.015625)"/>
+        <path id="STIXGeneral-Regular-cbf" d="M 3053 2112 
+Q 3053 1523 2915 1046 
+Q 2778 570 2438 240 
+Q 2099 -90 1600 -90 
+Q 1203 -90 912 108 
+Q 621 307 461 643 
+Q 301 979 224 1353 
+Q 147 1728 147 2150 
+Q 147 2746 294 3222 
+Q 442 3699 787 4012 
+Q 1133 4326 1626 4326 
+Q 2253 4326 2653 3708 
+Q 3053 3091 3053 2112 
+z
+M 2547 2112 
+Q 2547 2893 2288 3382 
+Q 2029 3872 1613 3872 
+Q 1139 3872 896 3376 
+Q 653 2880 653 2138 
+Q 653 1805 701 1507 
+Q 749 1210 854 944 
+Q 960 678 1152 521 
+Q 1344 365 1600 365 
+Q 1926 365 2147 627 
+Q 2368 890 2457 1270 
+Q 2547 1651 2547 2112 
+z
+" transform="scale(0.015625)"/>
+        <path id="STIXGeneral-Regular-cc1" d="M 3002 454 
+L 2816 0 
+L 224 0 
+L 224 134 
+L 1344 1504 
+L 1344 1498 
+L 1702 1933 
+Q 1952 2234 2054 2365 
+Q 2157 2496 2253 2685 
+Q 2349 2874 2349 3040 
+Q 2349 3437 2134 3654 
+Q 1920 3872 1549 3872 
+Q 1254 3872 1008 3629 
+Q 762 3386 698 2938 
+L 237 3046 
+Q 339 3616 716 3971 
+Q 1094 4326 1594 4326 
+Q 2150 4326 2502 3980 
+Q 2854 3635 2854 3142 
+Q 2854 2784 2720 2525 
+Q 2586 2266 2157 1728 
+L 1133 454 
+L 3002 454 
+z
+" transform="scale(0.015625)"/>
+        <path id="STIXGeneral-Regular-cc6" d="M 2886 4109 
+L 1472 -51 
+L 947 -51 
+L 2266 3782 
+L 243 3782 
+L 442 4237 
+L 2886 4237 
+L 2886 4109 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#STIXGeneral-Regular-cc0" transform="translate(0 0.384375)"/>
+       <use xlink:href="#STIXGeneral-Regular-cbf" transform="translate(49.999954 0.384375)"/>
+       <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(101.574908 41.684375) scale(0.7)"/>
+       <use xlink:href="#STIXGeneral-Regular-cc6" transform="translate(136.574876 41.684375) scale(0.7)"/>
       </g>
      </g>
     </g>
     <g id="ytick_2">
      <g id="line2d_5">
       <g>
-       <use xlink:href="#mf28f1008a3" x="60.649303" y="50.074468" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
+       <use xlink:href="#m1935003834" x="60.649303" y="50.074468" style="fill: #5f6062; stroke: #5f6062; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_6">
       <!-- $10^{28}$ -->
-      <g style="fill: #5f6062" transform="translate(28.789303 57.556402)">
-       <text>
-        <tspan x="0" y="-0.589875" style="font-size: 14px; font-family: 'STIXGeneral'; fill: #5f6062">𝟣</tspan>
-        <tspan x="6.999969" y="-0.589875" style="font-size: 14px; font-family: 'STIXGeneral'; fill: #5f6062">𝟢</tspan>
-        <tspan x="14.220439" y="-6.371875" style="font-size: 9.8px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-        <tspan x="19.120418" y="-6.371875" style="font-size: 9.8px; font-family: 'STIXGeneral'; fill: #5f6062">𝟪</tspan>
-       </text>
+      <g style="fill: #5f6062" transform="translate(28.789303 57.556402) scale(0.14 -0.14)">
+       <defs>
+        <path id="STIXGeneral-Regular-cc7" d="M 2861 1030 
+Q 2861 563 2521 236 
+Q 2182 -90 1587 -90 
+Q 1043 -90 678 220 
+Q 314 531 314 986 
+Q 314 1331 496 1616 
+Q 678 1901 1133 2208 
+Q 384 2650 384 3290 
+Q 384 3750 739 4038 
+Q 1094 4326 1638 4326 
+Q 2106 4326 2419 4022 
+Q 2733 3718 2733 3328 
+Q 2733 2970 2566 2733 
+Q 2400 2496 1990 2259 
+Q 2861 1728 2861 1030 
+z
+M 2272 3296 
+Q 2272 3552 2073 3712 
+Q 1875 3872 1562 3872 
+Q 1267 3872 1078 3702 
+Q 890 3533 890 3315 
+Q 890 3040 1046 2870 
+Q 1203 2701 1594 2522 
+Q 2272 2893 2272 3296 
+z
+M 1766 1830 
+L 1542 1952 
+Q 1210 1837 1014 1577 
+Q 819 1318 819 1043 
+Q 819 755 1024 560 
+Q 1229 365 1613 365 
+Q 1907 365 2131 541 
+Q 2355 717 2355 1011 
+Q 2355 1280 2220 1469 
+Q 2086 1658 1766 1830 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#STIXGeneral-Regular-cc0" transform="translate(0 0.384375)"/>
+       <use xlink:href="#STIXGeneral-Regular-cbf" transform="translate(49.999954 0.384375)"/>
+       <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(101.574908 41.684375) scale(0.7)"/>
+       <use xlink:href="#STIXGeneral-Regular-cc7" transform="translate(136.574876 41.684375) scale(0.7)"/>
       </g>
      </g>
     </g>
     <g id="text_7">
      <!-- H$_2$ escape (s$^{-1}$) -->
-     <g style="fill: #5f6062" transform="translate(20.101803 122.062754) rotate(-90)">
-      <text>
-       <tspan x="0" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">H</tspan>
-       <tspan x="18.008886" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-       <tspan x="22.165136" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">e</tspan>
-       <tspan x="31.149511" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">s</tspan>
-       <tspan x="38.774511" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">c</tspan>
-       <tspan x="46.438573" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">a</tspan>
-       <tspan x="55.329198" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">p</tspan>
-       <tspan x="65.118261" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">e</tspan>
-       <tspan x="74.102636" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-       <tspan x="78.258886" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">(</tspan>
-       <tspan x="82.977636" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">s</tspan>
-       <tspan x="104.486662" y="-0.812313" style="font-size: 16px; font-family: 'Open Sans'; fill: #5f6062">)</tspan>
-       <tspan x="12.048875" y="1.587687" style="font-size: 11.2px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-       <tspan x="90.854636" y="-7.420313" style="font-size: 11.2px; font-family: 'STIXGeneral'; fill: #5f6062">−</tspan>
-       <tspan x="98.526651" y="-7.420313" style="font-size: 11.2px; font-family: 'STIXGeneral'; fill: #5f6062">𝟣</tspan>
-      </text>
+     <g style="fill: #5f6062" transform="translate(20.101803 122.062754) rotate(-90) scale(0.16 -0.16)">
+      <defs>
+       <path id="OpenSans-Regular-2b" d="M 4088 0 
+L 3556 0 
+L 3556 2153 
+L 1156 2153 
+L 1156 0 
+L 625 0 
+L 625 4569 
+L 1156 4569 
+L 1156 2622 
+L 3556 2622 
+L 3556 4569 
+L 4088 4569 
+L 4088 0 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-3" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-48" d="M 1866 3488 
+Q 2303 3488 2615 3294 
+Q 2928 3100 3093 2751 
+Q 3259 2403 3259 1938 
+L 3259 1616 
+L 894 1616 
+Q 903 1013 1193 697 
+Q 1484 381 2013 381 
+Q 2338 381 2588 440 
+Q 2838 500 3106 616 
+L 3106 159 
+Q 2847 44 2592 -9 
+Q 2338 -63 1991 -63 
+Q 1250 -63 803 389 
+Q 356 841 356 1688 
+Q 356 2241 542 2645 
+Q 728 3050 1067 3269 
+Q 1406 3488 1866 3488 
+z
+M 1859 3063 
+Q 1444 3063 1197 2791 
+Q 950 2519 903 2031 
+L 2716 2031 
+Q 2713 2491 2505 2777 
+Q 2297 3063 1859 3063 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-56" d="M 2763 938 
+Q 2763 447 2398 192 
+Q 2034 -63 1403 -63 
+Q 1044 -63 781 -6 
+Q 519 50 322 153 
+L 322 631 
+Q 531 528 822 443 
+Q 1113 359 1416 359 
+Q 1859 359 2059 503 
+Q 2259 647 2259 894 
+Q 2259 1106 2073 1248 
+Q 1888 1391 1394 1575 
+Q 1066 1700 827 1823 
+Q 588 1947 458 2125 
+Q 328 2303 328 2588 
+Q 328 3022 679 3255 
+Q 1031 3488 1603 3488 
+Q 1913 3488 2183 3427 
+Q 2453 3366 2688 3263 
+L 2513 2847 
+Q 2300 2938 2059 3000 
+Q 1819 3063 1569 3063 
+Q 1209 3063 1017 2944 
+Q 825 2825 825 2619 
+Q 825 2459 914 2356 
+Q 1003 2253 1200 2162 
+Q 1397 2072 1719 1950 
+Q 2041 1831 2275 1704 
+Q 2509 1578 2636 1398 
+Q 2763 1219 2763 938 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-46" d="M 1919 -63 
+Q 1456 -63 1103 128 
+Q 750 319 553 709 
+Q 356 1100 356 1694 
+Q 356 2316 564 2711 
+Q 772 3106 1137 3297 
+Q 1503 3488 1969 3488 
+Q 2225 3488 2464 3436 
+Q 2703 3384 2856 3306 
+L 2700 2872 
+Q 2544 2934 2339 2984 
+Q 2134 3034 1956 3034 
+Q 1422 3034 1158 2692 
+Q 894 2350 894 1700 
+Q 894 1078 1150 733 
+Q 1406 388 1916 388 
+Q 2188 388 2406 445 
+Q 2625 503 2803 581 
+L 2803 119 
+Q 2631 31 2420 -16 
+Q 2209 -63 1919 -63 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-44" d="M 1828 3481 
+Q 2441 3481 2737 3206 
+Q 3034 2931 3034 2328 
+L 3034 0 
+L 2656 0 
+L 2556 506 
+L 2531 506 
+Q 2316 222 2064 79 
+Q 1813 -63 1369 -63 
+Q 900 -63 597 184 
+Q 294 431 294 941 
+Q 294 1453 700 1728 
+Q 1106 2003 1938 2028 
+L 2528 2053 
+L 2528 2263 
+Q 2528 2706 2337 2884 
+Q 2147 3063 1800 3063 
+Q 1531 3063 1287 2984 
+Q 1044 2906 825 2800 
+L 666 3194 
+Q 897 3313 1197 3397 
+Q 1497 3481 1828 3481 
+z
+M 2522 1688 
+L 2000 1666 
+Q 1359 1641 1096 1456 
+Q 834 1272 834 934 
+Q 834 641 1012 500 
+Q 1191 359 1484 359 
+Q 1941 359 2231 612 
+Q 2522 866 2522 1372 
+L 2522 1688 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-53" d="M 2156 3488 
+Q 2797 3488 3178 3047 
+Q 3559 2606 3559 1722 
+Q 3559 847 3173 392 
+Q 2788 -63 2144 -63 
+Q 1734 -63 1473 93 
+Q 1213 250 1069 469 
+L 1031 469 
+Q 1041 347 1055 175 
+Q 1069 3 1069 -125 
+L 1069 -1531 
+L 547 -1531 
+L 547 3425 
+L 975 3425 
+L 1044 2919 
+L 1069 2919 
+Q 1216 3153 1472 3320 
+Q 1728 3488 2156 3488 
+z
+M 2066 3050 
+Q 1531 3050 1303 2740 
+Q 1075 2431 1069 1816 
+L 1069 1716 
+Q 1069 1066 1291 717 
+Q 1513 369 2072 369 
+Q 2550 369 2787 747 
+Q 3025 1125 3025 1728 
+Q 3025 2334 2789 2692 
+Q 2553 3050 2066 3050 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-b" d="M 256 1753 
+Q 256 2544 486 3269 
+Q 716 3994 1197 4569 
+L 1694 4569 
+Q 1241 3975 1012 3250 
+Q 784 2525 784 1759 
+Q 784 1009 1012 296 
+Q 1241 -416 1688 -1013 
+L 1197 -1013 
+Q 716 -453 486 259 
+Q 256 972 256 1753 
+z
+" transform="scale(0.015625)"/>
+       <path id="STIXGeneral-Regular-425" d="M 3974 1408 
+L 410 1408 
+L 410 1830 
+L 3974 1830 
+L 3974 1408 
+z
+" transform="scale(0.015625)"/>
+       <path id="OpenSans-Regular-c" d="M 1631 1759 
+Q 1631 978 1401 262 
+Q 1172 -453 691 -1013 
+L 200 -1013 
+Q 650 -416 878 298 
+Q 1106 1013 1106 1763 
+Q 1106 2528 876 3250 
+Q 647 3972 194 4569 
+L 691 4569 
+Q 1172 3994 1401 3270 
+Q 1631 2547 1631 1759 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#OpenSans-Regular-2b" transform="translate(0 0.307812)"/>
+      <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(75.305469 -14.692188) scale(0.7)"/>
+      <use xlink:href="#OpenSans-Regular-3" transform="translate(112.555437 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-48" transform="translate(138.531999 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-56" transform="translate(194.684343 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-46" transform="translate(242.340593 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-44" transform="translate(290.240984 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-53" transform="translate(345.80739 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-48" transform="translate(406.98903 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-3" transform="translate(463.141374 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-b" transform="translate(489.117937 0.307812)"/>
+      <use xlink:href="#OpenSans-Regular-56" transform="translate(518.610124 0.307812)"/>
+      <use xlink:href="#STIXGeneral-Regular-425" transform="translate(567.841374 41.607813) scale(0.7)"/>
+      <use xlink:href="#STIXGeneral-Regular-cc0" transform="translate(615.791331 41.607813) scale(0.7)"/>
+      <use xlink:href="#OpenSans-Regular-c" transform="translate(653.041299 0.307812)"/>
      </g>
     </g>
    </g>
@@ -161,7 +468,7 @@ L 136.595432 117.49613
 L 194.505897 117.939654 
 L 252.942705 118.045361 
 L 311.646431 118.784605 
-" clip-path="url(#pcb66b30f40)" style="fill: none; stroke: #5f6062; stroke-width: 1.8; stroke-linecap: square"/>
+" clip-path="url(#p42f8d05239)" style="fill: none; stroke: #5f6062; stroke-width: 1.8; stroke-linecap: square"/>
    </g>
    <g id="line2d_7">
     <path d="M 79.708681 119.227911 
@@ -169,7 +476,7 @@ L 136.595432 119.168005
 L 194.505897 118.780688 
 L 252.942705 119.247917 
 L 311.646431 118.446471 
-" clip-path="url(#pcb66b30f40)" style="fill: none; stroke: #003a63; stroke-width: 1.8; stroke-linecap: square"/>
+" clip-path="url(#p42f8d05239)" style="fill: none; stroke: #003a63; stroke-width: 1.8; stroke-linecap: square"/>
    </g>
    <g id="line2d_8">
     <path d="M 79.708681 22.125731 
@@ -177,49 +484,273 @@ L 136.595432 49.900599
 L 194.505897 73.558524 
 L 252.942705 91.042466 
 L 311.646431 102.844129 
-" clip-path="url(#pcb66b30f40)" style="fill: none; stroke: #6b818d; stroke-width: 1.8; stroke-linecap: square"/>
+" clip-path="url(#p42f8d05239)" style="fill: none; stroke: #6b818d; stroke-width: 1.8; stroke-linecap: square"/>
    </g>
    <g id="text_8">
-    <text style="font-weight: 600; font-size: 12px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #003a63" x="78.820257" y="109.091779" transform="rotate(-0 78.820257 109.091779)">REFLECT ≈ HOLD</text>
+    <text style="font-size: 12px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #003a63" x="78.820257" y="109.091779" transform="rotate(-0 78.820257 109.091779)">REFLECT ≈ HOLD</text>
    </g>
    <g id="text_9">
-    <text style="font-weight: 600; font-size: 12px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #6b818d" x="78.820257" y="87.169027" transform="rotate(-0 78.820257 87.169027)">FREE ESCAPE</text>
+    <text style="font-size: 12px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #6b818d" x="78.820257" y="87.169027" transform="rotate(-0 78.820257 87.169027)">FREE ESCAPE</text>
    </g>
    <g id="text_10">
     <!-- FILLED: PURE H$_2$ -->
-    <g style="fill: #5f6062" transform="translate(230.747102 39.671663)">
-     <text>
-      <tspan x="0" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">F</tspan>
-      <tspan x="6.392578" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">I</tspan>
-      <tspan x="10.054688" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">L</tspan>
-      <tspan x="16.576172" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">L</tspan>
-      <tspan x="23.097656" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">E</tspan>
-      <tspan x="29.794922" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">D</tspan>
-      <tspan x="38.589844" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">:</tspan>
-      <tspan x="41.876953" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="44.994141" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">P</tspan>
-      <tspan x="52.371094" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">U</tspan>
-      <tspan x="61.283203" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">R</tspan>
-      <tspan x="68.947266" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">E</tspan>
-      <tspan x="75.644531" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="78.761719" y="-0.4375" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">H</tspan>
-      <tspan x="87.968297" y="1.3625" style="font-size: 8.4px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-     </text>
+    <g style="fill: #5f6062" transform="translate(230.747102 39.671663) scale(0.12 -0.12)">
+     <defs>
+      <path id="OpenSans-SemiBold-29" d="M 1344 0 
+L 600 0 
+L 600 4569 
+L 3181 4569 
+L 3181 3938 
+L 1344 3938 
+L 1344 2513 
+L 3063 2513 
+L 3063 1884 
+L 1344 1884 
+L 1344 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-2c" d="M 600 0 
+L 600 4569 
+L 1350 4569 
+L 1350 0 
+L 600 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-2f" d="M 600 0 
+L 600 4569 
+L 1350 4569 
+L 1350 638 
+L 3291 638 
+L 3291 0 
+L 600 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-28" d="M 3188 0 
+L 600 0 
+L 600 4569 
+L 3188 4569 
+L 3188 3938 
+L 1350 3938 
+L 1350 2697 
+L 3072 2697 
+L 3072 2069 
+L 1350 2069 
+L 1350 634 
+L 3188 634 
+L 3188 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-27" d="M 4309 2328 
+Q 4309 1172 3667 586 
+Q 3025 0 1869 0 
+L 600 0 
+L 600 4569 
+L 2006 4569 
+Q 2713 4569 3230 4314 
+Q 3747 4059 4028 3561 
+Q 4309 3063 4309 2328 
+z
+M 3528 2306 
+Q 3528 3147 3133 3547 
+Q 2738 3947 1991 3947 
+L 1350 3947 
+L 1350 628 
+L 1881 628 
+Q 3528 628 3528 2306 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-1d" d="M 419 3063 
+Q 419 3322 551 3428 
+Q 684 3534 875 3534 
+Q 1066 3534 1202 3428 
+Q 1338 3322 1338 3063 
+Q 1338 2816 1202 2705 
+Q 1066 2594 875 2594 
+Q 684 2594 551 2705 
+Q 419 2816 419 3063 
+z
+M 419 388 
+Q 419 641 551 747 
+Q 684 853 875 853 
+Q 1066 853 1202 747 
+Q 1338 641 1338 388 
+Q 1338 138 1202 27 
+Q 1066 -84 875 -84 
+Q 684 -84 551 27 
+Q 419 138 419 388 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-3" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-33" d="M 1928 4569 
+Q 2809 4569 3217 4206 
+Q 3625 3844 3625 3191 
+Q 3625 2794 3454 2458 
+Q 3284 2122 2893 1917 
+Q 2503 1713 1838 1713 
+L 1350 1713 
+L 1350 0 
+L 600 0 
+L 600 4569 
+L 1928 4569 
+z
+M 1878 3947 
+L 1350 3947 
+L 1350 2338 
+L 1759 2338 
+Q 2291 2338 2577 2527 
+Q 2863 2716 2863 3163 
+Q 2863 3559 2623 3753 
+Q 2384 3947 1878 3947 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-38" d="M 4188 4569 
+L 4188 1613 
+Q 4188 1134 3986 754 
+Q 3784 375 3378 156 
+Q 2972 -63 2356 -63 
+Q 1478 -63 1020 398 
+Q 563 859 563 1625 
+L 563 4569 
+L 1313 4569 
+L 1313 1691 
+Q 1313 1119 1581 847 
+Q 1850 575 2384 575 
+Q 2934 575 3187 865 
+Q 3441 1156 3441 1694 
+L 3441 4569 
+L 4188 4569 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-35" d="M 1884 4569 
+Q 2772 4569 3198 4242 
+Q 3625 3916 3625 3241 
+Q 3625 2903 3500 2664 
+Q 3375 2425 3172 2269 
+Q 2969 2113 2738 2022 
+L 4034 0 
+L 3188 0 
+L 2084 1831 
+L 1350 1831 
+L 1350 0 
+L 600 0 
+L 600 4569 
+L 1884 4569 
+z
+M 1834 3944 
+L 1350 3944 
+L 1350 2450 
+L 1869 2450 
+Q 2388 2450 2625 2644 
+Q 2863 2838 2863 3216 
+Q 2863 3613 2611 3778 
+Q 2359 3944 1834 3944 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-2b" d="M 4203 0 
+L 3456 0 
+L 3456 2063 
+L 1350 2063 
+L 1350 0 
+L 600 0 
+L 600 4569 
+L 1350 4569 
+L 1350 2700 
+L 3456 2700 
+L 3456 4569 
+L 4203 4569 
+L 4203 0 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#OpenSans-SemiBold-29" transform="translate(0 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-2c" transform="translate(53.271484 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-2f" transform="translate(83.789062 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-2f" transform="translate(138.134766 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-28" transform="translate(192.480469 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-27" transform="translate(248.291016 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-1d" transform="translate(321.582031 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-3" transform="translate(348.974609 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-33" transform="translate(374.951172 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-38" transform="translate(436.425781 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-35" transform="translate(510.693359 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-28" transform="translate(574.560547 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-3" transform="translate(630.371094 0.609375)"/>
+     <use xlink:href="#OpenSans-SemiBold-2b" transform="translate(656.347656 0.609375)"/>
+     <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(733.069141 -14.390625) scale(0.7)"/>
     </g>
     <!-- OPEN: O+H$_2$ -->
-    <g style="fill: #5f6062" transform="translate(253.907102 57.70764)">
-     <text>
-      <tspan x="0" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">O</tspan>
-      <tspan x="9.445312" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">P</tspan>
-      <tspan x="16.822266" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">E</tspan>
-      <tspan x="23.519531" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">N</tspan>
-      <tspan x="32.917969" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">:</tspan>
-      <tspan x="36.205078" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062"> </tspan>
-      <tspan x="39.322266" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">O</tspan>
-      <tspan x="48.767578" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">+</tspan>
-      <tspan x="55.628906" y="-0.296875" style="font-weight: 600; font-size: 12px; font-family: 'Open Sans'; fill: #5f6062">H</tspan>
-      <tspan x="64.835484" y="1.503125" style="font-size: 8.4px; font-family: 'STIXGeneral'; fill: #5f6062">𝟤</tspan>
-     </text>
+    <g style="fill: #5f6062" transform="translate(253.907102 57.70764) scale(0.12 -0.12)">
+     <defs>
+      <path id="OpenSans-SemiBold-32" d="M 4656 2291 
+Q 4656 1584 4420 1054 
+Q 4184 525 3711 231 
+Q 3238 -63 2522 -63 
+Q 1794 -63 1319 232 
+Q 844 528 612 1059 
+Q 381 1591 381 2297 
+Q 381 3000 614 3528 
+Q 847 4056 1323 4348 
+Q 1800 4641 2528 4641 
+Q 3238 4641 3711 4350 
+Q 4184 4059 4420 3531 
+Q 4656 3003 4656 2291 
+z
+M 1169 2291 
+Q 1169 1494 1494 1034 
+Q 1819 575 2522 575 
+Q 3228 575 3548 1034 
+Q 3869 1494 3869 2291 
+Q 3869 3094 3548 3548 
+Q 3228 4003 2528 4003 
+Q 1822 4003 1495 3545 
+Q 1169 3088 1169 2291 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-31" d="M 4413 0 
+L 3491 0 
+L 1253 3647 
+L 1225 3647 
+Q 1241 3369 1256 3045 
+Q 1272 2722 1281 2388 
+L 1281 0 
+L 600 0 
+L 600 4569 
+L 1516 4569 
+L 3750 947 
+L 3772 947 
+Q 3759 1184 3745 1520 
+Q 3731 1856 3728 2166 
+L 3728 4569 
+L 4413 4569 
+L 4413 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="OpenSans-SemiBold-e" d="M 2103 2534 
+L 3353 2534 
+L 3353 1978 
+L 2103 1978 
+L 2103 716 
+L 1547 716 
+L 1547 1978 
+L 300 1978 
+L 300 2534 
+L 1547 2534 
+L 1547 3809 
+L 2103 3809 
+L 2103 2534 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#OpenSans-SemiBold-32" transform="translate(0 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-33" transform="translate(78.710938 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-28" transform="translate(140.185547 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-31" transform="translate(195.996094 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-1d" transform="translate(274.316406 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-3" transform="translate(301.708984 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-32" transform="translate(327.685547 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-e" transform="translate(406.396484 0.484375)"/>
+     <use xlink:href="#OpenSans-SemiBold-2b" transform="translate(463.574219 0.484375)"/>
+     <use xlink:href="#STIXGeneral-Regular-cc1" transform="translate(540.295703 -14.515625) scale(0.7)"/>
     </g>
    </g>
    <g id="patch_5">
@@ -233,11 +764,11 @@ z
 " style="fill: #e51937; stroke: #e51937; stroke-width: 1.2; stroke-linecap: round"/>
    </g>
    <g id="text_11">
-    <text style="font-weight: 600; font-size: 13px; font-family: 'Open Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e51937" x="134.456537" y="18.208433" transform="rotate(-0 134.456537 18.208433)">50–89× too high</text>
+    <text style="font-size: 13px; font-family: 'Open Sans SemiBold', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e51937" x="134.456537" y="18.208433" transform="rotate(-0 134.456537 18.208433)">50–89× too high</text>
    </g>
    <g id="line2d_9">
     <defs>
-     <path id="m804a2024dd" d="M 0 2.75 
+     <path id="m88620c0c20" d="M 0 2.75 
 C 0.729309 2.75 1.428845 2.460243 1.944544 1.944544 
 C 2.460243 1.428845 2.75 0.729309 2.75 0 
 C 2.75 -0.729309 2.460243 -1.428845 1.944544 -1.944544 
@@ -249,17 +780,17 @@ C -1.428845 2.460243 -0.729309 2.75 0 2.75
 z
 "/>
     </defs>
-    <g clip-path="url(#pcb66b30f40)">
-     <use xlink:href="#m804a2024dd" x="79.708681" y="119.108266" style="fill: #5f6062"/>
-     <use xlink:href="#m804a2024dd" x="136.595432" y="117.49613" style="fill: #5f6062"/>
-     <use xlink:href="#m804a2024dd" x="194.505897" y="117.939654" style="fill: #5f6062"/>
-     <use xlink:href="#m804a2024dd" x="252.942705" y="118.045361" style="fill: #5f6062"/>
-     <use xlink:href="#m804a2024dd" x="311.646431" y="118.784605" style="fill: #5f6062"/>
+    <g clip-path="url(#p42f8d05239)">
+     <use xlink:href="#m88620c0c20" x="79.708681" y="119.108266" style="fill: #5f6062"/>
+     <use xlink:href="#m88620c0c20" x="136.595432" y="117.49613" style="fill: #5f6062"/>
+     <use xlink:href="#m88620c0c20" x="194.505897" y="117.939654" style="fill: #5f6062"/>
+     <use xlink:href="#m88620c0c20" x="252.942705" y="118.045361" style="fill: #5f6062"/>
+     <use xlink:href="#m88620c0c20" x="311.646431" y="118.784605" style="fill: #5f6062"/>
     </g>
    </g>
    <g id="line2d_10">
     <defs>
-     <path id="m43d4b471f9" d="M 0 2.75 
+     <path id="m4d6f675c67" d="M 0 2.75 
 C 0.729309 2.75 1.428845 2.460243 1.944544 1.944544 
 C 2.460243 1.428845 2.75 0.729309 2.75 0 
 C 2.75 -0.729309 2.460243 -1.428845 1.944544 -1.944544 
@@ -271,84 +802,84 @@ C -1.428845 2.460243 -0.729309 2.75 0 2.75
 z
 " style="stroke: #5f6062; stroke-width: 1.1"/>
     </defs>
-    <g clip-path="url(#pcb66b30f40)">
-     <use xlink:href="#m43d4b471f9" x="77.057471" y="118.787948" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
-     <use xlink:href="#m43d4b471f9" x="135.24724" y="118.727523" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
-     <use xlink:href="#m43d4b471f9" x="193.825998" y="119.444612" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
-     <use xlink:href="#m43d4b471f9" x="252.601285" y="119.238924" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
-     <use xlink:href="#m43d4b471f9" x="311.475351" y="121.47605" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
+    <g clip-path="url(#p42f8d05239)">
+     <use xlink:href="#m4d6f675c67" x="77.057471" y="118.787948" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
+     <use xlink:href="#m4d6f675c67" x="135.24724" y="118.727523" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
+     <use xlink:href="#m4d6f675c67" x="193.825998" y="119.444612" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
+     <use xlink:href="#m4d6f675c67" x="252.601285" y="119.238924" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
+     <use xlink:href="#m4d6f675c67" x="311.475351" y="121.47605" style="fill-opacity: 0; stroke: #5f6062; stroke-width: 1.1"/>
     </g>
    </g>
    <g id="line2d_11">
     <defs>
-     <path id="ma4ede8e7f9" d="M -2.75 2.75 
+     <path id="m7f20a8a049" d="M -2.75 2.75 
 L 2.75 2.75 
 L 2.75 -2.75 
 L -2.75 -2.75 
 z
 "/>
     </defs>
-    <g clip-path="url(#pcb66b30f40)">
-     <use xlink:href="#ma4ede8e7f9" x="79.708681" y="119.227911" style="fill: #003a63"/>
-     <use xlink:href="#ma4ede8e7f9" x="136.595432" y="119.168005" style="fill: #003a63"/>
-     <use xlink:href="#ma4ede8e7f9" x="194.505897" y="118.780688" style="fill: #003a63"/>
-     <use xlink:href="#ma4ede8e7f9" x="252.942705" y="119.247917" style="fill: #003a63"/>
-     <use xlink:href="#ma4ede8e7f9" x="311.646431" y="118.446471" style="fill: #003a63"/>
+    <g clip-path="url(#p42f8d05239)">
+     <use xlink:href="#m7f20a8a049" x="79.708681" y="119.227911" style="fill: #003a63"/>
+     <use xlink:href="#m7f20a8a049" x="136.595432" y="119.168005" style="fill: #003a63"/>
+     <use xlink:href="#m7f20a8a049" x="194.505897" y="118.780688" style="fill: #003a63"/>
+     <use xlink:href="#m7f20a8a049" x="252.942705" y="119.247917" style="fill: #003a63"/>
+     <use xlink:href="#m7f20a8a049" x="311.646431" y="118.446471" style="fill: #003a63"/>
     </g>
    </g>
    <g id="line2d_12">
     <defs>
-     <path id="mbeae34cb4c" d="M -2.75 2.75 
+     <path id="m51c69fb982" d="M -2.75 2.75 
 L 2.75 2.75 
 L 2.75 -2.75 
 L -2.75 -2.75 
 z
 " style="stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
     </defs>
-    <g clip-path="url(#pcb66b30f40)">
-     <use xlink:href="#mbeae34cb4c" x="77.057471" y="119.58546" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#mbeae34cb4c" x="135.24724" y="120.295814" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#mbeae34cb4c" x="193.825998" y="120.409731" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#mbeae34cb4c" x="252.601285" y="121.13577" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#mbeae34cb4c" x="311.475351" y="120.90075" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
+    <g clip-path="url(#p42f8d05239)">
+     <use xlink:href="#m51c69fb982" x="77.057471" y="119.58546" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m51c69fb982" x="135.24724" y="120.295814" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m51c69fb982" x="193.825998" y="120.409731" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m51c69fb982" x="252.601285" y="121.13577" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m51c69fb982" x="311.475351" y="120.90075" style="fill-opacity: 0; stroke: #003a63; stroke-width: 1.1; stroke-linejoin: miter"/>
     </g>
    </g>
    <g id="line2d_13">
     <defs>
-     <path id="mf507884595" d="M 0 -2.75 
+     <path id="mbb45158db0" d="M 0 -2.75 
 L -2.75 2.75 
 L 2.75 2.75 
 z
 "/>
     </defs>
-    <g clip-path="url(#pcb66b30f40)">
-     <use xlink:href="#mf507884595" x="79.708681" y="22.125731" style="fill: #6b818d"/>
-     <use xlink:href="#mf507884595" x="136.595432" y="49.900599" style="fill: #6b818d"/>
-     <use xlink:href="#mf507884595" x="194.505897" y="73.558524" style="fill: #6b818d"/>
-     <use xlink:href="#mf507884595" x="252.942705" y="91.042466" style="fill: #6b818d"/>
-     <use xlink:href="#mf507884595" x="311.646431" y="102.844129" style="fill: #6b818d"/>
+    <g clip-path="url(#p42f8d05239)">
+     <use xlink:href="#mbb45158db0" x="79.708681" y="22.125731" style="fill: #6b818d"/>
+     <use xlink:href="#mbb45158db0" x="136.595432" y="49.900599" style="fill: #6b818d"/>
+     <use xlink:href="#mbb45158db0" x="194.505897" y="73.558524" style="fill: #6b818d"/>
+     <use xlink:href="#mbb45158db0" x="252.942705" y="91.042466" style="fill: #6b818d"/>
+     <use xlink:href="#mbb45158db0" x="311.646431" y="102.844129" style="fill: #6b818d"/>
     </g>
    </g>
    <g id="line2d_14">
     <defs>
-     <path id="ma325ec31c4" d="M 0 -2.75 
+     <path id="m436a598472" d="M 0 -2.75 
 L -2.75 2.75 
 L 2.75 2.75 
 z
 " style="stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
     </defs>
-    <g clip-path="url(#pcb66b30f40)">
-     <use xlink:href="#ma325ec31c4" x="77.057471" y="36.184869" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#ma325ec31c4" x="135.24724" y="54.954075" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#ma325ec31c4" x="193.825998" y="76.057184" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#ma325ec31c4" x="252.601285" y="92.875124" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
-     <use xlink:href="#ma325ec31c4" x="311.475351" y="105.197445" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
+    <g clip-path="url(#p42f8d05239)">
+     <use xlink:href="#m436a598472" x="77.057471" y="36.184869" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m436a598472" x="135.24724" y="54.954075" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m436a598472" x="193.825998" y="76.057184" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m436a598472" x="252.601285" y="92.875124" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
+     <use xlink:href="#m436a598472" x="311.475351" y="105.197445" style="fill-opacity: 0; stroke: #6b818d; stroke-width: 1.1; stroke-linejoin: miter"/>
     </g>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="pcb66b30f40">
+  <clipPath id="p42f8d05239">
    <rect x="60.649303" y="3.00024" width="269.711935" height="128.845028"/>
   </clipPath>
  </defs>
