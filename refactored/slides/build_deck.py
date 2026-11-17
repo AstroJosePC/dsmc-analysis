@@ -1,9 +1,9 @@
-"""Assemble the NSBP/NSHP 2026 deck, slides 1 and 3-8, as one 13.333 x 7.5 in PDF.
+"""Assemble the NSBP/NSHP 2026 deck, slides 1 and 3-9, as one 13.333 x 7.5 in PDF.
 
     cd refactored && conda run -n dsmc python slides/build_deck.py
 
-Slide 2 waits for the reduced NGIMS data; slide 9 is the next phase. Page numbers and progress
-dots already count the full nine-slide talk, so these pages drop into the final deck unchanged.
+Slide 2 waits for the reduced NGIMS data. Page numbers and progress dots already count the full
+nine-slide talk, so these pages drop into the final deck unchanged.
 
 Pipeline
   1. Audit. style/deckstyle.py is the one canonical style module: if docs/deckstyle.py or the
@@ -24,7 +24,7 @@ Numbers on slides 7 and 8 are read from deck/data/*.json, written and checked ag
 by deck/cache_slides78.py (rerun it, then the figure scripts, before rebuilding when a source changes,
 e.g. when the last Stage 1B replicates finish).
 
-Outputs (refactored/slides/build/): NSBP2026_slides_1-8.pdf, preview/slide-N.png (page order).
+Outputs (refactored/slides/build/): NSBP2026_slides_1-9.pdf, preview/slide-N.png (page order).
 """
 from __future__ import annotations
 
@@ -60,7 +60,7 @@ FIGS = REFACTORED / "figures" / "deck"
 DOCS = REFACTORED / "docs"
 OUT = REFACTORED / "slides" / "build"
 WORK = OUT / "_work"
-DECK_PDF = OUT / "NSBP2026_slides_1-8.pdf"
+DECK_PDF = OUT / "NSBP2026_slides_1-9.pdf"
 DECK_DATA = REFACTORED / "deck" / "data"
 
 # ---------------------------------------------------------------- page geometry (points, y down)
@@ -94,7 +94,7 @@ SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
             "fig05a_amplitude_growth": "evidence", "fig05b_slab_vs_shell": "inset",
             "fig06a_s6_wedge": "evidence", "fig06_spark_latt": "spark", "fig06_spark_lambdah": "spark",
             "fig07a_wheel_sector": "evidence", "fig08a_coupling_baseline": "evidence",
-            "fig08b_escape_vs_top": "narrow"}
+            "fig08b_escape_vs_top": "narrow", "fig09_maven_roadmap": "strip"}
 ALLOWED_FONTS = re.compile(r"^(OpenSans|PlayfairDeckLF|IBMPlexMono|STIX)")
 
 
@@ -581,6 +581,46 @@ def slide8():
     return s
 
 
+def slide9():
+    """Roadmap to MAVEN: the six-node pipeline (FIG 9, strip slot), the hypothesis, then
+    acknowledgments beside the close. No measure card; the pipeline is the content."""
+    s = Slide(9)
+    header(s, "NEXT", "Next: can multi-species NGIMS data pin down the wave that produced it?")
+    y_fig = 148.0
+    _, fh = s.place("fig09_maven_roadmap_deck", M, y_fig)
+
+    # hypothesis: tracked label, Midnight bar, Playfair italic quote
+    y = y_fig + fh + 24
+    s.tracked(M, y, "HYPOTHESIS", fp(SANS, 11), TRACK_LABEL)
+    quote = "\u201cMultiple species break degeneracies that a single species cannot.\u201d"
+    qprop = fp(SERIF, 22, style="italic")
+    if s.width(quote, qprop) > RIGHT - M - 14:
+        raise ValueError("slide 9: hypothesis runs past the margin")
+    yq = y + 28
+    s.rule(M, yq - 19, 3, 25, ds.MIDNIGHT)
+    s.text(M + 14, yq, quote, qprop, color=ds.MIDNIGHT)
+
+    # bottom row: acknowledgments | thank you and contact
+    y0 = yq + 30
+    s.tracked(M, y0, "ACKNOWLEDGMENTS", fp(SANS, 11), TRACK_LABEL)
+    ack = fp(SANS, 13, 300)
+    ends = []
+    for k, t in enumerate(("NASA FINESST · ACCESS PHY240179 (TACC Stampede3)",
+                           "C. Boxe, O. J. Tucker, R. E. Johnson, S. Carberry Mogan")):
+        if s.width(t, ack) > WORD_X - M - 24:
+            raise ValueError(f"slide 9: acknowledgment line too long: {t}")
+        ends.append(y0 + 19 + 17 * k)
+        s.text(M, ends[-1], t, ack)
+    s.rule(WORD_X - 12, y0 - 10, 0.6, ends[-1] - y0 + 14, ds.GRANITE, alpha=0.35)
+    s.text(WORD_X + 4, y0 + 17, "Thank you", fp(SERIF, 30), color=ds.MIDNIGHT)
+    ends.append(y0 + 36)
+    s.text(WORD_X + 4, ends[-1], "jose.perezchavez@bison.howard.edu", fp(SANS, 15))
+    if max(ends) + 8 > FOOT_RULE_Y:
+        raise ValueError("slide 9: closing row runs into the footer")
+    footer(s, cite("MAVEN NGIMS waves: England et al. 2017; Williamson et al. 2019"))
+    return s
+
+
 # ================================================================= audit and checks
 def figure_size(stem: str):
     """MediaBox of a figure PDF in points."""
@@ -727,7 +767,7 @@ def compose(slides, commit: str, out_pdf: Path = DECK_PDF, subject: str | None =
             shutil.copy(FIGS / f"{stem}.pdf", work / f"{stem}.pdf")
             page.append(rf"\AddToShipoutPictureFG*{{\put({x:.3f},{H - y - h:.3f}){{\includegraphics{{{stem}.pdf}}}}}}")
         body.append("\n".join(page) + "\n\\null\\newpage\n")
-    subject = subject or f"NSBP/NSHP 2026, slides 1, 3-8; figures/deck @ {commit}"
+    subject = subject or f"NSBP/NSHP 2026, slides 1, 3-9; figures/deck @ {commit}"
     tex = TEX_HEAD % (TITLE, subject, ds.STYLE_VERSION)
     tex += "".join(body) + r"\end{document}" + "\n"
     (work / "deck.tex").write_text(tex)
@@ -757,7 +797,7 @@ def main():
         print(note)
     commit = subprocess.run(["git", "-C", str(REFACTORED), "rev-parse", "--short", "HEAD"],
                             capture_output=True, text=True, check=True).stdout.strip()
-    slides = [slide1(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8()]
+    slides = [slide1(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8(), slide9()]
     for s in slides:
         for stem, *_ in s.placed:
             audit_figure(stem)
