@@ -48,7 +48,7 @@ def latt(z_km):
 L_EXO, E_EXO = latt(ds.EXOBASE_KM)
 L_150, L_320 = latt(150.0)[0], latt(320.0)[0]
 
-KICK = {3: "02 · WHY KINETIC", 4: "03 · METHOD", 6: "05 · 2D RESULT · FIRST 2D DSMC WAVE STUDY"}
+KICK = {3: "WHY KINETIC", 4: "METHOD", 6: "2D RESULT · FIRST 2D DSMC WAVE STUDY"}
 HEAD = {3: "Near the exobase, molecules rarely collide, so fluid equations lose their footing "
            "and kinetic models don't.",
         4: "DSMC follows representative molecules, not equations: move, collide, sample, repeat.",
@@ -242,7 +242,7 @@ def s6b():
 def slide4_v1():
     """Slide 4 as it was before 4D was adopted."""
     s = Slide(4)
-    header(s, "03 · METHOD",
+    header(s, "METHOD",
            "DSMC follows representative molecules, not equations: move, collide, sample, repeat.")
     s.place("fig04_harrah_loop_deck", M, 148)
     card = Card("ONE DOT = MANY ATOMS",
@@ -265,7 +265,7 @@ def slide4_v1():
 def slide6_v1():
     """Slide 6 as it was before 6A was adopted."""
     s = Slide(6)
-    header(s, "05 · 2D RESULT · FIRST 2D DSMC WAVE STUDY",
+    header(s, "2D RESULT · FIRST 2D DSMC WAVE STUDY",
            "In 2D, wave energy escapes sideways, lowering heating below the 1D prediction.")
     s.place("fig06a_s6_wedge_deck", EVID_X, EVID_Y)
     card_h = (EVID_H - 8) / 2

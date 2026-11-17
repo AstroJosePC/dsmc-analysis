@@ -43,7 +43,8 @@ def pol(r, a):
     return CX + r * np.sin(a), CY + r * np.cos(a)
 
 
-def main_view(ax):
+def main_view(ax, notes=True):
+    """notes=False leaves out the two caption lines under the sector (slide 7 alternatives)."""
     n_azi, n_rad = G["n_azi"], G["n_radial"]
     a = np.linspace(-HALF, HALF, 200)
     # cell grid: every azimuthal cell, every 4th radial cell
@@ -99,6 +100,8 @@ def main_view(ax):
     for q in (hit, hit2):
         ax.plot(*q, "o", ms=5.5, mfc=ds.CULTURED, mec=ds.MIDNIGHT, mew=1.1, zorder=6)
 
+    if not notes:
+        return
     xb, yb = pol(R_IN, 0)
     ax.text(xb, yb - 0.30, rf"1 $\lambda_h$ = {G['sector_width_km']:.0f} km  ·  {G['n_azi']} cells × "
             f"{G['azi_cell_km']:.0f} km", ha="center", va="top", fontsize=13)

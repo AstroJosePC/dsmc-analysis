@@ -86,7 +86,7 @@ TRACK_KICKER, TRACK_LABEL = 0.15, 0.16     # letter-spacing in em ("+120" and wi
 # Figures drawn at a deckstyle SIZES key; review-only alternatives have a layout slot in deck/slots.py.
 SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
             "fig06a_s6_halfwedge": "evidence_tall", "fig06b_latt_fit_col": "column",
-            "fig06c_lambdah_fit_col": "column",
+            "fig06c_lambdah_fit_col": "column", "fig07c_sector_3d": "evidence_tall",
             "fig03_regime_schematic": "evidence", "fig03a_regime_windows": "evidence",
             "fig03b_kn_profile": "evidence", "fig04_harrah_loop": "full",
             "fig04a_timestep_plate": "evidence", "fig04c_split_step": "evidence",
@@ -325,7 +325,7 @@ def slide1():
 
 def slide3():
     s = Slide(3)
-    header(s, "02 · WHY KINETIC",
+    header(s, "WHY KINETIC",
            "Near the exobase, molecules rarely collide, so fluid equations lose their footing "
            "and kinetic models don't.")
     s.place("fig03_regime_schematic_deck", EVID_X, EVID_Y)
@@ -354,7 +354,7 @@ def number_badge(s: Slide, x, y, n):
 def slide4():
     """Adopted 4D: scale hierarchy and one time step (FIG 4), the three steps spelled out below."""
     s = Slide(4)
-    header(s, "03 · METHOD",
+    header(s, "METHOD",
            "DSMC follows representative molecules, not equations: move, collide, sample, repeat.")
     y_fig = 148.0
     _, fh = s.place("fig04d_scales_and_step_deck", M, y_fig)
@@ -385,7 +385,7 @@ def slide4():
 
 def slide5():
     s = Slide(5)
-    header(s, "04 · 1D RESULT · PUBLISHED",
+    header(s, "1D RESULT · PUBLISHED",
            "Spherical geometry cuts wave-driven heating by 40–56% compared with slab models.")
     s.place("fig05a_amplitude_growth_deck", EVID_X, EVID_Y)
     hero, unit = fp(SERIF, 54), fp(SANS, 18, 300)
@@ -431,7 +431,7 @@ def hero_row(s: Slide, x, y, w, hero, unit, labels, size=36.0):
 def slide6():
     """Adopted 6A: tall coherent wedge (FIG 6a) beside the two fits that give the hero numbers."""
     s = Slide(6)
-    header(s, "05 · 2D RESULT · FIRST 2D DSMC WAVE STUDY",
+    header(s, "2D RESULT · FIRST 2D DSMC WAVE STUDY",
            "In 2D, wave energy escapes sideways, lowering heating below the 1D prediction.")
     f = facts("slide06_facts")
     y0 = 160.0
@@ -478,7 +478,7 @@ def ladder_row(s: Slide, y, color, text, status):
 def slide7():
     s = Slide(7)
     f = facts("slide07_facts")
-    header(s, "06 · SCALING UP · IN PROGRESS",
+    header(s, "SCALING UP · IN PROGRESS",
            "To afford finer cells, we simulate a one-wavelength wheel sector instead of the full ring.")
     s.place("fig07a_wheel_sector_deck", EVID_X, EVID_Y)
 
@@ -506,7 +506,7 @@ def slide7():
     y = EVID_Y + 126
     for color, text, status in ((ds.GREEN, "0C null test, no wave", "DONE"),
                                 (ds.GREEN, "Cone-reflection fix", "DONE"),
-                                (ds.TANGELO, "1B noise floor",
+                                (ds.GREEN if st["finished"] == st["planned"] else ds.TANGELO, "1B noise floor",
                                  "DONE" if st["finished"] == st["planned"]
                                  else f"RUNNING {st['finished']}/{st['planned']}"),
                                 (ds.SLATE, "2 truncation twins", "NEXT")):
@@ -532,7 +532,7 @@ def slide7():
 def slide8():
     s = Slide(8)
     f = facts("slide08_facts")
-    header(s, "07 · BUILDING THE NEXT 2D RUNS",
+    header(s, "BUILDING THE NEXT 2D RUNS",
            "A fluid model now supplies the waves from below, and baseline runs fix the domain top.")
     y_fig = 148.0                                   # as on slide 4: room for the callout row
     _, h8a = s.place("fig08a_coupling_baseline_deck", M, y_fig)
@@ -561,7 +561,7 @@ def slide8():
         s.rule(x, y0 - 13, 3, 33, ds.MIDNIGHT)
         s.text(x + 11, y0, a, lead, color=ds.MIDNIGHT)
         s.paragraph(x + 11, y0 + 17, b, sub, col_w - 34, 15, max_lines=1)
-    footer(s, cite("MAGNUS-P fluid model (validated vs Srivastava et al. 2022) · Plates 1 and 3, Nov 2026"))
+    footer(s, cite("MAGNUS-P fluid model (validated vs Srivastava et al. 2022)"))
     return s
 
 

@@ -16,6 +16,8 @@ SLOTS = {
     "fig03c_collision_clock": (12.22, 3.00),
     # slide 4B: full-width figure over a row of three callouts
     "fig04b_powers_of_ten": (12.22, 3.00),
+    # slide 7A: full-width zoom strip (full ring -> wheel sector -> polar band) over three callouts
+    "fig07b_zoom_strip": (12.22, 3.10),
     # slide 6B: full-width wedge band over three plots with hero numbers
     "fig06a_s6_wedge_band": (12.22, 2.30),
     "fig06b_latt_fit_row": (3.87, 1.80),
