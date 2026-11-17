@@ -1,4 +1,8 @@
-"""Slide 7 alternatives (7A, 7B): why and how the wheel sector truncates the grid.
+"""Slide 7 alternatives (7A, 7B, 7B-1, 7B-2): why and how the wheel sector truncates the grid.
+
+  fig07e_sector_strip     (deckstyle strip, 7B-2, ADOPTED as FIG 7 of the deck) the full ring at true
+                          scale, the sector in 3D, and the full ring's particle budget as 170 sector tiles
+  fig07d_sector_ring      (deckstyle evidence_tall, 7B-1) the sector in 3D with the true-scale ring
 
   fig07b_zoom_strip       (slot 12.22 x 3.10, 7A) full ring at true scale, with the one-wavelength
                           slice dark -> the wheel sector (FIG 7a's drawing, periodic seams) -> the polar
@@ -16,7 +20,7 @@ reflection in the cone's tangent plane), which keeps the radial speed v_r. The o
 (reflection off a plane of constant z); at latitude +-beta that changes v_r by -2 v_z sin(beta) on the
 upper wall and the same sign on the lower one, so every wall hit removed outward speed.
 
-    cd refactored && conda run -n dsmc python deck/fig07_alternatives.py [a] [b]
+    cd refactored && conda run -n dsmc python deck/fig07_alternatives.py [a] [b] [b1] [b2]
 """
 import json
 import sys
@@ -388,9 +392,10 @@ def tiles(ax, x0, y0, tile, gap, n, cols):
 
 
 def fig_b2():
-    """7B-2: full-width strip; the ring (true scale), the sector, and the particle budget as tiles."""
+    """7B-2 (adopted FIG 7): full-width strip; the ring (true scale), the sector, and the particle budget
+    as tiles. Placed at deckstyle "strip"."""
     stem = "fig07e_sector_strip"
-    w, h = SLOTS[stem]
+    w, h = ds.SIZES["strip"]
     fig, ax = canvas(w, h)
     # 1 the full ring
     rx, ry, rm = 1.05, 1.80, 0.80

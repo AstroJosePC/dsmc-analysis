@@ -87,6 +87,7 @@ TRACK_KICKER, TRACK_LABEL = 0.15, 0.16     # letter-spacing in em ("+120" and wi
 SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
             "fig06a_s6_halfwedge": "evidence_tall", "fig06b_latt_fit_col": "column",
             "fig06c_lambdah_fit_col": "column", "fig07c_sector_3d": "evidence_tall", "fig07d_sector_ring": "evidence_tall",
+            "fig07e_sector_strip": "strip",
             "fig03_regime_schematic": "evidence", "fig03a_regime_windows": "evidence",
             "fig03b_kn_profile": "evidence", "fig04_harrah_loop": "full",
             "fig04a_timestep_plate": "evidence", "fig04c_split_step": "evidence",
@@ -475,57 +476,72 @@ def ladder_row(s: Slide, y, color, text, status):
     s.tracked(RIGHT, y, status, fp(SANS, 10.5), TRACK_LABEL, ha="right")
 
 
+CITE7 = ("Full ring: Pérez Chávez et al., to be submitted, JGR Planets · wheel-sector runs: in progress",)
+
+
+def hero_with_unit(s: Slide, x, y, hero, units, size=40.0, unit_size=17.0):
+    """Playfair hero number with one or two light unit lines beside it (bottom line on the baseline)."""
+    hw = s.width(hero, fp(SERIF, size))
+    s.text(x, y, hero, fp(SERIF, size), color=ds.MIDNIGHT)
+    for k, u in enumerate(units):
+        s.text(x + hw + 10, y - (len(units) - 1 - k) * (unit_size + 2), u, fp(SANS, unit_size, 300))
+    return hw
+
+
+def metric(s: Slide, x, y0, label, hero, units, lines, width, size=40.0):
+    """Tracked label, hero number with units, two light lines; returns the last baseline."""
+    s.tracked(x, y0, label, fp(SANS, 11), TRACK_LABEL)
+    hw = hero_with_unit(s, x, y0 + 40, hero, units, size=size)
+    if hw + 10 + max(s.width(u, fp(SANS, 17, 300)) for u in units) > width:
+        raise ValueError(f"slide {s.number}: metric '{label}' units run past the column")
+    y = y0 + 40
+    for t in lines:
+        if s.width(t, fp(SANS, 14, 300)) > width:
+            raise ValueError(f"slide {s.number}: metric line too long: {t}")
+        y += 18.5 + (4 if y == y0 + 40 else 0)
+        s.text(x, y, t, fp(SANS, 14, 300))
+    return y
+
+
 def slide7():
+    """Adopted 7B-2: full ring (true scale), wheel sector and the particle budget as 170 tiles (FIG 7)
+    over three metrics. Numbers from deck/data/slide07_facts.json (deck/cache_slides78.py)."""
     s = Slide(7)
     f = facts("slide07_facts")
+    g, runs, s6 = f["geometry"], f["runs_1b"], f["s6"]
     header(s, "SCALING UP · IN PROGRESS",
            "To afford finer cells, we simulate a one-wavelength wheel sector instead of the full ring.")
-    s.place("fig07a_wheel_sector_deck", EVID_X, EVID_Y)
+    y_fig = 148.0
+    _, fh = s.place("fig07e_sector_strip_deck", M, y_fig)
+    gap = 28.0
+    col_w = (RIGHT - M - 2 * gap) / 3
+    y0 = y_fig + fh + 24
+    lam = g["sector_width_km"]
 
-    # particles per run: full ring (S6, Table S1) vs wheel sector (Stage 1B, measured)
-    s.tracked(WORD_X, EVID_Y + 10, "PARTICLES PER RUN", fp(SANS, 11), TRACK_LABEL)
-    desc = fp(SANS, 13, 300)
-    rows = ((f["s6"]["particles"], ds.GRANITE, "full ring (S6)", f"{f['s6']['azi_cell_km']:.0f} km cells"),
-            (f["stage1b"]["particles"], ds.MIDNIGHT, "wheel sector (1B)",
-             f"{f['geometry']['azi_cell_km']:.0f} km cells"))
-    y = EVID_Y + 44
-    for value, color, a, b in rows:
-        w = hero_sci(s, WORD_X, y, value, color=color)
-        s.text(WORD_X + 150, y - 14, a, desc, color=color if color == ds.MIDNIGHT else ds.GRANITE)
-        s.text(WORD_X + 150, y + 1, b, desc)
-        if w > 142:
-            raise ValueError("slide 7: hero number runs into its description")
-        y += 36
-    ratio = f["s6"]["particles"] / f["stage1b"]["particles"]
-    finer = f["s6"]["azi_cell_km"] / f["geometry"]["azi_cell_km"]
-    s.text(WORD_X, y - 12, f"≈ 1/{10 * round(ratio / 10):.0f} of the particles, with cells "
-           f"{finer:.1f}× finer", fp(SANS, 13.5), color=ds.MIDNIGHT)
+    ends = [metric(s, M, y0, "SHARPER WAVES", f"{g['n_azi']}", ["cells per", f"{lam:.0f} km wave"],
+                   [f"{lam / s6['azi_cell_km']:.0f} on the full-ring grid:",
+                    f"{g['azi_cell_km']:.0f} km cells instead of {s6['azi_cell_km']:.0f} km"], col_w),
+            metric(s, M + col_w + gap, y0, "FAST ENOUGH FOR ENSEMBLES", f"{runs['n']}",
+                   ["runs in", f"{runs['span_h']:.0f} hours"],
+                   [f"{runs['n_wave']} with waves, {runs['n_nowave']} without",
+                    f"{runs['wall_h_min']:.0f}–{runs['wall_h_max']:.0f} h each on {runs['np']} cores "
+                    "of one workstation"], col_w)]
 
-    # status ladder
-    st = f["stage1b"]
-    y = EVID_Y + 126
-    for color, text, status in ((ds.GREEN, "0C null test, no wave", "DONE"),
-                                (ds.GREEN, "Cone-reflection fix", "DONE"),
-                                (ds.GREEN if st["finished"] == st["planned"] else ds.TANGELO, "1B noise floor",
-                                 "DONE" if st["finished"] == st["planned"]
-                                 else f"RUNNING {st['finished']}/{st['planned']}"),
-                                (ds.SLATE, "2 truncation twins", "NEXT")):
-        ladder_row(s, y, color, text, status)
-        y += 19.5
-
-    n = f["null_test"]
-    card = Card("NULL TEST · SECTOR VS 1D, NO WAVE",
-                eq=[[(rf"$\chi^2/\mathrm{{dof}} = {n['chi2_density_12x1d_fix']:.2f}$", fp(SANS, 20), ds.MIDNIGHT),
-                     (f"  density ({n['chi2_density_12x1d_pre']:,.0f} before fix)", fp(SANS, 13.5, 300),
-                      ds.GRANITE)]],
-                lines=[(f"Budget closes: R = {n['budget_R_fix']:.1f} ± {n['budget_R_fix_se']:.1f} "
-                        "per block".replace("-", "−"), 14.5, ds.GRANITE, 300),
-                       (f"Escape {abs(n['escape_rel_pct_fix']):.1f}% below 1D "
-                        f"({abs(n['escape_rel_pct_pre']):.0f}% before)", 14.5, ds.GRANITE, 300)])
-    _, ch = card.layout()
-    card.draw(s, WORD_X, EVID_BOTTOM - ch)
-    footer(s, cite("Truncation-baseline campaign · Stage 0C report and cone-reflection fix, Nov 2026"
-                   " · S6: Table S1"))
+    x = M + 2 * (col_w + gap)
+    s.tracked(x, y0, "WHAT IT OPENS UP", fp(SANS, 11), TRACK_LABEL)
+    y = y0 + 28
+    for t in ("Waves from the fluid model below", "Multi-species atmospheres", "Parameter sweeps"):
+        if s.width(t, fp(SANS, 15)) > col_w - 18:
+            raise ValueError(f"slide 7: '{t}' runs past the column")
+        s.ax.add_patch(Circle((x + 5, y - 5), 3.5, fc=ds.MIDNIGHT, lw=0, zorder=4))
+        s.text(x + 18, y, t, fp(SANS, 15))
+        ends.append(y)
+        y += 22
+    for k in range(2):
+        s.rule(M + (k + 1) * (col_w + gap) - gap / 2, y0 - 10, 0.6, 96, ds.GRANITE, alpha=0.35)
+    if max(ends) + 8 > FOOT_RULE_Y:
+        raise ValueError("slide 7: metrics run into the footer")
+    footer(s, cite(*CITE7))
     return s
 
 

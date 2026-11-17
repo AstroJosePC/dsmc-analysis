@@ -2,7 +2,8 @@
 
     cd refactored && conda run -n dsmc python slides/build_slide7_alternatives.py
 
-Uses the chrome, audits, collision check and composition of build_deck.py unchanged. Figures come
+Uses the chrome, audits, collision check and composition of build_deck.py unchanged. The 'current'
+page is slide7_v1(), the slide 7 of the deck before 7B-2 was adopted. Figures come
 from deck/fig07_alternatives.py; every number is read from deck/data/slide07_facts.json (rerun
 deck/cache_slides78.py first when a source changes). The alternatives name each validation step in
 plain words instead of the campaign's stage codes. A small Slate tag at the top right names the
@@ -18,8 +19,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_deck as bd  # noqa: E402
-from build_deck import (EVID_X, FOOT_RULE_Y, M, RIGHT, SANS, SERIF, TRACK_LABEL, WORD_W, WORD_X,  # noqa: E402
-                        Card, Slide, cite, ds, fp, footer, header)
+from build_deck import (EVID_BOTTOM, EVID_X, EVID_Y, FOOT_RULE_Y, M, RIGHT, SANS, TRACK_LABEL,  # noqa: E402
+                        WORD_W, WORD_X, Card, Slide, cite, ds, facts, footer, fp, header, hero_sci, ladder_row)
 from matplotlib.patches import Circle  # noqa: E402
 
 REVIEW_PDF = bd.REFACTORED / "slides" / "slide7_alternatives_review.pdf"
@@ -67,13 +68,7 @@ def tag(s: Slide, text: str):
     s.tracked(RIGHT, 46, text, fp(SANS, 10, "semibold"), 0.14, color=ds.SLATE, ha="right")
 
 
-def hero_with_unit(s: Slide, x, y, hero, units, size=40.0, unit_size=17.0):
-    """Playfair hero number with one or two light unit lines beside it (as on slide 5)."""
-    hw = s.width(hero, fp(SERIF, size))
-    s.text(x, y, hero, fp(SERIF, size), color=ds.MIDNIGHT)
-    for k, u in enumerate(units):
-        s.text(x + hw + 10, y - (len(units) - 1 - k) * (unit_size + 2), u, fp(SANS, unit_size, 300))
-    return hw
+hero_with_unit = bd.hero_with_unit
 
 
 # ================================================================= 7A: zoom strip over three callouts
@@ -151,8 +146,63 @@ def slide7b():
     return s
 
 
+def slide7_v1():
+    """Slide 7 as built before 7B-2 was adopted (FIG 7a, ladder, null-test card)."""
+    s = Slide(7)
+    f = facts("slide07_facts")
+    header(s, "SCALING UP · IN PROGRESS",
+           "To afford finer cells, we simulate a one-wavelength wheel sector instead of the full ring.")
+    s.place("fig07a_wheel_sector_deck", EVID_X, EVID_Y)
+
+    # particles per run: full ring (S6, Table S1) vs wheel sector (Stage 1B, measured)
+    s.tracked(WORD_X, EVID_Y + 10, "PARTICLES PER RUN", fp(SANS, 11), TRACK_LABEL)
+    desc = fp(SANS, 13, 300)
+    rows = ((f["s6"]["particles"], ds.GRANITE, "full ring (S6)", f"{f['s6']['azi_cell_km']:.0f} km cells"),
+            (f["stage1b"]["particles"], ds.MIDNIGHT, "wheel sector (1B)",
+             f"{f['geometry']['azi_cell_km']:.0f} km cells"))
+    y = EVID_Y + 44
+    for value, color, a, b in rows:
+        w = hero_sci(s, WORD_X, y, value, color=color)
+        s.text(WORD_X + 150, y - 14, a, desc, color=color if color == ds.MIDNIGHT else ds.GRANITE)
+        s.text(WORD_X + 150, y + 1, b, desc)
+        if w > 142:
+            raise ValueError("slide 7: hero number runs into its description")
+        y += 36
+    ratio = f["s6"]["particles"] / f["stage1b"]["particles"]
+    finer = f["s6"]["azi_cell_km"] / f["geometry"]["azi_cell_km"]
+    s.text(WORD_X, y - 12, f"≈ 1/{10 * round(ratio / 10):.0f} of the particles, with cells "
+           f"{finer:.1f}× finer", fp(SANS, 13.5), color=ds.MIDNIGHT)
+
+    # status ladder
+    st = f["stage1b"]
+    y = EVID_Y + 126
+    for color, text, status in ((ds.GREEN, "0C null test, no wave", "DONE"),
+                                (ds.GREEN, "Cone-reflection fix", "DONE"),
+                                (ds.GREEN if st["finished"] == st["planned"] else ds.TANGELO, "1B noise floor",
+                                 "DONE" if st["finished"] == st["planned"]
+                                 else f"RUNNING {st['finished']}/{st['planned']}"),
+                                (ds.SLATE, "2 truncation twins", "NEXT")):
+        ladder_row(s, y, color, text, status)
+        y += 19.5
+
+    n = f["null_test"]
+    card = Card("NULL TEST · SECTOR VS 1D, NO WAVE",
+                eq=[[(rf"$\chi^2/\mathrm{{dof}} = {n['chi2_density_12x1d_fix']:.2f}$", fp(SANS, 20), ds.MIDNIGHT),
+                     (f"  density ({n['chi2_density_12x1d_pre']:,.0f} before fix)", fp(SANS, 13.5, 300),
+                      ds.GRANITE)]],
+                lines=[(f"Budget closes: R = {n['budget_R_fix']:.1f} ± {n['budget_R_fix_se']:.1f} "
+                        "per block".replace("-", "−"), 14.5, ds.GRANITE, 300),
+                       (f"Escape {abs(n['escape_rel_pct_fix']):.1f}% below 1D "
+                        f"({abs(n['escape_rel_pct_pre']):.0f}% before)", 14.5, ds.GRANITE, 300)])
+    _, ch = card.layout()
+    card.draw(s, WORD_X, EVID_BOTTOM - ch)
+    footer(s, cite("Truncation-baseline campaign · Stage 0C report and cone-reflection fix, Nov 2026"
+                   " · S6: Table S1"))
+    return s
+
+
 def current():
-    s = bd.slide7()
+    s = slide7_v1()
     tag(s, "REVIEW · CURRENT")
     return s
 

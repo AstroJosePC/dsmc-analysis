@@ -9,6 +9,7 @@ what the 1/170 particle saving buys:
         progress line
   7B-2  full-width strip (fig07e_sector_strip: ring, sector, the full ring as 170 sector tiles) over
         three metrics: cells per wavelength, runs per day, what it opens up
+        (adopted: it is build_deck.slide7(), shown here with its review tag)
 
 Every number is read from deck/data/slide07_facts.json (deck/cache_slides78.py), including the
 finished-run wall times. "Fluid coupling adds no measurable cost" is the measured result of the coupled
@@ -26,8 +27,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_deck as bd  # noqa: E402
 import build_slide7_alternatives as s7  # noqa: E402
-from build_deck import (EVID_X, FOOT_RULE_Y, M, RIGHT, SANS, SERIF, TRACK_LABEL, WORD_W, WORD_X,  # noqa: E402
-                        Slide, cite, ds, fp, footer, header, number_badge)
+from build_deck import (EVID_X, SANS, TRACK_LABEL, WORD_W, WORD_X, Slide, cite, ds, fp, footer,  # noqa: E402
+                        header, number_badge)
 from matplotlib.patches import Circle  # noqa: E402
 
 REVIEW_PDF = bd.REFACTORED / "slides" / "slide7b_alternatives_review.pdf"
@@ -38,7 +39,7 @@ F = s7.F
 G = F["geometry"]
 RUNS = F["runs_1b"]
 KICK = "SCALING UP · IN PROGRESS"
-CITE = cite("Full ring: Pérez Chávez et al., to be submitted, JGR Planets · wheel-sector runs: in progress")
+CITE = cite(*bd.CITE7)
 ALL_DONE = RUNS["n"] == F["stage1b"]["planned"]
 
 
@@ -94,48 +95,10 @@ def slide7b1():
     return s
 
 
-# ================================================================= 7B-2: see the 170x, then three metrics
-def metric(s: Slide, x, y0, label, hero, units, lines, size=40.0):
-    s.tracked(x, y0, label, fp(SANS, 11), TRACK_LABEL)
-    s7.hero_with_unit(s, x, y0 + 40, hero, units, size=size)
-    for k, t in enumerate(lines):
-        s.text(x, y0 + 40 + 18.5 * (k + 1) + 4, t, fp(SANS, 14, 300))
-
-
+# ================================================================= 7B-2: adopted as slide 7
 def slide7b2():
-    s = Slide(7)
-    header(s, KICK, s7.HEAD)
+    s = bd.slide7()
     s7.tag(s, "REVIEW · 7B-2 · SEE THE 170×")
-    y_fig = 148.0
-    _, fh = s.place("fig07e_sector_strip_deck", M, y_fig)
-    gap = 28.0
-    col_w = (RIGHT - M - 2 * gap) / 3
-    y0 = y_fig + fh + 24
-    lam = G["sector_width_km"]
-    ring_cells = lam / F["s6"]["azi_cell_km"]
-
-    metric(s, M, y0, "SHARPER WAVES", f"{G['n_azi']}", ["cells per", f"{lam:.0f} km wave"],
-           [f"{ring_cells:.0f} on the full-ring grid:",
-            f"{G['azi_cell_km']:.0f} km cells instead of {F['s6']['azi_cell_km']:.0f} km"])
-    metric(s, M + col_w + gap, y0, "FAST ENOUGH FOR ENSEMBLES", f"{RUNS['n']}",
-           ["runs in", f"{RUNS['span_h']:.0f} hours"],
-           [f"{RUNS['n_wave']} with waves, {RUNS['n_nowave']} without",
-            f"{RUNS['wall_h_min']:.0f}–{RUNS['wall_h_max']:.0f} h each on {RUNS['np']} cores of one workstation"])
-
-    x = M + 2 * (col_w + gap)
-    s.tracked(x, y0, "WHAT IT OPENS UP", fp(SANS, 11), TRACK_LABEL)
-    y = y0 + 28
-    for t in ("Waves from the fluid model below", "Multi-species atmospheres", "Parameter sweeps"):
-        s.ax.add_patch(Circle((x + 5, y - 5), 3.5, fc=ds.MIDNIGHT, lw=0, zorder=4))
-        fits(s, t, fp(SANS, 15), col_w - 18, "7B-2")
-        s.text(x + 18, y, t, fp(SANS, 15))
-        y += 22
-    for k in range(2):
-        xk = M + (k + 1) * (col_w + gap) - gap / 2
-        s.rule(xk, y0 - 10, 0.6, 96, ds.GRANITE, alpha=0.35)
-    if y0 + 40 + 2 * 18.5 + 4 + 8 > FOOT_RULE_Y or y - 22 + 8 > FOOT_RULE_Y:
-        raise ValueError("slide 7B-2: metrics run into the footer")
-    footer(s, CITE)
     return s
 
 
