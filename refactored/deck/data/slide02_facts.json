@@ -1,0 +1,70 @@
+{
+  "generated": "2026-11-17",
+  "orbit": 2521,
+  "orbit_date": "2016-01-16",
+  "orbit_lst_h": 3.0,
+  "orbit_sza_deg": 104,
+  "orbit_z_exo_km": 151.6,
+  "orbit_peak_pct": {
+    "O": 21,
+    "Ar": 66,
+    "CO2": 87
+  },
+  "orbit_peak_alt_km": 160.8,
+  "threshold_pct": 40,
+  "williamson_orbits": 4259,
+  "williamson_events": 252,
+  "williamson_window": "Feb 2015 - Nov 2017",
+  "replication_passes": 4282,
+  "sza_bins_deg": [
+    22.5,
+    37.5,
+    52.5,
+    67.5,
+    82.5,
+    97.5,
+    112.5,
+    127.5,
+    142.5,
+    157.5
+  ],
+  "sza_bin_passes": [
+    144,
+    367,
+    1061,
+    679,
+    630,
+    588,
+    411,
+    164,
+    96,
+    117
+  ],
+  "median_meanabsA_pct_day_vs_night": {
+    "O": {
+      "day_lt75": 3.4,
+      "night_ge105": 6.0
+    },
+    "Ar": {
+      "day_lt75": 10.1,
+      "night_ge105": 15.7
+    },
+    "CO2": {
+      "day_lt75": 7.7,
+      "night_ge105": 13.3
+    }
+  },
+  "background": "5th-order polynomial in log10 density over each species' valid range (Williamson et al. 2019; wrep.detrend)",
+  "sources": {
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/outputs/tables/orbits.parquet": "115aeded591e244821c4bdf8046e65b3558b5f0abbab9b762be5a9c701f2babd",
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/outputs/tables/profiles.parquet": "6e473743f635ff74438fd840a294d2d5c817aa3895a30309c9921389b927a099",
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/outputs/tables/climatology_orbits.parquet": "27c64854d1ccd39a963479735da21578863b6dfd549855d24ce2affe4193db9b",
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/report/validation_report.md": "9c0cbc650ba645c30763cd209f35971361a50b5ff4005869403ef52e30450674",
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/config.toml": "ebc29b1fccde4ca998ac8712ba86935e2e34e6b43d5db336141757ae2bc593ae"
+  },
+  "papers": {
+    "williamson2019": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/MarsAtmos/docs/Literature/Markdown Parsed/Williamson et al. 2019 - Large amplitude perturbations in the martian exosphere seen in MAVEN NGIMS data/Williamson et al. 2019 - Large amplitude perturbations in the martian exosphere seen in MAVEN NGIMS data.md",
+    "england2017": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/MarsAtmos/docs/Literature/Markdown Parsed/England et al. 2017 - MAVEN NGIMS observations of atmospheric gravity waves in the Martian thermosphere/England et al. 2017 - MAVEN NGIMS observations of atmospheric gravity waves in the Martian thermosphere.md",
+    "yigit2021": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/MarsAtmos/docs/Literature/Markdown Parsed/Yiğit et al. 2021 - Dust storm‐enhanced gravity wave activity in the martian thermosphere observed by MAVEN and implication for atmospheric escape/Yiğit et al. 2021 - Dust storm‐enhanced gravity wave activity in the martian thermosphere observed by MAVEN and implication for atmospheric escape.md"
+  }
+}

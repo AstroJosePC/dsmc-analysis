@@ -1,10 +1,9 @@
-"""Assemble the NSBP/NSHP 2026 deck, slides 1 and 3-9 plus backups B1-B6, as one 13.333 x 7.5 in PDF.
+"""Assemble the NSBP/NSHP 2026 deck, slides 1-9 plus backups B1-B6, as one 13.333 x 7.5 in PDF.
 
     cd refactored && conda run -n dsmc python slides/build_deck.py
 
-Slide 2 waits for the reduced NGIMS data. Page numbers and progress dots already count the full
-nine-slide talk, so these pages drop into the final deck unchanged. Backup slides B1-B6 (Q&A) follow
-slide 9: their counter reads B1-B6 and all nine talk dots show as done.
+Backup slides B1-B6 (Q&A) follow slide 9: their counter reads B1-B6 and all nine talk dots show
+as done.
 
 Pipeline
   1. Audit. style/deckstyle.py is the one canonical style module: if docs/deckstyle.py or the
@@ -21,8 +20,8 @@ Pipeline
      vector, no scaling, embedded fonts untouched.
   5. Verification. Page count and size, embedded-font whitelist (no substitutes), PNG previews.
 
-Numbers on slides 7, 8 and B1-B6 are read from deck/data/*.json, written and checked against their
-sources by deck/cache_slides78.py and deck/cache_backups.py (rerun it, then the figure scripts, before rebuilding when a source changes,
+Numbers on slides 2, 7, 8 and B1-B6 are read from deck/data/*.json, written and checked against their
+sources by deck/cache_slide02.py, deck/cache_slides78.py and deck/cache_backups.py (rerun it, then the figure scripts, before rebuilding when a source changes,
 e.g. when the last Stage 1B replicates finish).
 
 Outputs (refactored/slides/build/): NSBP2026_deck_full.pdf, preview/slide-N.png (page order).
@@ -86,6 +85,7 @@ TRACK_KICKER, TRACK_LABEL = 0.15, 0.16     # letter-spacing in em ("+120" and wi
 
 # Figures drawn at a deckstyle SIZES key; review-only alternatives have a layout slot in deck/slots.py.
 SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
+            "fig02a_ngims_orbit2521": "evidence", "fig02b_ngims_sza": "inset",
             "fig06a_s6_halfwedge": "evidence_tall", "fig06b_latt_fit_col": "column",
             "fig06c_lambdah_fit_col": "column", "fig07c_sector_3d": "evidence_tall", "fig07d_sector_ring": "evidence_tall",
             "fig07e_sector_strip": "strip",
@@ -325,6 +325,35 @@ def slide1():
     s.tracked(x, 364, "HOWARD UNIVERSITY", fp(SANS, 9.5), 0.2, color=ds.CULTURED, alpha=0.75)
     fw, fh = figure_size("fig01_title_wedge_deck")
     s.place("fig01_title_wedge_deck", W - fw - 16, H - fh - 32)
+    return s
+
+
+def slide2():
+    """What MAVEN sees: one NGIMS pass (FIG 2a) with the all-pass SZA climatology (FIG 2b) inset in the
+    lower right of the evidence field, three callouts and the perturbation measure card."""
+    s = Slide(2)
+    f = facts("slide02_facts")
+    header(s, "WHAT MAVEN SEES",
+           "MAVEN sees large, species-dependent waves right where Mars' atmosphere stops behaving "
+           "like a fluid.")
+    s.place("fig02a_ngims_orbit2521_deck", EVID_X, EVID_Y)
+    iw, ih = (v * 72 for v in ds.SIZES["inset"])
+    s.place("fig02b_ngims_sza_deck", EVID_X + EVID_W - iw, EVID_BOTTOM - ih)   # x axes level with 2a
+
+    y = EVID_Y + 31
+    for hero, labels in ((f"> {f['threshold_pct']}%", ["PEAK DENSITY", "PERTURBATIONS"]),
+                         ("CO$_2$, Ar > O", ["HEAVIER SPECIES,", "LARGER AMPLITUDES"]),
+                         (r"$\uparrow$ with SZA", ["LARGER AT HIGH", "SOLAR ZENITH ANGLE"])):
+        hero_row(s, WORD_X, y, WORD_W, hero, None, labels)
+        y += 54
+    y_src = y - 54 + 30
+    s.text(WORD_X, y_src, f"NGIMS · {f['williamson_orbits']:,} orbits · 2015–2017", fp(SANS, 14, 300))
+    card = Card('WHAT "PERTURBATION" MEANS',
+                eq=[r"$\delta\rho/\bar\rho = (\rho - \bar\rho_{\mathrm{fit}})\,/\,\bar\rho_{\mathrm{fit}}$"],
+                lines=[(r"$\bar\rho_{\mathrm{fit}}$ is a smooth fit to each pass, so", 15, ds.GRANITE, 300),
+                       ("the wave depends on that choice.", 15, ds.GRANITE, 300)])
+    card_bottom(s, card, y_src)
+    footer(s, cite("England et al. 2017; Williamson et al. 2019; Yiğit et al. 2021"))
     return s
 
 
@@ -963,7 +992,7 @@ def compose(slides, commit: str, out_pdf: Path = DECK_PDF, subject: str | None =
             shutil.copy(FIGS / f"{stem}.pdf", work / f"{stem}.pdf")
             page.append(rf"\AddToShipoutPictureFG*{{\put({x:.3f},{H - y - h:.3f}){{\includegraphics{{{stem}.pdf}}}}}}")
         body.append("\n".join(page) + "\n\\null\\newpage\n")
-    subject = subject or f"NSBP/NSHP 2026, slides 1, 3-9 and backups B1-B6; figures/deck @ {commit}"
+    subject = subject or f"NSBP/NSHP 2026, slides 1-9 and backups B1-B6; figures/deck @ {commit}"
     tex = TEX_HEAD % (TITLE, subject, ds.STYLE_VERSION)
     tex += "".join(body) + r"\end{document}" + "\n"
     (work / "deck.tex").write_text(tex)
@@ -993,7 +1022,7 @@ def main():
         print(note)
     commit = subprocess.run(["git", "-C", str(REFACTORED), "rev-parse", "--short", "HEAD"],
                             capture_output=True, text=True, check=True).stdout.strip()
-    slides = [slide1(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8(), slide9(),
+    slides = [slide1(), slide2(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8(), slide9(),
               backup1(), backup2(), backup3(), backup4(), backup5(), backup6()]
     for s in slides:
         for stem, *_ in s.placed:
