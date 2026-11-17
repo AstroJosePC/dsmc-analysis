@@ -581,7 +581,8 @@ def slide8():
         s.rule(x, y0 - 13, 3, 33, ds.MIDNIGHT)
         s.text(x + 11, y0, a, lead, color=ds.MIDNIGHT)
         s.paragraph(x + 11, y0 + 17, b, sub, col_w - 34, 15, max_lines=1)
-    footer(s, cite("MAGNUS-P fluid model (validated vs Srivastava et al. 2022)"))
+    footer(s, cite("MAGNUS-P (Srivastava et al. 2022) · viscous theory after Pitteway & Hines 1963; "
+                   "Vadas & Fritts 2005 · no viscosity: Hines 1960"))
     return s
 
 

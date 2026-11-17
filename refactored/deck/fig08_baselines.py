@@ -7,7 +7,8 @@ FIG 8a: MAGNUS-P run S01B8 (pure O at 270 K; wave period 60 min, horizontal wave
   viscous theory (2|c_w_linear|, computed by MAGNUS-P's isoo_linear.solve_cell and stored with the
   profile). The labelled misfits at the three DSMC input altitudes are |c_w - c_w_lin|/|c_w_lin|
   (amplitude and phase) at the 100.25 / 120.25 / 140.25 km cells. The dashed reference is undamped
-  growth 0.1 exp(z/2H), H = R_O T/g = 37.7 km. The sponge starts at 180 km (it continues to 280 km,
+  growth 0.1 exp(z/2H), H = R_O T/g = 37.7 km (Hines 1960); the viscous damping physics follows
+  Pitteway & Hines 1963 and Vadas & Fritts 2005 (cited in the slide 8 footer). The sponge starts at 180 km (it continues to 280 km,
   above this axis). The exobase is far above 200 km, so no exobase line here.
 FIG 8b: DSMC campaign h2_ubc_rtop, H2 escape rate vs actual domain-top altitude, 250 km radial cells,
   mean over 100-300 ks, for three upper-boundary treatments. Pure-H2 columns are lines with filled
@@ -60,6 +61,9 @@ def fig8a():
     ds.label(ax, "linear viscous\ntheory", (0.195, 22), color=ds.ROLE["theory"], ha="left", va="center",
              linespacing=1.0)
     ds.label(ax, "no viscosity", (0.67, 130), color=ds.ROLE["prior_work"], ha="left", va="center")
+    ax.annotate(r"$\propto e^{z/2H}$", (0.67, 130), xytext=(0, -10), textcoords="offset points",
+                color=ds.ROLE["prior_work"], fontsize=plt.rcParams["legend.fontsize"] + 5,
+                ha="left", va="top")      # not ds.label: it upper-cases the math
     zp = float(d["peak_z_km"])
     ds.takeaway(ax, f"Viscous damping wins\nabove {zp:.0f} km", xy=(np.interp(zp, z, wm) * 1.06, zp),
                 xytext=(0.46, 62), ha="left", va="center", linespacing=1.1)
