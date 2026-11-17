@@ -13,7 +13,7 @@ import numpy as np
 
 from _deck import MONO, OUT, ds, save
 
-SIZE_IN = (7.6, 6.4)
+SIZE_IN = ds.SIZES["title"]
 Z0, Z1 = 100.0, 700.0
 SEED = 20261116
 

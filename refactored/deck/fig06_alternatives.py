@@ -34,7 +34,7 @@ import numpy as np
 from _deck import R_MARS_KM, ds, save
 from dsmclib import attenuation as att
 from dsmclib.paths import output_dir
-from slots import SLOTS
+from slots import size_in
 
 ANALYSIS = output_dir("s1_s6_azimuthal", "analysis")
 LATT_CACHE = ANALYSIS / "lockin_attenuation_S6_azimean_preforcing.npz"
@@ -47,7 +47,7 @@ SCALE_BAR_KM = 450.0
 
 
 def figure(stem):
-    fig = plt.figure(figsize=SLOTS[stem])
+    fig = plt.figure(figsize=size_in(stem, ds.SIZES))
     return fig
 
 
@@ -142,7 +142,7 @@ def wedge_figure(stem, f, k, *, margin_in, colorbar_at, scale_at, labels, centre
                          rasterized=True, shading="flat")
 
     # frame the view: equal km per inch
-    w_in, h_in = SLOTS[stem]
+    w_in, h_in = size_in(stem, ds.SIZES)
     xs, ys = X.ravel(), Y.ravel()
     left, right, bottom, top = margin_in
     kpi = max((xs.max() - xs.min()) / (w_in - left - right), (ys.max() - ys.min()) / (h_in - bottom - top))
@@ -348,7 +348,29 @@ def latt_profile(stem):
     plt.close(fig)
 
 
+def write_facts():
+    """Slide 6 hero numbers for slides/build_deck.py (deck/data/slide06_facts.json)."""
+    import json
+    from datetime import date
+    from pathlib import Path
+    from _deck import commit
+    t = np.load(TRANSPORT_CACHE)
+    z = t["altitude_km"]
+    i = int(np.argmin(np.abs(z - ds.EXOBASE_KM)))
+    lag = np.load(LAG_CACHE)
+    out = {"created": date.today().isoformat(), "run": "S6",
+           "sources": {"transport_cache": str(TRANSPORT_CACHE), "phase_lag_cache": str(LAG_CACHE),
+                       "dsmc_analyzer_commit": commit()},
+           "L_att_exobase_km": float(t["L_att_km"][i]), "sigma_L_exobase_km": float(t["sigma_L_total_km"][i]),
+           "exobase_cell_km": float(z[i]),
+           "lambda_h_odr_km": float(lag["lambda_h_km"]), "lambda_h_odr_err_km": float(lag["lambda_h_err_km"])}
+    path = Path(__file__).resolve().parent / "data" / "slide06_facts.json"
+    path.write_text(json.dumps(out, indent=1) + "\n")
+    print(f"{path.name}: L_att = {out['L_att_exobase_km']:.1f} +/- {out['sigma_L_exobase_km']:.1f} km")
+
+
 def panels():
+    write_facts()
     for suffix in ("col", "row"):
         latt_fit(f"fig06b_latt_fit_{suffix}")
         lambdah_fit(f"fig06c_lambdah_fit_{suffix}")

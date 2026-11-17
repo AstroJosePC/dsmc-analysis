@@ -83,8 +83,11 @@ CARD_FILL = "#ECECE6"                      # Phase 1: "Cultured, one step darker
 MUTED = 0.80                               # citation footer: Granite at 80%
 TRACK_KICKER, TRACK_LABEL = 0.15, 0.16     # letter-spacing in em ("+120" and wider for 11 pt)
 
-# Figures drawn at a deckstyle SIZES slot; every other placed figure has a layout slot in deck/slots.py.
-SIZE_KEY = {"fig03_regime_schematic": "evidence", "fig03a_regime_windows": "evidence",
+# Figures drawn at a deckstyle SIZES key; review-only alternatives have a layout slot in deck/slots.py.
+SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
+            "fig06a_s6_halfwedge": "evidence_tall", "fig06b_latt_fit_col": "column",
+            "fig06c_lambdah_fit_col": "column",
+            "fig03_regime_schematic": "evidence", "fig03a_regime_windows": "evidence",
             "fig03b_kn_profile": "evidence", "fig04_harrah_loop": "full",
             "fig04a_timestep_plate": "evidence", "fig04c_split_step": "evidence",
             "fig05a_amplitude_growth": "evidence", "fig05b_slab_vs_shell": "inset",
@@ -342,24 +345,38 @@ def slide3():
     return s
 
 
+def number_badge(s: Slide, x, y, n):
+    """Midnight disc with a white numeral, matching the numbered badges inside FIG 4."""
+    s.ax.add_patch(Circle((x, y), 10.5, fc=ds.MIDNIGHT, lw=0, zorder=4))
+    s.text(x, y + 4.6, str(n), fp(SANS, 13, "semibold"), color=ds.CULTURED, ha="center")
+
+
 def slide4():
+    """Adopted 4D: scale hierarchy and one time step (FIG 4), the three steps spelled out below."""
     s = Slide(4)
     header(s, "03 · METHOD",
            "DSMC follows representative molecules, not equations: move, collide, sample, repeat.")
-    s.place("fig04_harrah_loop_deck", M, 148)
-    card = Card("ONE DOT = MANY ATOMS",
-                eq=[r"$W = n\,V_{\mathrm{cell}}/N_{\mathrm{cell}} \approx 10^{24}$"],
-                lines=[("Particle weight. Finer cells need more simulated particles,", 16, ds.GRANITE, 300),
-                       ("which is the cost on slide 7.", 16, ds.GRANITE, 300)])
-    _, ch = card.layout()
-    cw = 452.0
-    y_card = FOOT_RULE_Y - 9 - ch
-    card.draw(s, RIGHT - cw, y_card, w=cw)
-    s.tracked(M, y_card + 20, "DSMC CONSTRAINTS", fp(SANS, 11), TRACK_LABEL)
-    y = y_card + 30
-    for t in ("Δt < mean collision time", "cell ≈ mean free path", "≥ 20 particles per cell"):
-        chip(s, M, y, t)
-        y += 26.0
+    y_fig = 148.0
+    _, fh = s.place("fig04d_scales_and_step_deck", M, y_fig)
+    f = facts("slide04_facts")
+    ratio = int(f["tau_100"] / f["dt"])          # shortest collision time in S6 (100 km) over the step
+    steps = [("Move", f"fly straight in x, y, z for Δt = {f['dt']:.2f} s, {ratio}× shorter than "
+                      "a collision time"),
+             ("Collide", "random pairs in the same cell; momentum and energy conserved"),
+             ("Boundaries", f"wave-driven inflow at {f['z_bot']:.0f} km; escape above {f['z_top']:.0f} km")]
+    gap, lead = 28.0, 20.5
+    col_w = (RIGHT - M - 2 * gap) / 3
+    prop, bold = fp(SANS, 16), fp(SANS, 16, "semibold")
+    y0 = y_fig + fh + 27
+    for k, (verb, rest) in enumerate(steps):
+        x = M + k * (col_w + gap)
+        number_badge(s, x + 10.5, y0 - 6, k + 1)
+        lines = s.wrap(f"{verb}: {rest}", prop, col_w - 36)
+        s.runs(x + 30, y0, [(f"{verb}:", bold, ds.MIDNIGHT), (lines[0][len(verb) + 1:], prop, ds.GRANITE)])
+        for i, line in enumerate(lines[1:], 1):
+            s.text(x + 30, y0 + i * lead, line, prop)
+        if y0 + (len(lines) - 1) * lead > FOOT_RULE_Y - 14:
+            raise ValueError(f"slide 4: step '{verb}' runs into the footer")
     footer(s, cite("Bird 1994; HARRAH: Carberry Mogan et al. 2020–2022"))
     return s
 
@@ -393,31 +410,38 @@ def slide5():
     return s
 
 
+def hero_row(s: Slide, x, y, w, hero, unit, labels, size=36.0):
+    """Hero number with its unit, and a two-line caps label flush right on the same row."""
+    hw = s.width(hero, fp(SERIF, size))
+    s.text(x, y, hero, fp(SERIF, size), color=ds.MIDNIGHT)
+    end = x + hw
+    if unit:
+        s.text(end + 7, y, unit, fp(SANS, 18, 300))
+        end += 7 + s.width(unit, fp(SANS, 18, 300))
+    prop = fp(SANS, 10.5, "semibold")
+    for k, lab in enumerate(labels):
+        lw = sum(advance(c, prop) + 0.12 * 10.5 for c in lab) - 0.12 * 10.5
+        if x + w - lw < end + 12:
+            raise ValueError(f"slide {s.number}: label '{lab}' runs into hero '{hero}'")
+        s.tracked(x + w - lw, y - 15 + 15 * k, lab, prop, 0.12)
+
+
 def slide6():
+    """Adopted 6A: tall coherent wedge (FIG 6a) beside the two fits that give the hero numbers."""
     s = Slide(6)
     header(s, "05 · 2D RESULT · FIRST 2D DSMC WAVE STUDY",
            "In 2D, wave energy escapes sideways, lowering heating below the 1D prediction.")
-    s.place("fig06a_s6_wedge_deck", EVID_X, EVID_Y)
-    card_h = (EVID_H - 8) / 2
-    small = 14.5
-    Card("LATERAL ATTENUATION LENGTH", hero="119 ± 3", unit="km", spark="fig06_spark_latt_deck",
-         eq=[r"$A(s) = A_0\,e^{-s/L_{\mathrm{att}}}$"],
-         lines=[("A: lock-in amplitude  ·  s: distance past patch", small, ds.GRANITE, 300),
-                ("150 / 230 / 320 km:  49, 119, 148 km", small, ds.MIDNIGHT, "normal")]
-         ).draw(s, WORD_X, EVID_Y, h=card_h)
-    Card("HORIZONTAL WAVELENGTH", hero="450 ± 14", unit="km", spark="fig06_spark_lambdah_deck",
-         eq=[r"$\lambda_h = c_h P,\quad c_h = \Delta s/\Delta\tau$"],
-         lines=[("Δτ: crest-arrival delay between columns", small, ds.GRANITE, 300),
-                ("Slope by ODR fit over many column pairs", small, ds.GRANITE, 300)]
-         ).draw(s, WORD_X, EVID_Y + card_h + 8, h=card_h)
-    # resolution strip (rev5 §3.6 / Table 4 numbers), with the Crimson tick
-    y = EVID_BOTTOM + 25
-    s.rule(M, y - 13, 3, 17, ds.CRIMSON)
-    strip = fp(SANS, 15)
-    s.runs(M + 12, y, [
-        ("Grid rule:  ", fp(SANS, 15, "semibold"), ds.GRANITE),
-        (r"≈ 8 cells per $\lambda_h$ (57 km) for amplitude growth  ·  ≤ 45 km to fit $L_{\mathrm{att}}$"
-         r"  ·  $\lambda_h$ still shifts 8% from 13 to 21 cells", strip, ds.GRANITE)])
+    f = facts("slide06_facts")
+    y0 = 160.0
+    s.place("fig06a_s6_halfwedge_deck", EVID_X, y0)
+    y = y0 + 31
+    hero_row(s, WORD_X, y, WORD_W, f"{f['L_att_exobase_km']:.0f} ± {f['sigma_L_exobase_km']:.0f}", "km",
+             ["ATTENUATION LENGTH", "AT THE EXOBASE"])
+    _, ph = s.place("fig06b_latt_fit_col_deck", WORD_X, y + 9)
+    y = y + 9 + ph + 14 + 31
+    # rev5 total uncertainty (ODR + resolution); the cache holds the ODR-only error
+    hero_row(s, WORD_X, y, WORD_W, "450 ± 14", "km", ["HORIZONTAL", "WAVELENGTH"])
+    s.place("fig06c_lambdah_fit_col_deck", WORD_X, y + 9)
     footer(s, cite("Pérez Chávez et al., to be submitted, JGR Planets"))
     return s
 

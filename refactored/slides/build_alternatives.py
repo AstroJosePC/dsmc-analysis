@@ -21,8 +21,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_deck as bd  # noqa: E402
-from build_deck import (EVID_X, EVID_Y, FOOT_RULE_Y, M, MATH, RIGHT, SANS, SERIF, W, WORD_W, WORD_X,  # noqa: E402
-                        Card, Slide, chip, cite, ds, fp, footer, header)
+from build_deck import (EVID_BOTTOM, EVID_H, EVID_X, EVID_Y, FOOT_RULE_Y, M, MATH, RIGHT, SANS,  # noqa: E402
+                        SERIF, TRACK_LABEL, W, WORD_W, WORD_X, Card, Slide, chip, cite, ds, fp, footer,
+                        header)
 
 import numpy as np  # noqa: E402
 from matplotlib.patches import Circle  # noqa: E402
@@ -105,22 +106,6 @@ def w_card():
                 eq=[rf"$W = n\,V_{{\mathrm{{cell}}}}/N_{{\mathrm{{cp}}}} \approx {NUM['W'] / 1e23:.1f}\times10^{{23}}$"],
                 lines=[("O atoms per computational particle (S6).", SMALL, ds.GRANITE, 300),
                        ("Finer cells need more particles: slide 7.", SMALL, ds.GRANITE, 300)])
-
-
-def hero_row(s: Slide, x, y, w, hero, unit, labels, size=36.0):
-    """Hero number with its unit, and a two-line caps label flush right on the same row."""
-    hw = s.width(hero, fp(SERIF, size))
-    s.text(x, y, hero, fp(SERIF, size), color=ds.MIDNIGHT)
-    end = x + hw
-    if unit:
-        s.text(end + 7, y, unit, fp(SANS, 18, 300))
-        end += 7 + s.width(unit, fp(SANS, 18, 300))
-    prop = fp(SANS, 10.5, "semibold")
-    for k, lab in enumerate(labels):
-        lw = sum(bd.advance(c, prop) + 0.12 * 10.5 for c in lab) - 0.12 * 10.5
-        if x + w - lw < end + 12:
-            raise ValueError(f"slide {s.number}: label '{lab}' runs into hero '{hero}'")
-        s.tracked(x + w - lw, y - 15 + 15 * k, lab, prop, 0.12)
 
 
 # ================================================================= slide 3
@@ -227,16 +212,8 @@ def s4c():
 
 # ================================================================= slide 6
 def s6a():
-    s = slide(6, "6A · TALL WEDGE + PLOT COLUMN")
-    y0 = 160.0
-    s.place("fig06a_s6_halfwedge_deck", EVID_X, y0)
-    x, w = WORD_X, WORD_W
-    y = y0 + 31
-    hero_row(s, x, y, w, f"{L_EXO:.0f} ± {E_EXO:.0f}", "km", ["ATTENUATION LENGTH", "AT THE EXOBASE"])
-    _, ph = s.place("fig06b_latt_fit_col_deck", x, y + 9)
-    y = y + 9 + ph + 14 + 31
-    hero_row(s, x, y, w, "450 ± 14", "km", ["HORIZONTAL", "WAVELENGTH"])
-    s.place("fig06c_lambdah_fit_col_deck", x, y + 9)
+    s = bd.slide6()
+    tag(s, "REVIEW · 6A · TALL WEDGE + PLOT COLUMN")
     return s
 
 
@@ -254,14 +231,69 @@ def s6b():
                "fig06d_latt_profile_row_deck")]
     for k, (hero, unit, labels, stem) in enumerate(heroes):
         x = M + k * (bw + gap)
-        hero_row(s, x, y, bw, hero, unit, labels, size=34.0)
+        bd.hero_row(s, x, y, bw, hero, unit, labels, size=34.0)
         s.place(stem, x, y + 7)
     return s
 
 
 # ================================================================= current slides and cover
+# ================================================================= pre-adoption slides 4 and 6
+# Kept here so the review PDF still shows the slides as they were when the alternatives were judged.
+def slide4_v1():
+    """Slide 4 as it was before 4D was adopted."""
+    s = Slide(4)
+    header(s, "03 · METHOD",
+           "DSMC follows representative molecules, not equations: move, collide, sample, repeat.")
+    s.place("fig04_harrah_loop_deck", M, 148)
+    card = Card("ONE DOT = MANY ATOMS",
+                eq=[r"$W = n\,V_{\mathrm{cell}}/N_{\mathrm{cell}} \approx 10^{24}$"],
+                lines=[("Particle weight. Finer cells need more simulated particles,", 16, ds.GRANITE, 300),
+                       ("which is the cost on slide 7.", 16, ds.GRANITE, 300)])
+    _, ch = card.layout()
+    cw = 452.0
+    y_card = FOOT_RULE_Y - 9 - ch
+    card.draw(s, RIGHT - cw, y_card, w=cw)
+    s.tracked(M, y_card + 20, "DSMC CONSTRAINTS", fp(SANS, 11), TRACK_LABEL)
+    y = y_card + 30
+    for t in ("Δt < mean collision time", "cell ≈ mean free path", "≥ 20 particles per cell"):
+        chip(s, M, y, t)
+        y += 26.0
+    footer(s, cite("Bird 1994; HARRAH: Carberry Mogan et al. 2020–2022"))
+    return s
+
+
+def slide6_v1():
+    """Slide 6 as it was before 6A was adopted."""
+    s = Slide(6)
+    header(s, "05 · 2D RESULT · FIRST 2D DSMC WAVE STUDY",
+           "In 2D, wave energy escapes sideways, lowering heating below the 1D prediction.")
+    s.place("fig06a_s6_wedge_deck", EVID_X, EVID_Y)
+    card_h = (EVID_H - 8) / 2
+    small = 14.5
+    Card("LATERAL ATTENUATION LENGTH", hero="119 ± 3", unit="km", spark="fig06_spark_latt_deck",
+         eq=[r"$A(s) = A_0\,e^{-s/L_{\mathrm{att}}}$"],
+         lines=[("A: lock-in amplitude  ·  s: distance past patch", small, ds.GRANITE, 300),
+                ("150 / 230 / 320 km:  49, 119, 148 km", small, ds.MIDNIGHT, "normal")]
+         ).draw(s, WORD_X, EVID_Y, h=card_h)
+    Card("HORIZONTAL WAVELENGTH", hero="450 ± 14", unit="km", spark="fig06_spark_lambdah_deck",
+         eq=[r"$\lambda_h = c_h P,\quad c_h = \Delta s/\Delta\tau$"],
+         lines=[("Δτ: crest-arrival delay between columns", small, ds.GRANITE, 300),
+                ("Slope by ODR fit over many column pairs", small, ds.GRANITE, 300)]
+         ).draw(s, WORD_X, EVID_Y + card_h + 8, h=card_h)
+    # resolution strip (rev5 §3.6 / Table 4 numbers), with the Crimson tick
+    y = EVID_BOTTOM + 25
+    s.rule(M, y - 13, 3, 17, ds.CRIMSON)
+    strip = fp(SANS, 15)
+    s.runs(M + 12, y, [
+        ("Grid rule:  ", fp(SANS, 15, "semibold"), ds.GRANITE),
+        (r"≈ 8 cells per $\lambda_h$ (57 km) for amplitude growth  ·  ≤ 45 km to fit $L_{\mathrm{att}}$"
+         r"  ·  $\lambda_h$ still shifts 8% from 13 to 21 cells", strip, ds.GRANITE)])
+    footer(s, cite("Pérez Chávez et al., to be submitted, JGR Planets"))
+    return s
+
+
 def current(n):
-    s = {3: bd.slide3, 4: bd.slide4, 6: bd.slide6}[n]()
+    s = {3: bd.slide3, 4: slide4_v1, 6: slide6_v1}[n]()
     tag(s, "REVIEW · CURRENT")
     return s
 

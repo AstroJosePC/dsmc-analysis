@@ -20,7 +20,7 @@ from matplotlib import font_manager
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.transforms import blended_transform_factory
 
-STYLE_VERSION = "1.0 (2026-11-16)"  # bump when any token changes; copy to every repo
+STYLE_VERSION = "1.1 (2026-11-17)"  # bump when any token changes; copy to every repo
 
 # ---------------------------------------------------------------- palette
 # Howard University OUC primary palette
@@ -67,6 +67,11 @@ SIZES = {
     "narrow": (4.67, 2.60),     # word-column figure above a measure card
     "inset": (2.50, 2.00),
     "spark": (1.22, 0.47),      # measure-card sparkline: no ticks, no labels
+    # added in 1.1 (slides 1, 4, 6 as adopted)
+    "title": (7.60, 6.40),          # right field of the dark title slide
+    "plate": (12.22, 3.85),         # full-width figure over a row of numbered statements
+    "evidence_tall": (7.22, 4.55),  # evidence field run down to the footer, beside stacked plots
+    "column": (4.67, 1.62),         # word-column plot under a hero number (two per column)
 }
 
 # ---------------------------------------------------------------- colormaps

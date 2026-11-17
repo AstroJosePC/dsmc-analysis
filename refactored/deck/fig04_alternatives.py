@@ -87,8 +87,11 @@ def badge(ax, x, y, n, r=0.13):
 
 
 # ================================================================= 4A: the plate
-def fig_a(num):
-    fig, ax = canvas(size="evidence")
+def draw_plate(ax, num, short_labels=False, badge_r=0.13):
+    """The 4A schematic in its own inch coordinates (7.22 x 4.17 box); 4D embeds it scaled.
+
+    Returns the cell-centre helper and the background particles, so a caller can point at one.
+    """
     rng = np.random.default_rng(404)
     cx, cy, R0, DR, NR = 3.55, -5.42, 6.40, 0.58, 4
     NC, DA = 6, 0.105                                   # columns, angular width (rad): curvature exaggerated
@@ -141,7 +144,7 @@ def fig_a(num):
         arrow(ax, (x, y), (x + dx, y + dy), ds.MIDNIGHT, lw=1.3, ms=9)
         ax.plot(x + dx, y + dy, "o", ms=4.2, mew=0, color=ds.MIDNIGHT, zorder=7)
     bx, by = xy(r_edges[1] + 0.30, a_edges[1] - 0.005)
-    badge(ax, bx - 0.20, by, 1)
+    badge(ax, bx - 0.20, by, 1, badge_r)
 
     # 2 COLLIDE: a random pair in one cell; velocities turn, momentum and energy kept
     i, j = 0, 4
@@ -162,7 +165,7 @@ def fig_a(num):
         ax.plot(*p, "o", ms=5, mew=0, color=ds.MIDNIGHT, zorder=8)
     ax.plot([pa[0], pb[0]], [pa[1], pb[1]], color=ds.MIDNIGHT, lw=0.8, ls=(0, (1, 2)), zorder=7)
     bx, by = xy(r_edges[1] - 0.05, a_edges[j + 1] + 0.03)
-    badge(ax, bx + 0.18, by + 0.02, 2)
+    badge(ax, bx + 0.18, by + 0.02, 2, badge_r)
 
     # 3 BOUNDARIES: wave-modulated flux in at the base, escape out of the top
     for k, a in enumerate(np.linspace(a_edges[0] + 0.03, a_edges[-1] - 0.03, 11)):
@@ -170,7 +173,7 @@ def fig_a(num):
         (x0, x1), (y0, y1) = xy(np.array([R0 - amp - 0.06, R0 - 0.04]), a)
         arrow(ax, (x0, y0), (x1, y1), ds.ROLE["forcing"], lw=1.5, ms=8)
     bx, by = xy(R0 - 0.26, a_edges[-1] + 0.03)
-    badge(ax, bx + 0.10, by, 3)
+    badge(ax, bx + 0.10, by, 3, badge_r)
     # break and the domain top
     r_top = r_edges[-1] + 0.42
     for dd in (-0.04, 0.04):
@@ -183,13 +186,13 @@ def fig_a(num):
     pe = xy(r_top - 0.16, a_edges[2] + 0.04)
     ax.plot(*pe, "o", ms=4.2, mew=0, color=ds.MIDNIGHT, zorder=7)
     arrow(ax, pe, (pe[0] + 0.08, pe[1] + 0.36), ds.MIDNIGHT, lw=1.3, ms=9)
-    badge(ax, pe[0] + 0.36, pe[1] + 0.20, 3)
+    badge(ax, pe[0] + 0.36, pe[1] + 0.20, 3, badge_r)
     xt, yt = xy(r_top, a_edges[-2])
-    ax.text(xt + 0.05, yt + 0.10, f"top boundary, {num['z_top']:.0f} km", ha="left", va="bottom",
-            fontsize=12)
+    top = f"{num['z_top']:.0f} km" if short_labels else f"top boundary, {num['z_top']:.0f} km"
+    ax.text(xt + 0.05, yt + 0.10, top, ha="left", va="bottom", fontsize=12)
     xb_, yb_ = xy(R0, a_edges[0])
-    ax.text(xb_ - 0.10, yb_ + 0.02, f"lower boundary\n{num['z_bot']:.0f} km", ha="right", va="center",
-            fontsize=12, linespacing=1.3)
+    bot = f"{num['z_bot']:.0f} km" if short_labels else f"lower boundary\n{num['z_bot']:.0f} km"
+    ax.text(xb_ - 0.10, yb_ + 0.02, bot, ha="right", va="center", fontsize=12, linespacing=1.3)
 
     # dr, dphi on one cell
     i, j = 2, 4
@@ -207,6 +210,12 @@ def fig_a(num):
     xm, ym = xy(r_edges[i + 1] + 0.25, aa.mean())
     ax.text(xm, ym, r"$\Delta\phi$", ha="center", va="center", fontsize=15, zorder=8,
             bbox=dict(fc=ds.CULTURED, ec="none", pad=1.5))
+    return dict(xy=xy, r_edges=r_edges, a_edges=a_edges, r_top=r_top, pts=pts)
+
+
+def fig_a(num):
+    fig, ax = canvas(size="evidence")
+    draw_plate(ax, num)
     ax.text(0.08, 4.05, "schematic · curvature exaggerated", ha="left", va="center", fontsize=12,
             style="italic")
     save(fig, "fig04a_timestep_plate", num["source"], "schematic; W, dt, grid from S6")
