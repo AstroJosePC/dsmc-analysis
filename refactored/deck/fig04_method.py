@@ -8,6 +8,9 @@ Left to right, three zoom levels joined by zoom lines:
   3. one computational particle = W O atoms with one velocity.
 The slide text under the figure explains steps 1-3; the badges here match it.
 
+Build steps (progressive deck, deck/_deck.Build): 1 the domain, 2 the cells, 3 move, 4 collide,
+5 boundaries, 6 the particle and W; fig04d_scales_and_step_b1 ... _b5 hold steps 1-5.
+
 Numbers are read, not typed: W and dt from the S6 Info/Simulation_Parameters.ascii, grid from the
 run parameters, particles per cell and the shortest collision time from the S6 pre-forcing transport
 cache (see fig04_alternatives.s6_numbers). They are also written to deck/data/slide04_facts.json,
@@ -24,7 +27,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Rectangle, Wedge
 
-from _deck import R_MARS_KM, commit, ds, save
+from _deck import R_MARS_KM, Build, commit, ds
 from fig04_alternatives import TRANSPORT, draw_plate, s6_numbers, sci
 
 STEM = "fig04d_scales_and_step"
@@ -32,6 +35,7 @@ FACTS = Path(__file__).resolve().parent / "data" / "slide04_facts.json"
 
 # Plate crop in its own (4A) inch coordinates, and where it goes in this figure
 PLATE_X, PLATE_Y = (0.60, 6.50), (0.12, 3.98)
+STEP = {"domain": 1, "cells": 2, "move": 3, "collide": 4, "boundaries": 5, "particle": 6}
 
 
 def write_facts(num):
@@ -55,6 +59,7 @@ def main():
     ax.set_xlim(0, w)
     ax.set_ylim(0, h)
     ax.set_aspect("equal")
+    build = Build(fig)
     cap_y, mid_y = 0.40, 2.30
     cap = dict(ha="center", fontsize=12, fontweight="semibold")
     sub = dict(ha="center", va="top", fontsize=13)
@@ -83,6 +88,7 @@ def main():
             f"{num['z_bot']:.0f}–{num['z_top']:.0f} km", **sub)
 
     # 2 the cells, one time step (the 4A plate, scaled into an inset axes)
+    build.at(STEP["cells"])
     pw_n, ph_n = PLATE_X[1] - PLATE_X[0], PLATE_Y[1] - PLATE_Y[0]
     py0, py1 = 0.76, h - 0.04
     s = (py1 - py0) / ph_n
@@ -94,7 +100,8 @@ def main():
     ins.set_xlim(*PLATE_X)
     ins.set_ylim(*PLATE_Y)
     ins.set_aspect("equal")
-    plate = draw_plate(ins, num, short_labels=True, badge_r=0.17)
+    plate = draw_plate(ins, num, short_labels=True, badge_r=0.17, mark=lambda layer: build.at(STEP[layer]))
+    build.at(STEP["cells"])
 
     def to_main(xn, yn):
         return px0 + (xn - PLATE_X[0]) * s, py0 + (yn - PLATE_Y[0]) * s
@@ -110,6 +117,7 @@ def main():
             f"≈ {round(num['ppc_exo'], -3):,.0f} particles", **sub)
 
     # 3 one computational particle, picked from a quiet cell at the right of the plate
+    build.at(STEP["particle"])
     i, j = 2, len(a_edges) - 2
     rc, ac = 0.5 * (r_edges[i] + r_edges[i + 1]), 0.5 * (a_edges[j] + a_edges[j + 1])
     cxy = np.array(xy(rc, ac))
@@ -135,7 +143,7 @@ def main():
     ax.text(lx, cap_y + 0.02, "ONE COMPUTATIONAL PARTICLE", va="bottom", **cap)
     ax.text(lx, cap_y - 0.04, f"= {sci(num['W'])} O atoms, one velocity", **sub)
 
-    save(fig, STEM, num["source"], TRANSPORT, "true-scale ring; schematic cells; W")
+    build.save(STEM, num["source"], TRANSPORT, "true-scale ring; schematic cells; W")
     plt.close(fig)
     print(f"{STEM}: plate scale {s:.3f}, plate {pw:.2f} in wide at x = {px0:.2f}; facts -> {FACTS.name}")
 

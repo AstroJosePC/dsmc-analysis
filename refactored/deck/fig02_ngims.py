@@ -8,7 +8,8 @@ FIG 2a (evidence slot): delta rho / rho_bar against altitude for the inbound pas
   40% event threshold dotted, and this pass's own exobase (N_tot = 5e18 m^-2, 151.6 km) as the Gold
   dashed line: on the cold nightside it sits well below the 230 km of the model atmosphere, so the
   deck default would misplace it. The axes fill the left 4.5 in; the right part of the field holds the
-  key (shared with FIG 2b) above the space where build_deck.py places FIG 2b.
+  key (shared with FIG 2b) above the space where build_deck.py places FIG 2b. Build step 1
+  (fig02a_ngims_orbit2521_b1, progressive deck) omits FIG 2b's caption.
 FIG 2b (inset slot): median over passes of each pass's mean |delta rho / rho_bar|, in 15 deg SZA bins
   (>= 50 passes), all 4,282 inbound passes Feb 2015 - Nov 2017, no event selection; bands are the
   bootstrap 16-84% range of the median. Its x axis sits at the same height as FIG 2a's.
@@ -18,7 +19,7 @@ import json
 import numpy as np
 from matplotlib.lines import Line2D
 
-from _deck import REFACTORED, ds, save
+from _deck import REFACTORED, Build, ds, save
 
 DATA = REFACTORED / "deck" / "data"
 NPZ = DATA / "fig02_ngims.npz"
@@ -35,6 +36,7 @@ W_B, H_B = ds.SIZES["inset"]
 def fig2a(d):
     fig, ax = ds.figure("evidence")
     fig.set_layout_engine("none")
+    build = Build(fig)
     left, width, top = 0.80, 3.62, 0.16
     ax.set_position([left / W_A, AX_BOTTOM / H_A, width / W_A, (H_A - AX_BOTTOM - top) / H_A])
 
@@ -72,10 +74,12 @@ def fig2a(d):
     fig.legend(handles, labels, loc="upper left", bbox_to_anchor=(x0 - 0.008, 1 - 0.66 / H_A),
                fontsize=14, handlelength=1.6, handletextpad=0.6, labelspacing=0.35, borderaxespad=0,
                borderpad=0)
-    # caption for FIG 2b, which build_deck.py places in the lower right of this field
+    # caption for FIG 2b, which build_deck.py places in the lower right of this field; in the
+    # progressive deck it appears with FIG 2b (build step 2)
+    build.at(2)
     fig.text(x0, (H_B + 0.10) / H_A, "ALL PASSES · 2015–2017", fontsize=12, fontweight="semibold",
              color=ds.GRANITE, va="baseline")
-    save(fig, "fig02a_ngims_orbit2521", *SRC)
+    build.save("fig02a_ngims_orbit2521", *SRC)
 
 
 def fig2b(d):

@@ -8,12 +8,14 @@ Granite because Green and Tangelo fail text contrast on Cultured. Species are na
 SPECIES colours, so H2/CO2 never share an element with the Green/Tangelo status meanings
 (FIGURE_STYLE.md §3). Schematic; the domain top is read from deck/data/slide08_facts.json so slides
 8 and 9 quote the same number.
+Build steps (progressive deck): 1 the forward models (nodes 1-3, fig09_maven_roadmap_b1), 2 the MAVEN
+inversion (nodes 4-6, with the track from node 3 to 4).
 """
 import json
 
 from matplotlib.patches import Circle, FancyArrowPatch
 
-from _deck import REFACTORED, ds, save
+from _deck import REFACTORED, Build, ds
 
 FACTS = REFACTORED / "deck" / "data" / "slide08_facts.json"
 Z_TOP = json.loads(FACTS.read_text())["z_top_min_km"]
@@ -76,9 +78,12 @@ def main():
     ax.set_xlim(0, W_IN)
     ax.set_ylim(0, H_IN)
     xc = [PITCH * (k + 0.5) for k in range(len(NODES))]
+    build = Build(fig)
+    step = lambda node: 1 if node <= GROUPS[0][2] else 2       # build step of a node
 
     # phase brackets
     for label, a, b in GROUPS:
+        build.at(step(a))
         x0, x1 = xc[a] - 0.42 * PITCH, xc[b] + 0.42 * PITCH    # 0.16-pitch gap between groups
         ax.plot([x0, x0, x1, x1], [Y_BRACKET - 0.07, Y_BRACKET, Y_BRACKET, Y_BRACKET - 0.07],
                 color=ds.GRANITE, lw=0.8, alpha=0.6, solid_joinstyle="miter")
@@ -87,6 +92,7 @@ def main():
 
     # track: built or underway (1-3) solid Midnight, planned (3-6) light Granite
     for k in range(len(NODES) - 1):
+        build.at(step(k + 1))
         done = k < 2
         color, alpha, lw = (ds.MIDNIGHT, 1.0, 2.0) if done else (ds.GRANITE, 0.45, 1.5)
         ax.plot([xc[k], xc[k + 1]], [Y_TRACK] * 2, color=color, alpha=alpha, lw=lw,
@@ -95,7 +101,8 @@ def main():
         ax.add_patch(FancyArrowPatch((xm - 0.09, Y_TRACK), (xm + 0.09, Y_TRACK), arrowstyle="-|>",
                                      mutation_scale=13, color=color, alpha=alpha, lw=0, zorder=2))
 
-    for (title, desc, status, mark), x in zip(NODES, xc):
+    for k, ((title, desc, status, mark), x) in enumerate(zip(NODES, xc)):
+        build.at(step(k))
         fc, ec, rad, elw = MARK[mark]
         ax.add_patch(Circle((x, Y_TRACK), rad, fc=fc, ec=ec, lw=elw, zorder=3))
         ax.text(x, Y_STATUS, status, ha="center", va="baseline", fontsize=13, fontweight="semibold",
@@ -109,7 +116,7 @@ def main():
             ax.text(x, Y_DESC - i * DESC_LEAD, line, ha="center", va="baseline", fontsize=14,
                     color=ds.GRANITE)
 
-    save(fig, "fig09_maven_roadmap", "schematic (no data)", "deck/data/slide08_facts.json: z_top_min_km")
+    build.save("fig09_maven_roadmap", "schematic (no data)", "deck/data/slide08_facts.json: z_top_min_km")
 
 
 if __name__ == "__main__":

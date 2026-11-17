@@ -1,4 +1,5 @@
-"""Assemble the NSBP/NSHP 2026 deck, slides 1-9 plus backups B1-B6, as one 13.333 x 7.5 in PDF.
+"""Assemble the NSBP/NSHP 2026 deck, slides 1-9 plus backups B1-B6, as 13.333 x 7.5 in PDFs: the full
+deck (one page per slide) and the progressive deck for live delivery (slides 2-9 built up click by click).
 
     cd refactored && conda run -n dsmc python slides/build_deck.py
 
@@ -20,11 +21,21 @@ Pipeline
      vector, no scaling, embedded fonts untouched.
   5. Verification. Page count and size, embedded-font whitelist (no substitutes), PNG previews.
 
+Progressive builds. Each slide is laid out once; Slide.reveal(k) marks what first appears at build
+step k (header and footer are step 0, on every page). Page k of the progressive deck is that same
+layout with the later steps hidden, so nothing is placed twice and nothing moves between clicks.
+A figure that builds up inside itself (FIG 2a, 4, 7, 9) has variants <stem>_b1, _b2, ... written by
+its script with deck/_deck.Build: the finished figure with later artists hidden, at the same size.
+Steps 1-3 run on every build page as well; check_builds then compares the previews pixel by pixel:
+each inked pixel of a build page must equal the full slide's, and a slide's last page must equal it.
+The title and backup slides stay single pages.
+
 Numbers on slides 2, 7, 8 and B1-B6 are read from deck/data/*.json, written and checked against their
 sources by deck/cache_slide02.py, deck/cache_slides78.py and deck/cache_backups.py (rerun it, then the figure scripts, before rebuilding when a source changes,
 e.g. when the last Stage 1B replicates finish).
 
-Outputs (refactored/slides/build/): NSBP2026_deck_full.pdf, preview/slide-N.png (page order).
+Outputs (refactored/slides/build/): NSBP2026_deck_full.pdf, preview/slide-N.png (page order);
+NSBP2026_deck_progressive.pdf, preview_progressive/page-N.png.
 """
 from __future__ import annotations
 
@@ -61,6 +72,7 @@ DOCS = REFACTORED / "docs"
 OUT = REFACTORED / "slides" / "build"
 WORK = OUT / "_work"
 DECK_PDF = OUT / "NSBP2026_deck_full.pdf"
+PROG_PDF = OUT / "NSBP2026_deck_progressive.pdf"
 DECK_DATA = REFACTORED / "deck" / "data"
 
 # ---------------------------------------------------------------- page geometry (points, y down)
@@ -121,8 +133,11 @@ class Slide:
     fig: plt.Figure = None
     ax: plt.Axes = None
     texts: list = field(default_factory=list)      # (artist, group, name)
-    placed: list = field(default_factory=list)     # (stem, x, y_top, w, h)
-    panels: list = field(default_factory=list)     # (x, y, w, h, name) card / chip rectangles
+    placed: list = field(default_factory=list)     # (stem, x, y_top, w, h) as on the full slide
+    panels: list = field(default_factory=list)     # (x, y, w, h, name, step) card / chip rectangles
+    layers: list = field(default_factory=list)     # (stem, x, y_top, w, h, first, last) incl. build variants
+    step: int = 0                                  # build step of what is drawn now (0: every page)
+    art_step: dict = field(default_factory=dict)   # chrome artist -> build step
     _group: itertools.count = field(default_factory=itertools.count)
 
     def __post_init__(self):
@@ -135,6 +150,37 @@ class Slide:
         self.field = ds.MIDNIGHT if self.dark else ds.CULTURED
         self.ax.add_patch(Rectangle((0, 0), W, H, fc=self.field, lw=0, zorder=-10))
         self.renderer = self.fig.canvas.get_renderer()
+        self._seen = set(self.ax.get_children())
+
+    # ---- build steps (progressive deck)
+    def _sweep(self):
+        for a in self.ax.get_children():
+            if a not in self._seen:
+                self._seen.add(a)
+                self.art_step[a] = self.step
+
+    def reveal(self, k: int):
+        """What is drawn from here on first appears at build step k. Positions never depend on k:
+        the slide is laid out once and page k hides the later steps, so nothing moves between pages."""
+        self._sweep()
+        self.step = k
+
+    @property
+    def n_steps(self) -> int:
+        self._sweep()
+        return max([0, *self.art_step.values(), *(p[5] for p in self.panels), *(l[5] for l in self.layers)])
+
+    def show(self, k: int):
+        """Show build step k (chrome artists of later steps hidden); returns the figures on that page."""
+        self._sweep()
+        for a, s in self.art_step.items():
+            a.set_visible(s <= k)
+        return [l[:5] for l in self.layers if l[5] <= k and (l[6] is None or k <= l[6])]
+
+    def pages(self) -> range:
+        """Build steps that become pages of the progressive deck (one page if nothing is staged)."""
+        n = self.n_steps
+        return range(min(1, n), n + 1)
 
     # ---- measuring
     def width(self, s: str, prop: FontProperties) -> float:
@@ -191,11 +237,24 @@ class Slide:
             self.text(x, y + i * leading, line, prop, color=color, alpha=alpha)
         return y + (len(lines) - 1) * leading
 
-    def place(self, stem, x, y_top):
-        """Reserve a figure at natural size; the PDF is laid over the chrome by tectonic."""
+    def place(self, stem, x, y_top, builds=0):
+        """Reserve a figure at natural size; the PDF is laid over the chrome by tectonic.
+
+        builds = n: the progressive deck shows the figure's build variants <base>_b1 ... _bn (same size,
+        deck/_deck.Build) at steps step ... step + n - 1 and the finished figure from step + n on."""
         w, h = figure_size(stem)
         self.placed.append((stem, x, y_top, w, h))
+        base = stem.removesuffix("_deck")
+        for i in range(1, builds + 1):
+            v = f"{base}_b{i}_deck"
+            if figure_size(v) != (w, h):
+                raise SystemExit(f"{v}: not the size of {stem}")
+            self.layers.append((v, x, y_top, w, h, self.step + i - 1, self.step + i - 1))
+        self.layers.append((stem, x, y_top, w, h, self.step + builds, None))
         return w, h
+
+    def panel(self, x, y, w, h, name):
+        self.panels.append((x, y, w, h, name, self.step))
 
     def rule(self, x, y, w, h, color, alpha=1.0):
         self.ax.add_patch(Rectangle((x, y), w, h, fc=color, lw=0, alpha=alpha, zorder=4))
@@ -213,6 +272,9 @@ def header(s: Slide, kicker: str, headline: str):
 
 
 def footer(s: Slide, parts):
+    """Citation, counter and progress dots: on every build step of the slide."""
+    resume = s.step
+    s.reveal(0)
     s.ax.plot([M, RIGHT], [FOOT_RULE_Y] * 2, color=ds.GRANITE, alpha=0.25, lw=0.5, zorder=3)
     s.runs(M, FOOT_BASE, [(t, p, ds.GRANITE) for t, p in parts])
     for t in s.texts[-len(parts):]:
@@ -226,6 +288,7 @@ def footer(s: Slide, parts):
         color, alpha = ((ds.MIDNIGHT, 1.0) if k == s.number else
                         (ds.GRANITE, 0.45) if k < s.number else (ds.GRANITE, 0.20))
         s.ax.add_patch(Circle((cx, FOOT_BASE - 4.3), 2.5, fc=color, alpha=alpha, lw=0, zorder=4))
+    s.reveal(resume)
 
 
 def cite(*parts):
@@ -273,7 +336,7 @@ class Card:
                                       fc=CARD_FILL, ec=(*matplotlib.colors.to_rgb(ds.GRANITE), 0.35),
                                       lw=1.0, zorder=1))
         s.rule(x, y + 7, 4, h - 14, ds.MIDNIGHT)
-        s.panels.append((x, y, w, h, f"card {self.label}"))
+        s.panel(x, y, w, h, f"card {self.label}")
         tx, text_w = x + self.PAD, w - 2 * self.PAD
         base = dict(rows)
         s.tracked(tx, y + base["label"], self.label, fp(SANS, 11), TRACK_LABEL)
@@ -302,7 +365,7 @@ def chip(s: Slide, x, y, text, size=14.0, h=22.0):
     w = s.width(text, fp(SANS, size)) + 24
     s.ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle=f"round,pad=0,rounding_size={h / 2}",
                                   fc="none", ec=ds.GRANITE, alpha=0.55, lw=1.0, zorder=1))
-    s.panels.append((x, y, w, h, f"chip {text}"))
+    s.panel(x, y, w, h, f"chip {text}")
     s.text(x + 12, y + h / 2 + 0.36 * size, text, fp(SANS, size))
     return w
 
@@ -336,10 +399,13 @@ def slide2():
     header(s, "WHAT MAVEN SEES",
            "MAVEN sees large, species-dependent waves right where Mars' atmosphere stops behaving "
            "like a fluid.")
-    s.place("fig02a_ngims_orbit2521_deck", EVID_X, EVID_Y)
+    s.reveal(1)                                   # build: one pass, all passes, what they show
+    s.place("fig02a_ngims_orbit2521_deck", EVID_X, EVID_Y, builds=1)   # FIG 2b's caption at step 2
     iw, ih = (v * 72 for v in ds.SIZES["inset"])
+    s.reveal(2)
     s.place("fig02b_ngims_sza_deck", EVID_X + EVID_W - iw, EVID_BOTTOM - ih)   # x axes level with 2a
 
+    s.reveal(3)
     y = EVID_Y + 31
     for hero, labels in ((f"> {f['threshold_pct']}%", ["PEAK DENSITY", "PERTURBATIONS"]),
                          ("CO$_2$, Ar > O", ["HEAVIER SPECIES,", "LARGER AMPLITUDES"]),
@@ -362,12 +428,15 @@ def slide3():
     header(s, "WHY KINETIC",
            "Near the exobase, molecules rarely collide, so fluid equations lose their footing "
            "and kinetic models don't.")
+    s.reveal(1)                                   # build: regimes and Kn, then the two statements
     s.place("fig03_regime_schematic_deck", EVID_X, EVID_Y)
     body = fp(SANS, 20)
     y = EVID_Y + 15
-    for stmt in ("Fluid models need many collisions per wave period.",
-                 "DSMC has no closure: heating and dissipation emerge from the collisions."):
+    for k, stmt in enumerate(("Fluid models need many collisions per wave period.",
+                              "DSMC has no closure: heating and dissipation emerge from the collisions.")):
+        s.reveal(2 + k)
         y = s.paragraph(WORD_X, y, stmt, body, WORD_W, 27) + 42
+    s.reveal(1)
     card = Card("WHERE FLUIDS FAIL",
                 eq=[[(r"$\mathrm{Kn} = \lambda_{\mathrm{mfp}}/H \;\to\; 1$", fp(SANS, 20), ds.MIDNIGHT),
                      ("  at the exobase", fp(SANS, 16, 300), ds.GRANITE)]],
@@ -391,7 +460,10 @@ def slide4():
     header(s, "METHOD",
            "DSMC follows representative molecules, not equations: move, collide, sample, repeat.")
     y_fig = 148.0
-    _, fh = s.place("fig04d_scales_and_step_deck", M, y_fig)
+    # build (deck/fig04_method.py): 1 domain, 2 cells, 3-5 move / collide / boundaries with their
+    # text below, 6 one particle and W
+    s.reveal(1)
+    _, fh = s.place("fig04d_scales_and_step_deck", M, y_fig, builds=5)
     f = facts("slide04_facts")
     ratio = int(f["tau_100"] / f["dt"])          # shortest collision time in S6 (100 km) over the step
     nb = " "                                # keep a value with its symbol and unit on one line
@@ -405,6 +477,7 @@ def slide4():
     prop, bold = fp(SANS, 16), fp(SANS, 16, "semibold")
     y0 = y_fig + fh + 27
     for k, (verb, rest) in enumerate(steps):
+        s.reveal(3 + k)
         x = M + k * (col_w + gap)
         number_badge(s, x + 10.5, y0 - 6, k + 1)
         lines = s.wrap(f"{verb}: {rest}", prop, col_w - 36)
@@ -421,7 +494,9 @@ def slide5():
     s = Slide(5)
     header(s, "1D RESULT · PUBLISHED",
            "Spherical geometry cuts wave-driven heating by 40–56% compared with slab models.")
+    s.reveal(1)                                   # build: growth curves, the numbers, the measure
     s.place("fig05a_amplitude_growth_deck", EVID_X, EVID_Y)
+    s.reveal(2)
     hero, unit = fp(SERIF, 54), fp(SANS, 18, 300)
     y1 = EVID_Y + 38
     w1 = s.width("1.7–2.3×", hero)
@@ -440,6 +515,7 @@ def slide5():
                 eq=[r"$G = A(z)/A_{150},\quad d\langle T\rangle/dr$"],
                 lines=[("Growth relative to 150 km; heating as", 16, ds.GRANITE, 300),
                        ("the cycle-5 mean temperature gradient.", 16, ds.GRANITE, 300)])
+    s.reveal(3)
     _, ch = card.layout()
     card.draw(s, WORD_X, EVID_BOTTOM - ch)
     footer(s, cite("Pérez Chávez et al. 2026, ", ("italic", "Icarus"), " 447, 116900"))
@@ -469,13 +545,16 @@ def slide6():
            "In 2D, wave energy escapes sideways, lowering heating below the 1D prediction.")
     f = facts("slide06_facts")
     y0 = 160.0
+    s.reveal(1)                                   # build: wedge, attenuation length, wavelength
     s.place("fig06a_s6_halfwedge_deck", EVID_X, y0)
+    s.reveal(2)
     y = y0 + 31
     hero_row(s, WORD_X, y, WORD_W, f"{f['L_att_exobase_km']:.0f} ± {f['sigma_L_exobase_km']:.0f}", "km",
              ["ATTENUATION LENGTH", "AT THE EXOBASE"])
     _, ph = s.place("fig06b_latt_fit_col_deck", WORD_X, y + 9)
     y = y + 9 + ph + 14 + 31
     # rev5 total uncertainty (ODR + resolution); the cache holds the ODR-only error
+    s.reveal(3)
     hero_row(s, WORD_X, y, WORD_W, "450 ± 14", "km", ["HORIZONTAL", "WAVELENGTH"])
     s.place("fig06c_lambdah_fit_col_deck", WORD_X, y + 9)
     footer(s, cite("Pérez Chávez et al., to be submitted, JGR Planets"))
@@ -545,21 +624,25 @@ def slide7():
     header(s, "SCALING UP · IN PROGRESS",
            "To afford finer cells, we simulate a one-wavelength wheel sector instead of the full ring.")
     y_fig = 148.0
-    _, fh = s.place("fig07e_sector_strip_deck", M, y_fig)
+    s.reveal(1)                                   # build: ring and sector, tiles (FIG 7e b1), columns
+    _, fh = s.place("fig07e_sector_strip_deck", M, y_fig, builds=1)
     gap = 28.0
     col_w = (RIGHT - M - 2 * gap) / 3
     y0 = y_fig + fh + 24
     lam = g["sector_width_km"]
 
+    s.reveal(3)
     ends = [metric(s, M, y0, "SHARPER WAVES", f"{g['n_azi']}", ["cells per", f"{lam:.0f} km wave"],
                    [f"{lam / s6['azi_cell_km']:.0f} on the full-ring grid:",
-                    f"{g['azi_cell_km']:.0f} km cells instead of {s6['azi_cell_km']:.0f} km"], col_w),
-            metric(s, M + col_w + gap, y0, "FAST ENOUGH FOR ENSEMBLES", f"{runs['n']}",
+                    f"{g['azi_cell_km']:.0f} km cells instead of {s6['azi_cell_km']:.0f} km"], col_w)]
+    s.reveal(4)
+    ends += [metric(s, M + col_w + gap, y0, "FAST ENOUGH FOR ENSEMBLES", f"{runs['n']}",
                    ["runs in", f"{runs['span_h']:.0f} hours"],
                    [f"{runs['n_wave']} with waves, {runs['n_nowave']} without",
                     f"{runs['wall_h_min']:.0f}–{runs['wall_h_max']:.0f} h each on {runs['np']} cores "
                     "of one workstation"], col_w)]
 
+    s.reveal(5)
     x = M + 2 * (col_w + gap)
     s.tracked(x, y0, "WHAT IT OPENS UP", fp(SANS, 11), TRACK_LABEL)
     y = y0 + 28
@@ -570,7 +653,8 @@ def slide7():
         s.text(x + 18, y, t, fp(SANS, 15))
         ends.append(y)
         y += 22
-    for k in range(2):
+    for k in range(2):                            # each divider comes with the column to its right
+        s.reveal(4 + k)
         s.rule(M + (k + 1) * (col_w + gap) - gap / 2, y0 - 10, 0.6, 96, ds.GRANITE, alpha=0.35)
     if max(ends) + 8 > FOOT_RULE_Y:
         raise ValueError("slide 7: metrics run into the footer")
@@ -584,8 +668,11 @@ def slide8():
     header(s, "BUILDING THE NEXT 2D RUNS",
            "A fluid model now supplies the waves from below, and baseline runs fix the domain top.")
     y_fig = 148.0                                   # as on slide 4: room for the callout row
+    s.reveal(1)                                   # build: coupling and its check, domain top, callouts
     _, h8a = s.place("fig08a_coupling_baseline_deck", M, y_fig)
+    s.reveal(2)
     _, h8b = s.place("fig08b_escape_vs_top_deck", WORD_X, y_fig)
+    s.reveal(1)
     card = Card("COUPLING CHECK",
                 eq=[r"$|\hat w_{\mathrm{fluid}} - \hat w_{\mathrm{lin}}|\,/\,|\hat w_{\mathrm{lin}}| \leq 0.22\%$"],
                 lines=[(f"at 100–140 km, so the {f['n_weak_streams']} weak-forcing", 14.5, ds.GRANITE, 300),
@@ -594,6 +681,7 @@ def slide8():
     card.draw(s, WORD_X, y_fig + h8a - ch)
 
     # callout row: three items on the 12-column grid
+    s.reveal(3)
     col_w = (RIGHT - M) / 3
     lead, sub = fp(SANS, 16, "semibold"), fp(SANS, 13, 300)
     wind = f"{f['strong_wind_m_s']:.1f}".replace("-", "−")
@@ -621,8 +709,10 @@ def slide9():
     s = Slide(9)
     header(s, "NEXT", "Next: can multi-species NGIMS data pin down the wave that produced it?")
     y_fig = 148.0
-    _, fh = s.place("fig09_maven_roadmap_deck", M, y_fig)
+    s.reveal(1)                                   # build: nodes 1-3 (FIG 9 b1), nodes 4-6, the close
+    _, fh = s.place("fig09_maven_roadmap_deck", M, y_fig, builds=1)
 
+    s.reveal(3)
     # hypothesis: tracked label, Midnight bar, Playfair italic quote
     y = y_fig + fh + 24
     s.tracked(M, y, "HYPOTHESIS", fp(SANS, 11), TRACK_LABEL)
@@ -855,7 +945,7 @@ def figure_size(stem: str):
 
 
 def expected_size(stem: str):
-    base = stem.removesuffix("_deck")
+    base = re.sub(r"_b\d+$", "", stem.removesuffix("_deck"))      # build variants share the size
     if base in SLOTS:
         return SLOTS[base]
     return ds.SIZES[SIZE_KEY[base]]
@@ -914,10 +1004,16 @@ def ink_rect(stem: str, x, y_top):
     return (x + cols.min() * k, y_top + rows.min() * k, x + (cols.max() + 1) * k, y_top + (rows.max() + 1) * k)
 
 
-def check_layout(s: Slide):
-    """Text inside the page, no text/text, text/figure-ink or panel/figure-ink collisions."""
+def check_layout(s: Slide, k: int | None = None):
+    """Text inside the page, no text/text, text/figure-ink or panel/figure-ink collisions, on build
+    step k (default: the full slide)."""
+    k = s.n_steps if k is None else k
+    placed = s.show(k)
+    panels = [p[:5] for p in s.panels if p[5] <= k]
     boxes = []
     for t, g, name in s.texts:
+        if not t.get_visible():
+            continue
         b = t.get_window_extent(s.renderer)                 # display coords, y up, 1 px = 1 pt
         # vertical extent from the glyph ink (the layout box always spans ascender to descender)
         prop = t.get_fontproperties().copy()
@@ -932,7 +1028,7 @@ def check_layout(s: Slide):
             problems.append(f"outside page: {name}")
         if not s.dark and y0 < FOOT_RULE_Y < y1:
             problems.append(f"text crosses the footer rule: {name}")
-    for px, py, pw, ph, pname in s.panels:
+    for px, py, pw, ph, pname in panels:
         if not s.dark and py + ph > FOOT_RULE_Y - 4:
             problems.append(f"{pname} reaches the footer rule")
     groups = {}
@@ -948,20 +1044,21 @@ def check_layout(s: Slide):
     for (a, na), (b, nb) in itertools.combinations(items, 2):
         if hit(a, b):
             problems.append(f"text overlap: '{na}' / '{nb}'")
-    for stem, x, y, w, h in s.placed:
+    for stem, x, y, w, h in placed:
         ink = ink_rect(stem, x, y)
         if ink[0] < 0 or ink[1] < 0 or ink[2] > W or ink[3] > H:
             problems.append(f"figure ink off page: {stem}")
         for box, name in items:
             if hit(box, ink):
                 problems.append(f"text over figure ink: '{name}' / {stem}")
-        for px, py, pw, ph, pname in s.panels:
+        for px, py, pw, ph, pname in panels:
             if "spark" in stem and pname.startswith("card"):
                 continue
             if hit((px, py, px + pw, py + ph), ink):
                 problems.append(f"{pname} over figure ink: {stem}")
+    s.show(s.n_steps)
     if problems:
-        raise SystemExit(f"slide {s.number} layout:\n  " + "\n  ".join(problems))
+        raise SystemExit(f"slide {s.counter or s.number} step {k} layout:\n  " + "\n  ".join(problems))
 
 
 # ================================================================= composition
@@ -978,17 +1075,21 @@ TEX_HEAD = r"""\documentclass{article}
 TITLE = "Molecular Kinetic Simulations of Acoustic-Gravity Wave Energy Transport into the Martian Exosphere"
 
 
-def compose(slides, commit: str, out_pdf: Path = DECK_PDF, subject: str | None = None, work: Path = WORK):
-    """Lay each slide's figure PDFs over its chrome page at natural size; one PDF out."""
+def compose(pages, commit: str, out_pdf: Path = DECK_PDF, subject: str | None = None, work: Path = WORK):
+    """Lay each page's figure PDFs over its chrome at natural size; one PDF out.
+
+    pages: (slide, build step) pairs; the full deck shows every slide at its last step."""
     if work.exists():
         shutil.rmtree(work)
     work.mkdir(parents=True)
     body = []
-    for k, s in enumerate(slides):
+    for k, (s, step) in enumerate(pages):
+        placed = s.show(step)
         chrome = work / f"chrome{k:02d}.pdf"
         s.fig.savefig(chrome, facecolor=s.field, transparent=False)
+        s.show(s.n_steps)
         page = [rf"\AddToShipoutPictureBG*{{\put(0,0){{\includegraphics{{{chrome.name}}}}}}}"]
-        for stem, x, y, w, h in s.placed:
+        for stem, x, y, w, h in placed:
             shutil.copy(FIGS / f"{stem}.pdf", work / f"{stem}.pdf")
             page.append(rf"\AddToShipoutPictureFG*{{\put({x:.3f},{H - y - h:.3f}){{\includegraphics{{{stem}.pdf}}}}}}")
         body.append("\n".join(page) + "\n\\null\\newpage\n")
@@ -1000,7 +1101,7 @@ def compose(slides, commit: str, out_pdf: Path = DECK_PDF, subject: str | None =
     shutil.copy(work / "deck.pdf", out_pdf)
 
 
-def verify(n_pages: int, pdf: Path = DECK_PDF, prev: Path = OUT / "preview"):
+def verify(n_pages: int, pdf: Path = DECK_PDF, prev: Path = OUT / "preview", name: str = "slide"):
     info = subprocess.run(["pdfinfo", str(pdf)], capture_output=True, text=True, check=True).stdout
     pages = int(re.search(r"Pages:\s+(\d+)", info).group(1))
     size = re.search(r"Page size:\s+([\d.]+) x ([\d.]+)", info).groups()
@@ -1013,8 +1114,37 @@ def verify(n_pages: int, pdf: Path = DECK_PDF, prev: Path = OUT / "preview"):
     if prev.exists():
         shutil.rmtree(prev)
     prev.mkdir(parents=True)
-    subprocess.run(["pdftoppm", "-r", "110", "-png", str(pdf), str(prev / "slide")], check=True)
+    subprocess.run(["pdftoppm", "-r", "110", "-png", str(pdf), str(prev / name)], check=True)
     return pages, sorted({n for n, _ in fonts})
+
+
+def check_builds(pages, full_prev: Path, prog_prev: Path, full_index: dict, tol: int = 40):
+    """No layout jitter: no build page may put ink where the full slide is blank (an element that moved
+    or changed would), and a slide's last build page must equal the full slide. Ink that a later step
+    covers (a badge over a grid line) is allowed.
+
+    Compares the 110 dpi previews; returns the worst share of misplaced inked pixels."""
+    worst = 0.0
+    bg = np.array(matplotlib.colors.to_rgb(ds.CULTURED)) * 255
+    full_png = sorted(full_prev.glob("*.png"))
+    prog_png = sorted(prog_prev.glob("*.png"))
+    for i, (s, step) in enumerate(pages):
+        a = mpimg.imread(prog_png[i])[..., :3] * 255
+        b = mpimg.imread(full_png[full_index[id(s)]])[..., :3] * 255
+        if a.shape != b.shape:
+            raise SystemExit(f"progressive page {i + 1}: preview size differs from the full slide")
+        diff = np.abs(a - b).max(axis=-1)
+        if step == s.n_steps:
+            bad = (diff > tol).mean()
+        else:                                                    # build steps exist on light slides only
+            ink = np.abs(a - bg).max(axis=-1) > tol
+            blank = np.abs(b - bg).max(axis=-1) <= tol
+            bad = (ink & blank).sum() / max(ink.sum(), 1)
+        worst = max(worst, bad)
+        if bad > 1e-3:
+            raise SystemExit(f"progressive page {i + 1} (slide {s.counter or s.number}, step {step}): "
+                             f"{100 * bad:.2f}% of inked pixels are not on the full slide")
+    return worst
 
 
 def main():
@@ -1024,15 +1154,28 @@ def main():
                             capture_output=True, text=True, check=True).stdout.strip()
     slides = [slide1(), slide2(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8(), slide9(),
               backup1(), backup2(), backup3(), backup4(), backup5(), backup6()]
+    full = [(s, s.n_steps) for s in slides]
+    prog = [(s, k) for s in slides for k in s.pages()]
     for s in slides:
-        for stem, *_ in s.placed:
+        for stem in {l[0] for l in s.layers}:
             audit_figure(stem)
-        check_layout(s)
-    print("figures: sizes, fonts, provenance OK; layout: no clipping or collisions")
-    compose(slides, commit)
-    pages, fonts = verify(len(slides))
-    rel = DECK_PDF.relative_to(REFACTORED)
-    print(f"{rel}: {pages} pages, 960 x 540 pt; fonts: {', '.join(fonts)}")
+        for k in s.pages():
+            check_layout(s, k)
+    print(f"figures: sizes, fonts, provenance OK; layout: no clipping or collisions on all {len(full)} "
+          f"slides and {len(prog)} build pages")
+    compose(full, commit)
+    pages, fonts = verify(len(full))
+    print(f"{DECK_PDF.relative_to(REFACTORED)}: {pages} pages, 960 x 540 pt; fonts: {', '.join(fonts)}")
+    compose(prog, commit, PROG_PDF, work=OUT / "_work_progressive",
+            subject=f"NSBP/NSHP 2026, progressive builds of slides 2-9 ({len(prog)} pages); "
+                    f"figures/deck @ {commit}")
+    pages, fonts = verify(len(prog), PROG_PDF, OUT / "preview_progressive", name="page")
+    print(f"{PROG_PDF.relative_to(REFACTORED)}: {pages} pages, 960 x 540 pt; fonts: {', '.join(fonts)}")
+    worst = check_builds(prog, OUT / "preview", OUT / "preview_progressive",
+                         {id(s): i for i, s in enumerate(slides)})
+    print("builds: " + ", ".join(f"{s.counter or s.number} x{len(s.pages())}" for s in slides
+                                 if len(s.pages()) > 1)
+          + f"; no element moves between steps (worst mismatch {100 * worst:.3f}% of inked pixels)")
     for s in slides:
         plt.close(s.fig)
 

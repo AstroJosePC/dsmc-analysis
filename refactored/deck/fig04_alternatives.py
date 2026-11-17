@@ -87,9 +87,12 @@ def badge(ax, x, y, n, r=0.13):
 
 
 # ================================================================= 4A: the plate
-def draw_plate(ax, num, short_labels=False, badge_r=0.13):
+def draw_plate(ax, num, short_labels=False, badge_r=0.13, mark=lambda layer: None):
     """The 4A schematic in its own inch coordinates (7.22 x 4.17 box); 4D embeds it scaled.
 
+    mark(layer) is called before each group of artists, layer in "cells" (grid, particles, frame and
+    labels), "move", "collide", "boundaries", so a caller can put the operations on build steps
+    (deck/_deck.Build). The drawing order does not depend on it.
     Returns the cell-centre helper and the background particles, so a caller can point at one.
     """
     rng = np.random.default_rng(404)
@@ -108,6 +111,7 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
         return Polygon(np.column_stack([np.r_[x0, x1], np.r_[y0, y1]]), closed=True, **kw)
 
     # grid
+    mark("cells")
     for i, r in enumerate(r_edges):
         aa = np.linspace(a_edges[0], a_edges[-1], 200)
         ax.plot(*xy(r, aa), color=ds.GRANITE, lw=1.6 if i == 0 else 0.7, zorder=2)
@@ -128,6 +132,8 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
             ax.plot(x, y, "o", ms=3.2, mew=0, color=ds.MIDNIGHT, alpha=0.55, zorder=3)
 
     # 1 MOVE: straight flights for dt; a flight that crosses a curved face changes cell
+    mark("move")
+
     def cell_of(x, y):
         r, a = np.hypot(x - cx, y - cy), np.arctan2(x - cx, y - cy)
         return int(np.searchsorted(r_edges, r) - 1), int(np.searchsorted(a_edges, a) - 1)
@@ -147,6 +153,7 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
     badge(ax, bx - 0.20, by, 1, badge_r)
 
     # 2 COLLIDE: a random pair in one cell; velocities turn, momentum and energy kept
+    mark("collide")
     i, j = 0, 4
     ax.add_patch(cell_poly(i, j, fc="none", ec=ds.MIDNIGHT, lw=1.8, zorder=6))
     pa = xy(r_edges[0] + 0.22, a_edges[j] + 0.03)
@@ -168,6 +175,7 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
     badge(ax, bx + 0.18, by + 0.02, 2, badge_r)
 
     # 3 BOUNDARIES: wave-modulated flux in at the base, escape out of the top
+    mark("boundaries")
     for k, a in enumerate(np.linspace(a_edges[0] + 0.03, a_edges[-1] - 0.03, 11)):
         amp = 0.30 + 0.16 * np.sin(2 * np.pi * k / 10 * 1.0)
         (x0, x1), (y0, y1) = xy(np.array([R0 - amp - 0.06, R0 - 0.04]), a)
@@ -175,6 +183,7 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
     bx, by = xy(R0 - 0.26, a_edges[-1] + 0.03)
     badge(ax, bx + 0.10, by, 3, badge_r)
     # break and the domain top
+    mark("cells")
     r_top = r_edges[-1] + 0.42
     for dd in (-0.04, 0.04):
         x, y = xy(r_edges[-1] + 0.20 + dd, a_edges[0] - 0.03)
@@ -183,10 +192,12 @@ def draw_plate(ax, num, short_labels=False, badge_r=0.13):
     for a in (a_edges[0], a_edges[-1]):
         (x0, x1), (y0, y1) = xy(np.array([r_edges[-1] + 0.10, r_top - 0.10]), a)
         ax.plot([x0, x1], [y0, y1], color=ds.GRANITE, lw=0.7, ls=(0, (1, 2)), zorder=2)
+    mark("boundaries")
     pe = xy(r_top - 0.16, a_edges[2] + 0.04)
     ax.plot(*pe, "o", ms=4.2, mew=0, color=ds.MIDNIGHT, zorder=7)
     arrow(ax, pe, (pe[0] + 0.08, pe[1] + 0.36), ds.MIDNIGHT, lw=1.3, ms=9)
     badge(ax, pe[0] + 0.36, pe[1] + 0.20, 3, badge_r)
+    mark("cells")
     xt, yt = xy(r_top, a_edges[-2])
     top = r_label(num["z_top"]) if short_labels else f"top boundary, {r_label(num['z_top'])}"
     ax.text(xt + 0.05, yt + 0.10, top, ha="left", va="bottom", fontsize=12)

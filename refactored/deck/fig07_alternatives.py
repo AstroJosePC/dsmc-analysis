@@ -1,7 +1,8 @@
 """Slide 7 alternatives (7A, 7B, 7B-1, 7B-2): why and how the wheel sector truncates the grid.
 
   fig07e_sector_strip     (deckstyle strip, 7B-2, ADOPTED as FIG 7 of the deck) the full ring at true
-                          scale, the sector in 3D, and the full ring's particle budget as 170 sector tiles
+                          scale, the sector in 3D, and the full ring's particle budget as 170 sector tiles;
+                          build step 1 (fig07e_sector_strip_b1, progressive deck) without the tiles
   fig07d_sector_ring      (deckstyle evidence_tall, 7B-1) the sector in 3D with the true-scale ring
 
   fig07b_zoom_strip       (slot 12.22 x 3.10, 7A) full ring at true scale, with the one-wavelength
@@ -31,7 +32,7 @@ import numpy as np
 from matplotlib.patches import Arc, Circle, FancyArrowPatch, Polygon, Wedge
 
 import fig07_wheel_sector as w7
-from _deck import R_MARS_KM, ds, r_label, save
+from _deck import R_MARS_KM, Build, ds, r_label, save
 from slots import SLOTS
 
 DATA = Path(__file__).resolve().parent / "data"
@@ -399,6 +400,7 @@ def fig_b2():
     stem = "fig07e_sector_strip"
     w, h = ds.SIZES["strip"]
     fig, ax = canvas(w, h)
+    build = Build(fig)
     # 1 the full ring
     rx, ry, rm = 1.05, 1.80, 0.80
     ring(ax, rx, ry, rm, angle_deg=90.0)
@@ -410,7 +412,8 @@ def fig_b2():
     sector_labels(ax, lat_f, notes=False)
     ax.text(2.45, h - 0.05, "NOT TO SCALE", ha="left", va="top", fontsize=11, fontweight="semibold",
             color=ds.GRANITE)
-    # 3 the particle budget: the full ring = n sector-sized tiles
+    # 3 the particle budget: the full ring = n sector-sized tiles (build step 2)
+    build.at(2)
     ratio = F7["s6"]["particles"] / F7["stage1b"]["particles"]
     n = 10 * round(ratio / 10)
     cols = n // 10
@@ -423,7 +426,7 @@ def fig_b2():
     mant, exp = sci_parts(F7["stage1b"]["particles"])
     ds.takeaway(ax, rf"one sector: {mant}$^{{{exp}}}$", xy=(x0 + tile / 2, y0 - 0.03),
                 xytext=(x0 + tile + 0.25, y0 - 0.30), ha="left", va="center")
-    save(fig, stem, *SOURCES, f"schematic + true-scale ring; MarsAtmos {F7['sources']['marsatmos_commit']}")
+    build.save(stem, *SOURCES, f"schematic + true-scale ring; MarsAtmos {F7['sources']['marsatmos_commit']}")
     plt.close(fig)
 
 
