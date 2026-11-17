@@ -45,7 +45,9 @@ from matplotlib.textpath import TextPath  # noqa: E402
 
 REFACTORED = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REFACTORED / "style"))
+sys.path.insert(0, str(REFACTORED / "deck"))
 import deckstyle as ds  # noqa: E402
+from slots import SLOTS  # noqa: E402
 
 ds.use("deck", font_dir=REFACTORED / "style" / "fonts")
 
@@ -75,8 +77,12 @@ CARD_FILL = "#ECECE6"                      # Phase 1: "Cultured, one step darker
 MUTED = 0.80                               # citation footer: Granite at 80%
 TRACK_KICKER, TRACK_LABEL = 0.15, 0.16     # letter-spacing in em ("+120" and wider for 11 pt)
 
-# The one non-slot figure: title artwork on the right field of slide 1 (see fig01_title_wedge.py).
-CUSTOM_SIZES = {"fig01_title_wedge_deck": (7.6, 6.4)}
+# Figures drawn at a deckstyle SIZES slot; every other placed figure has a layout slot in deck/slots.py.
+SIZE_KEY = {"fig03_regime_schematic": "evidence", "fig03a_regime_windows": "evidence",
+            "fig03b_kn_profile": "evidence", "fig04_harrah_loop": "full",
+            "fig04a_timestep_plate": "evidence", "fig04c_split_step": "evidence",
+            "fig05a_amplitude_growth": "evidence", "fig05b_slab_vs_shell": "inset",
+            "fig06a_s6_wedge": "evidence", "fig06_spark_latt": "spark", "fig06_spark_lambdah": "spark"}
 ALLOWED_FONTS = re.compile(r"^(OpenSans|PlayfairDeckLF|IBMPlexMono|STIX)")
 
 
@@ -417,14 +423,10 @@ def figure_size(stem: str):
 
 
 def expected_size(stem: str):
-    if stem in CUSTOM_SIZES:
-        return CUSTOM_SIZES[stem]
-    kind = {"fig03": "evidence", "fig04": "full", "fig05a": "evidence", "fig05b": "inset",
-            "fig06a": "evidence", "fig06_spark": "spark"}
-    for prefix, slot in kind.items():
-        if stem.startswith(prefix):
-            return ds.SIZES[slot]
-    raise KeyError(stem)
+    base = stem.removesuffix("_deck")
+    if base in SLOTS:
+        return SLOTS[base]
+    return ds.SIZES[SIZE_KEY[base]]
 
 
 def pdf_fonts(path: Path):
@@ -541,42 +543,45 @@ TEX_HEAD = r"""\documentclass{article}
 """
 
 
-def compose(slides, commit: str):
-    if WORK.exists():
-        shutil.rmtree(WORK)
-    WORK.mkdir(parents=True)
+TITLE = "Molecular Kinetic Simulations of Acoustic-Gravity Wave Energy Transport into the Martian Exosphere"
+
+
+def compose(slides, commit: str, out_pdf: Path = DECK_PDF, subject: str | None = None, work: Path = WORK):
+    """Lay each slide's figure PDFs over its chrome page at natural size; one PDF out."""
+    if work.exists():
+        shutil.rmtree(work)
+    work.mkdir(parents=True)
     body = []
-    for s in slides:
-        chrome = WORK / f"chrome{s.number:02d}.pdf"
+    for k, s in enumerate(slides):
+        chrome = work / f"chrome{k:02d}.pdf"
         s.fig.savefig(chrome, facecolor=s.field, transparent=False)
         page = [rf"\AddToShipoutPictureBG*{{\put(0,0){{\includegraphics{{{chrome.name}}}}}}}"]
         for stem, x, y, w, h in s.placed:
-            shutil.copy(FIGS / f"{stem}.pdf", WORK / f"{stem}.pdf")
+            shutil.copy(FIGS / f"{stem}.pdf", work / f"{stem}.pdf")
             page.append(rf"\AddToShipoutPictureFG*{{\put({x:.3f},{H - y - h:.3f}){{\includegraphics{{{stem}.pdf}}}}}}")
         body.append("\n".join(page) + "\n\\null\\newpage\n")
-    title = "Molecular Kinetic Simulations of Acoustic-Gravity Wave Energy Transport into the Martian Exosphere"
-    tex = TEX_HEAD % (title, f"NSBP/NSHP 2026, slides 1, 3-6; figures/deck @ {commit}", ds.STYLE_VERSION)
+    subject = subject or f"NSBP/NSHP 2026, slides 1, 3-6; figures/deck @ {commit}"
+    tex = TEX_HEAD % (TITLE, subject, ds.STYLE_VERSION)
     tex += "".join(body) + r"\end{document}" + "\n"
-    (WORK / "deck.tex").write_text(tex)
-    subprocess.run(["tectonic", "-X", "compile", "deck.tex"], cwd=WORK, check=True, capture_output=True)
-    shutil.copy(WORK / "deck.pdf", DECK_PDF)
+    (work / "deck.tex").write_text(tex)
+    subprocess.run(["tectonic", "-X", "compile", "deck.tex"], cwd=work, check=True, capture_output=True)
+    shutil.copy(work / "deck.pdf", out_pdf)
 
 
-def verify(n_pages: int):
-    info = subprocess.run(["pdfinfo", str(DECK_PDF)], capture_output=True, text=True, check=True).stdout
+def verify(n_pages: int, pdf: Path = DECK_PDF, prev: Path = OUT / "preview"):
+    info = subprocess.run(["pdfinfo", str(pdf)], capture_output=True, text=True, check=True).stdout
     pages = int(re.search(r"Pages:\s+(\d+)", info).group(1))
     size = re.search(r"Page size:\s+([\d.]+) x ([\d.]+)", info).groups()
     assert pages == n_pages, f"{pages} pages, expected {n_pages}"
     assert tuple(map(float, size)) == (W, H), f"page size {size}"
-    fonts = sorted({(n, e) for n, e in pdf_fonts(DECK_PDF)})
+    fonts = sorted({(n, e) for n, e in pdf_fonts(pdf)})
     bad = [f for f in fonts if f[1] != "yes" or not ALLOWED_FONTS.match(f[0])]
     if bad:
-        raise SystemExit(f"non-deck or unembedded fonts in the deck: {bad}")
-    prev = OUT / "preview"
+        raise SystemExit(f"non-deck or unembedded fonts in {pdf.name}: {bad}")
     if prev.exists():
         shutil.rmtree(prev)
-    prev.mkdir()
-    subprocess.run(["pdftoppm", "-r", "110", "-png", str(DECK_PDF), str(prev / "slide")], check=True)
+    prev.mkdir(parents=True)
+    subprocess.run(["pdftoppm", "-r", "110", "-png", str(pdf), str(prev / "slide")], check=True)
     return pages, sorted({n for n, _ in fonts})
 
 
