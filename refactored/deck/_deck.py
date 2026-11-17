@@ -9,6 +9,7 @@ No colours or sizes are defined here.
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -28,6 +29,39 @@ OUT = REFACTORED / "figures" / "deck"
 # and scripts that also write deck/data files skip those writes.
 SVG_ONLY = os.environ.get("DECK_SVG") == "1"
 SVG_OUT = OUT / "svg"
+# Open Sans weights by the family names their TTFs carry, as PowerPoint and macOS resolve them (a bare
+# 'Open Sans' at weight 600 would be synthesised bold from Regular).
+SVG_FACES = {"600": "Open Sans SemiBold", "300": "Open Sans Light"}
+
+if SVG_ONLY:
+    from matplotlib.backends.backend_svg import RendererSVG
+
+    _svg_draw_text = RendererSVG.draw_text
+
+    def _svg_math_as_path(self, gc, x, y, s, prop, angle, ismath=False, mtext=None):
+        """Mathtext as outlines: its sans-serif glyphs are private-use codepoints of matplotlib's
+        STIXNonUnicode font, which no other application has. Plain text stays text."""
+        if ismath:
+            return self._draw_text_as_path(gc, x, y, s, prop, angle, ismath, mtext)
+        return _svg_draw_text(self, gc, x, y, s, prop, angle, ismath, mtext)
+
+    RendererSVG.draw_text = _svg_math_as_path
+
+
+def _svg_faces(path: Path):
+    def face(m):
+        style = m.group(0)
+        w = re.search(r"font-weight: (\d+); ", style)
+        if w and w.group(1) in SVG_FACES and "font-family: 'Open Sans'" in style:
+            style = style.replace(w.group(0), "").replace("font-family: 'Open Sans'",
+                                                          f"font-family: '{SVG_FACES[w.group(1)]}'")
+        return style
+    text = re.sub(r'style="[^"]*font-family[^"]*"', face, path.read_text())
+    # runs of spaces (aligned legend columns) as no-break spaces: SVG renderers collapse plain ones
+    text = re.sub(r"(<text[^>]*>)([^<]*)(</text>)",
+                  lambda m: m.group(1) + re.sub(r"  +", lambda s: " " + "\u00a0" * (len(s.group(0)) - 1),
+                                                m.group(2)) + m.group(3), text)
+    path.write_text(text)
 MONO = "IBM Plex Mono"
 R_MARS_KM = 3389.5  # dsmclib.constants.MARS_RADIUS
 
@@ -48,6 +82,7 @@ def save(fig, name: str, *inputs, png: bool = True) -> Path:
         SVG_OUT.mkdir(parents=True, exist_ok=True)
         path = SVG_OUT / f"{name}_deck.svg"
         fig.savefig(path, metadata={"Creator": f"deckstyle {ds.STYLE_VERSION}", "Source": source(*inputs)})
+        _svg_faces(path)
         print(path)
         return path
     path = ds.save(fig, name, target="deck", outdir=OUT, png=png, source=source(*inputs))
