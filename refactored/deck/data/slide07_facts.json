@@ -1,0 +1,55 @@
+{
+ "created": "2026-11-17",
+ "sources": {
+  "deck": "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/decks/wave1b/Input",
+  "run": "/Users/josepc/MarsAtmos-TruncBase-runs/1b/wave1b_r1",
+  "report": "/Users/josepc/MarsAtmos-TruncBase/campaigns/truncation_baseline/reports/wheel_fix/numbers.tex",
+  "table_s1": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/exports/table_s1_manuscript.csv",
+  "marsatmos_commit": "3dfeedf3",
+  "run_solver_rev": "3cb842b5"
+ },
+ "geometry": {
+  "sector_deg": 6.493359344166,
+  "sector_width_km": 400.0000000000168,
+  "n_azi": 50,
+  "azi_cell_km": 8.000000000000336,
+  "base_km": 140.0,
+  "top_input_km": 500.0,
+  "top_edge_km": 504.61293952665255,
+  "n_radial": 73,
+  "beta_deg": 7.2
+ },
+ "stage1b": {
+  "particles": 6243796.090909092,
+  "macro_output": 2634,
+  "cells": 3650,
+  "weight": 8.24500570042004e+24,
+  "dt_s": 0.2292713482431636,
+  "replicates": {
+   "wave1b_r1": true,
+   "wave1b_r2": true,
+   "wave1b_r3": true,
+   "wave1b_r4": true,
+   "wave1b_r5": false,
+   "nowave1b_r1": true,
+   "nowave1b_r2": true,
+   "nowave1b_r3": false
+  },
+  "finished": 6,
+  "planned": 8
+ },
+ "s6": {
+  "particles": 1080000000.0,
+  "azi_cell_km": 21.4
+ },
+ "null_test": {
+  "chi2_density_12x1d_fix": 1.14,
+  "chi2_density_12x1d_pre": 2638.36,
+  "chi2_density_3x1d_fix": 1.94,
+  "chi2_temperature_12x1d_fix": 3.35,
+  "budget_R_fix": -0.2,
+  "budget_R_fix_se": 0.7,
+  "escape_rel_pct_fix": -1.1,
+  "escape_rel_pct_pre": -9.0
+ }
+}
