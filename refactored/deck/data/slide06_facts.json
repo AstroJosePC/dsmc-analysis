@@ -1,0 +1,14 @@
+{
+ "created": "2026-11-17",
+ "run": "S6",
+ "sources": {
+  "transport_cache": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/s1_s6_azimuthal/analysis/preforcing_transport_S6_azimean_preforcing.npz",
+  "phase_lag_cache": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/s1_s6_azimuthal/analysis/phase_lag_S6_mad_column0.npz",
+  "dsmc_analyzer_commit": "2d9ba21"
+ },
+ "L_att_exobase_km": 118.94702582702733,
+ "sigma_L_exobase_km": 3.009391318029816,
+ "exobase_cell_km": 231.35515743315918,
+ "lambda_h_odr_km": 450.40349794621164,
+ "lambda_h_odr_err_km": 7.606572379037655
+}

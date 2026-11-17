@@ -360,10 +360,12 @@ def slide4():
     _, fh = s.place("fig04d_scales_and_step_deck", M, y_fig)
     f = facts("slide04_facts")
     ratio = int(f["tau_100"] / f["dt"])          # shortest collision time in S6 (100 km) over the step
-    steps = [("Move", f"fly straight in x, y, z for Δt = {f['dt']:.2f} s, {ratio}× shorter than "
+    nb = " "                                # keep a value with its symbol and unit on one line
+    steps = [("Move", f"fly straight in x, y, z for Δt{nb}={nb}{f['dt']:.2f}{nb}s, {ratio}× shorter than "
                       "a collision time"),
              ("Collide", "random pairs in the same cell; momentum and energy conserved"),
-             ("Boundaries", f"wave-driven inflow at {f['z_bot']:.0f} km; escape above {f['z_top']:.0f} km")]
+             ("Boundaries", f"wave-driven inflow at {f['z_bot']:.0f}{nb}km; escape above "
+                            f"{f['z_top']:.0f}{nb}km")]
     gap, lead = 28.0, 20.5
     col_w = (RIGHT - M - 2 * gap) / 3
     prop, bold = fp(SANS, 16), fp(SANS, 16, "semibold")

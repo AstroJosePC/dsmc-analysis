@@ -1,0 +1,20 @@
+{
+ "created": "2026-11-17",
+ "run": "S6",
+ "sources": {
+  "parameters": "/Volumes/MyBook/ArchiveSims/Results_20240722_041906.318/Info/Simulation_Parameters.ascii",
+  "transport_cache": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/dsmc_analyzer/refactored/outputs/s1_s6_azimuthal/analysis/preforcing_transport_S6_azimean_preforcing.npz",
+  "dsmc_analyzer_commit": "2d9ba21"
+ },
+ "W": 3.581526756485562e+23,
+ "dt": 0.13069995325516598,
+ "tau_100": 2.6847530525730763,
+ "z_bot": 100.0,
+ "z_top": 801.3551574331595,
+ "n_r": 75.0,
+ "n_phi": 1024.0,
+ "n_part": 1084569057.3494117,
+ "ppc_exo": 13407.592350643381,
+ "dr_exo": 12.0,
+ "dphi_exo_km": 22.21728898887642
+}
