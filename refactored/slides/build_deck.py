@@ -1,8 +1,8 @@
-"""Assemble the NSBP/NSHP 2026 deck, slides 1, 3, 4, 5, 6, as one 13.333 x 7.5 in PDF.
+"""Assemble the NSBP/NSHP 2026 deck, slides 1 and 3-8, as one 13.333 x 7.5 in PDF.
 
     cd refactored && conda run -n dsmc python slides/build_deck.py
 
-Slide 2 waits for the reduced NGIMS data; slides 7-9 are the next phase. Page numbers and progress
+Slide 2 waits for the reduced NGIMS data; slide 9 is the next phase. Page numbers and progress
 dots already count the full nine-slide talk, so these pages drop into the final deck unchanged.
 
 Pipeline
@@ -20,11 +20,16 @@ Pipeline
      vector, no scaling, embedded fonts untouched.
   5. Verification. Page count and size, embedded-font whitelist (no substitutes), PNG previews.
 
-Outputs (refactored/slides/build/): NSBP2026_slides_1-6.pdf, preview/slide-NN.png.
+Numbers on slides 7 and 8 are read from deck/data/*.json, written and checked against their sources
+by deck/cache_slides78.py (rerun it, then the figure scripts, before rebuilding when a source changes,
+e.g. when the last Stage 1B replicates finish).
+
+Outputs (refactored/slides/build/): NSBP2026_slides_1-8.pdf, preview/slide-N.png (page order).
 """
 from __future__ import annotations
 
 import itertools
+import json
 import re
 import shutil
 import subprocess
@@ -53,7 +58,8 @@ FIGS = REFACTORED / "figures" / "deck"
 DOCS = REFACTORED / "docs"
 OUT = REFACTORED / "slides" / "build"
 WORK = OUT / "_work"
-DECK_PDF = OUT / "NSBP2026_slides_1-6.pdf"
+DECK_PDF = OUT / "NSBP2026_slides_1-8.pdf"
+DECK_DATA = REFACTORED / "deck" / "data"
 
 # ---------------------------------------------------------------- page geometry (points, y down)
 W, H = 960.0, 540.0
@@ -408,6 +414,123 @@ def slide6():
     return s
 
 
+def facts(name: str) -> dict:
+    """Numbers cached and checked against their sources by deck/cache_slides78.py."""
+    return json.loads((DECK_DATA / f"{name}.json").read_text())
+
+
+def sci(x: float) -> tuple[str, str]:
+    """1.08e9 -> ('1.1 × 10', '9') for a Playfair mantissa with a raised exponent."""
+    e = int(np.floor(np.log10(x)))
+    return f"{x / 10 ** e:.1f} × 10", str(e)
+
+
+def hero_sci(s: Slide, x, y, value: float, size=34.0, color=ds.MIDNIGHT):
+    """Hero number in Playfair with a superscript exponent; returns its width."""
+    mant, exp = sci(value)
+    g = next(s._group)
+    w = s.width(mant, fp(SERIF, size))
+    s.text(x, y, mant, fp(SERIF, size), color=color, group=g, name=f"{mant}^{exp}")
+    s.text(x + w + 1.5, y - 0.42 * size, exp, fp(SERIF, 0.55 * size), color=color, group=g, name=f"{mant}^{exp}")
+    return w + 1.5 + s.width(exp, fp(SERIF, 0.55 * size))
+
+
+def ladder_row(s: Slide, y, color, text, status):
+    s.ax.add_patch(Circle((WORD_X + 5, y - 5), 4.0, fc=color, lw=0, zorder=4))
+    s.text(WORD_X + 18, y, text, fp(SANS, 14.5))
+    s.tracked(RIGHT, y, status, fp(SANS, 10.5), TRACK_LABEL, ha="right")
+
+
+def slide7():
+    s = Slide(7)
+    f = facts("slide07_facts")
+    header(s, "06 · SCALING UP · IN PROGRESS",
+           "To afford finer cells, we simulate a one-wavelength wheel sector instead of the full ring.")
+    s.place("fig07a_wheel_sector_deck", EVID_X, EVID_Y)
+
+    # particles per run: full ring (S6, Table S1) vs wheel sector (Stage 1B, measured)
+    s.tracked(WORD_X, EVID_Y + 10, "PARTICLES PER RUN", fp(SANS, 11), TRACK_LABEL)
+    desc = fp(SANS, 13, 300)
+    rows = ((f["s6"]["particles"], ds.GRANITE, "full ring (S6)", f"{f['s6']['azi_cell_km']:.0f} km cells"),
+            (f["stage1b"]["particles"], ds.MIDNIGHT, "wheel sector (1B)",
+             f"{f['geometry']['azi_cell_km']:.0f} km cells"))
+    y = EVID_Y + 44
+    for value, color, a, b in rows:
+        w = hero_sci(s, WORD_X, y, value, color=color)
+        s.text(WORD_X + 150, y - 14, a, desc, color=color if color == ds.MIDNIGHT else ds.GRANITE)
+        s.text(WORD_X + 150, y + 1, b, desc)
+        if w > 142:
+            raise ValueError("slide 7: hero number runs into its description")
+        y += 36
+    ratio = f["s6"]["particles"] / f["stage1b"]["particles"]
+    finer = f["s6"]["azi_cell_km"] / f["geometry"]["azi_cell_km"]
+    s.text(WORD_X, y - 12, f"≈ 1/{10 * round(ratio / 10):.0f} of the particles, with cells "
+           f"{finer:.1f}× finer", fp(SANS, 13.5), color=ds.MIDNIGHT)
+
+    # status ladder
+    st = f["stage1b"]
+    y = EVID_Y + 126
+    for color, text, status in ((ds.GREEN, "0C null test, no wave", "DONE"),
+                                (ds.GREEN, "Cone-reflection fix", "DONE"),
+                                (ds.TANGELO, "1B noise floor",
+                                 "DONE" if st["finished"] == st["planned"]
+                                 else f"RUNNING {st['finished']}/{st['planned']}"),
+                                (ds.SLATE, "2 truncation twins", "NEXT")):
+        ladder_row(s, y, color, text, status)
+        y += 19.5
+
+    n = f["null_test"]
+    card = Card("NULL TEST · SECTOR VS 1D, NO WAVE",
+                eq=[[(rf"$\chi^2/\mathrm{{dof}} = {n['chi2_density_12x1d_fix']:.2f}$", fp(SANS, 20), ds.MIDNIGHT),
+                     (f"  density ({n['chi2_density_12x1d_pre']:,.0f} before fix)", fp(SANS, 13.5, 300),
+                      ds.GRANITE)]],
+                lines=[(f"Budget closes: R = {n['budget_R_fix']:.1f} ± {n['budget_R_fix_se']:.1f} "
+                        "per block".replace("-", "−"), 14.5, ds.GRANITE, 300),
+                       (f"Escape {abs(n['escape_rel_pct_fix']):.1f}% below 1D "
+                        f"({abs(n['escape_rel_pct_pre']):.0f}% before)", 14.5, ds.GRANITE, 300)])
+    _, ch = card.layout()
+    card.draw(s, WORD_X, EVID_BOTTOM - ch)
+    footer(s, cite("Truncation-baseline campaign · Stage 0C report and cone-reflection fix, Nov 2026"
+                   " · S6: Table S1"))
+    return s
+
+
+def slide8():
+    s = Slide(8)
+    f = facts("slide08_facts")
+    header(s, "07 · BUILDING THE NEXT 2D RUNS",
+           "A fluid model now supplies the waves from below, and baseline runs fix the domain top.")
+    y_fig = 148.0                                   # as on slide 4: room for the callout row
+    _, h8a = s.place("fig08a_coupling_baseline_deck", M, y_fig)
+    _, h8b = s.place("fig08b_escape_vs_top_deck", WORD_X, y_fig)
+    card = Card("COUPLING CHECK",
+                eq=[r"$|\hat w_{\mathrm{fluid}} - \hat w_{\mathrm{lin}}|\,/\,|\hat w_{\mathrm{lin}}| \leq 0.22\%$"],
+                lines=[(f"at 100–140 km, so the {f['n_weak_streams']} weak-forcing", 14.5, ds.GRANITE, 300),
+                       ("streams are the first input to DSMC.", 14.5, ds.GRANITE, 300)])
+    _, ch = card.layout()
+    card.draw(s, WORD_X, y_fig + h8a - ch)
+
+    # callout row: three items on the 12-column grid
+    col_w = (RIGHT - M) / 3
+    lead, sub = fp(SANS, 16, "semibold"), fp(SANS, 13, 300)
+    wind = f"{f['strong_wind_m_s']:.1f}".replace("-", "−")
+    items = ((f"{f['n_streams']} input streams",
+              "100 · 120 · 140 km, all checks pass"),
+             ("Weak forcing is linear",
+              f"≤ {f['linear_ok_max_pct']:.2f}%, {f['linear_ok_waves']} of {f['linear_waves']} waves; "
+              f"strong: {wind} m/s wind"),
+             (f"Domain top ≥ {f['z_top_min_km']:,} km",
+              f"if bound particles return; cells ≤ {f['dr_fine_km']} km"))
+    y0 = y_fig + h8a + 24
+    for k, (a, b) in enumerate(items):
+        x = M + k * col_w
+        s.rule(x, y0 - 13, 3, 33, ds.MIDNIGHT)
+        s.text(x + 11, y0, a, lead, color=ds.MIDNIGHT)
+        s.paragraph(x + 11, y0 + 17, b, sub, col_w - 34, 15, max_lines=1)
+    footer(s, cite("MAGNUS-P fluid model (validated vs Srivastava et al. 2022) · Plates 1 and 3, Nov 2026"))
+    return s
+
+
 # ================================================================= audit and checks
 def figure_size(stem: str):
     """MediaBox of a figure PDF in points."""
@@ -420,7 +543,8 @@ def expected_size(stem: str):
     if stem in CUSTOM_SIZES:
         return CUSTOM_SIZES[stem]
     kind = {"fig03": "evidence", "fig04": "full", "fig05a": "evidence", "fig05b": "inset",
-            "fig06a": "evidence", "fig06_spark": "spark"}
+            "fig06a": "evidence", "fig06_spark": "spark", "fig07a": "evidence", "fig08a": "evidence",
+            "fig08b": "narrow"}
     for prefix, slot in kind.items():
         if stem.startswith(prefix):
             return ds.SIZES[slot]
@@ -555,7 +679,7 @@ def compose(slides, commit: str):
             page.append(rf"\AddToShipoutPictureFG*{{\put({x:.3f},{H - y - h:.3f}){{\includegraphics{{{stem}.pdf}}}}}}")
         body.append("\n".join(page) + "\n\\null\\newpage\n")
     title = "Molecular Kinetic Simulations of Acoustic-Gravity Wave Energy Transport into the Martian Exosphere"
-    tex = TEX_HEAD % (title, f"NSBP/NSHP 2026, slides 1, 3-6; figures/deck @ {commit}", ds.STYLE_VERSION)
+    tex = TEX_HEAD % (title, f"NSBP/NSHP 2026, slides 1, 3-8; figures/deck @ {commit}", ds.STYLE_VERSION)
     tex += "".join(body) + r"\end{document}" + "\n"
     (WORK / "deck.tex").write_text(tex)
     subprocess.run(["tectonic", "-X", "compile", "deck.tex"], cwd=WORK, check=True, capture_output=True)
@@ -585,7 +709,7 @@ def main():
         print(note)
     commit = subprocess.run(["git", "-C", str(REFACTORED), "rev-parse", "--short", "HEAD"],
                             capture_output=True, text=True, check=True).stdout.strip()
-    slides = [slide1(), slide3(), slide4(), slide5(), slide6()]
+    slides = [slide1(), slide3(), slide4(), slide5(), slide6(), slide7(), slide8()]
     for s in slides:
         for stem, *_ in s.placed:
             audit_figure(stem)

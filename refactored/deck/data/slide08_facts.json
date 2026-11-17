@@ -1,0 +1,18 @@
+{
+ "created": "2026-11-17",
+ "sources": {
+  "plate1": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/advisor_update_plates/plate_01_magnusp_isoo.json",
+  "plate3": "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/advisor_update_plates/plate_03_dsmc_ubc_sweep.json",
+  "magnusp_commit": "03fb7e22"
+ },
+ "n_streams": 57,
+ "n_weak_streams": 24,
+ "linear_ok_waves": 7,
+ "linear_waves": 8,
+ "linear_ok_max_pct": 0.7104814330795599,
+ "strong_wind_m_s": -6.08021111239583,
+ "strong_wind_z_km": 97.25,
+ "strong_wind_t_h": 12.0,
+ "z_top_min_km": 2500,
+ "dr_fine_km": 250
+}
