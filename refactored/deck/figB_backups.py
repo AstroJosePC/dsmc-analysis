@@ -2,7 +2,7 @@
 
     cd refactored && conda run -n dsmc python deck/figB_backups.py [B1 B2 ...]
 
-B1 run table (strip slot); B2-B6 one evidence-field figure each. Sizes are existing deckstyle slots, so
+B1 run table (strip slot) and growth-convergence plot (column slot); B2-B6 one evidence-field figure each. Sizes are existing deckstyle slots, so
 no style token changes. Curved-geometry profiles (B2, B3: the wheel sector) label altitude with the
 radial variable r; flat 1-D and fluid profiles (B4, B5) read "Altitude (km)", as on slides 5 and 8.
 """
@@ -82,6 +82,34 @@ def figB1():
     save(fig, "figB1_run_table", FACTS + " B1", *b["sources"])
 
 
+def figB1b():
+    """Peak growth against azimuthal cells with the A - B/N fit and its asymptote (column slot)."""
+    b = F["B1"]
+    A, A_err, B = b["fit"]["A"], b["fit"]["A_err"], b["fit"]["B"]
+    fig, ax = ds.figure("column")
+    n = np.array([r["n_azi"] for r in b["rows"]], float)
+    g = np.array([r["g_max"] for r in b["rows"]])
+    ax.axhspan(A - A_err, A + A_err, color=ds.MIDNIGHT, alpha=0.15, lw=0)
+    ax.axhline(A, color=ds.MIDNIGHT, lw=1.0, ls=(0, (3, 2.5)))
+    x = np.geomspace(100, 1300, 100)
+    ax.plot(x, A - B / x, color=ds.MIDNIGHT, lw=1.6, zorder=2)
+    for r, xi, gi in zip(b["rows"], n, g):
+        ax.plot(xi, gi, "o", ms=6.5, color=ds.RUN_RAMP[r["run"]], mec=ds.CULTURED, mew=0.8, zorder=3)
+    ax.text(1250, A + A_err + 0.03, f"CONVERGED {A:.2f} ± {A_err:.2f}", ha="right", va="bottom",
+            fontsize=12, fontweight="semibold", color=ds.MIDNIGHT)
+    ax.text(400, 5.20, r"fit $A - B/N_\phi$", ha="left", va="bottom", fontsize=14, color=ds.MIDNIGHT)
+    ax.set_xscale("log")
+    ax.set_xlim(100, 1300)
+    ax.xaxis.set_major_locator(FixedLocator([128, 256, 512, 1024]))
+    ax.xaxis.set_major_formatter(FuncFormatter(thousands))
+    ax.xaxis.set_minor_locator(NullLocator())
+    ax.set_ylim(5.1, 6.15)
+    ax.set_yticks([5.2, 5.6, 6.0])
+    ax.set_xlabel(r"Azimuthal cells $N_\phi$")
+    ax.set_ylabel(r"$G_{\max}$")
+    save(fig, "figB1b_growth_convergence", FACTS + " B1", *b["sources"])
+
+
 # ================================================================= B2 wheel-sector boundary fix
 def figB2():
     d = np.load(DATA / "figB2_wheel_profiles.npz")
@@ -117,7 +145,7 @@ def figB3():
     d = np.load(DATA / "figB3_floor.npz")
     b = F["B3"]
     fig, ax = ds.figure("evidence")
-    names = {"n": "n′/n", "T": "T′/T", "u": "u", "w": "w"}
+    names = {"n": "Density", "T": "Temperature", "u": "Horizontal wind", "w": "Vertical wind"}
     colors = {"n": ds.MIDNIGHT, "T": ds.CELTIC, "u": ds.VIOLET, "w": ds.GRANITE}
     ax.axvspan(10, 60, color=ds.GRANITE, alpha=0.07, lw=0)
     for f in "nTuw":
@@ -133,9 +161,9 @@ def figB3():
     ax.set_ylim(140, 295)
     ds.exobase(ax, label=False)
     ax.text(48, 232, "EXOBASE", **CAPS, ha="right", va="bottom")
-    ax.text(4.8, 288, r"$\delta_{\mathrm{phys}}$ = 5%", ha="right", va="top", fontsize=14)
-    ax.text(10.8, 145, "NOT SCORED ABOVE\nTHE 10% CROSSING", ha="left", va="bottom", **CAPS)
-    ax.set_xlabel(r"Detectable difference, $3\,\delta_{\mathrm{floor}}/\sqrt{5}$")
+    ax.text(4.8, 290, "5% THRESHOLD", rotation=90, ha="right", va="top", **CAPS)
+    ax.text(10.8, 145, "NOT TESTED:\nNOISE ABOVE 10%", ha="left", va="bottom", **CAPS)
+    ax.set_xlabel(r"Smallest detectable change, $3\,\delta_{\mathrm{floor}}/\sqrt{5}$")
     ax.set_ylabel(R_ALT)
     ax.legend(loc="upper left", handlelength=1.8)
     save(fig, "figB3_noise_floor", FACTS + " B3", *b["sources"][:2])
@@ -248,7 +276,7 @@ def figB6():
     save(fig, "figB6_phase_lag", FACTS + " B6", *b["sources"][:2])
 
 
-ALL = {"B1": figB1, "B2": figB2, "B3": figB3, "B4": figB4, "B5": figB5, "B6": figB6}
+ALL = {"B1": figB1, "B1b": figB1b, "B2": figB2, "B3": figB3, "B4": figB4, "B5": figB5, "B6": figB6}
 
 if __name__ == "__main__":
     for key in sys.argv[1:] or ALL:

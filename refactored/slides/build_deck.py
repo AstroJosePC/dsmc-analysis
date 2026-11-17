@@ -96,7 +96,7 @@ SIZE_KEY = {"fig01_title_wedge": "title", "fig04d_scales_and_step": "plate",
             "fig06a_s6_wedge": "evidence", "fig06_spark_latt": "spark", "fig06_spark_lambdah": "spark",
             "fig07a_wheel_sector": "evidence", "fig08a_coupling_baseline": "evidence",
             "fig08b_escape_vs_top": "narrow", "fig09_maven_roadmap": "strip",
-            "figB1_run_table": "strip", "figB2_wheel_fix": "evidence", "figB3_noise_floor": "evidence",
+            "figB1_run_table": "strip", "figB1b_growth_convergence": "column", "figB2_wheel_fix": "evidence", "figB3_noise_floor": "evidence",
             "figB4_westward_wind": "evidence", "figB5_radial_grid": "evidence", "figB6_phase_lag": "evidence"}
 ALLOWED_FONTS = re.compile(r"^(OpenSans|PlayfairDeckLF|IBMPlexMono|STIX)")
 
@@ -651,7 +651,7 @@ def card_bottom(s: Slide, card: Card, last_y: float):
 
 
 def backup1():
-    """S1-S6 resolution runs: the run table (FIG B1) over three metrics, as on slide 7."""
+    """S1-S6 resolution runs: the run table (FIG B1) over the growth-convergence plot and two metrics."""
     s = backup(1)
     b = facts("backup_facts")["B1"]
     rows = {r["run"]: r for r in b["rows"]}
@@ -659,25 +659,24 @@ def backup1():
            f"Peak wave growth converges as azimuthal cells shrink, levelling off near {b['fit']['A']:.1f}.")
     y_fig = 148.0
     _, fh = s.place("figB1_run_table_deck", M, y_fig)
+    pw, ph = s.place("figB1b_growth_convergence_deck", M, y_fig + fh + 4)
+    if y_fig + fh + 4 + ph > FOOT_RULE_Y:
+        raise ValueError("slide B1: growth plot runs into the footer")
     gap = 28.0
-    col_w = (RIGHT - M - 2 * gap) / 3
+    x1 = M + pw + gap
+    col_w = (RIGHT - x1 - gap) / 2
     y0 = y_fig + fh + 24
     s4, s6 = rows["S4"], rows["S6"]
-    off = max(abs(rows[r]["g_max"] / b["fit"]["A"] - 1) for r in ("S4", "S5", "S6"))
-    ends = [metric(s, M, y0, "CONVERGED GROWTH", f"{b['fit']['A']:.2f} ± {b['fit']['A_err']:.2f}",
-                   ["asymptote of", r"$A - B/N_\phi$"],
-                   [f"S4–S6 lie within {100 * off:.1f}% of it;",
-                    f"S1 is {100 * (1 - rows['S1']['g_max'] / b['fit']['A']):.0f}% below"], col_w, size=34),
-            metric(s, M + col_w + gap, y0, "CELLS PER WAVELENGTH", f"{s6['cells_per_lambda']:.0f}",
+    ends = [metric(s, x1, y0, "CELLS PER WAVELENGTH", f"{s6['cells_per_lambda']:.0f}",
                    [r"cells per $\lambda_h$", "in S6"],
                    [f"S1 had {rows['S1']['cells_per_lambda']:.1f}: one cell spanned",
                     f"{rows['S1']['cell_km']:.0f} km at the exobase"], col_w),
-            metric(s, M + 2 * (col_w + gap), y0, "TWO PARTICLE BUDGETS",
+            metric(s, x1 + col_w + gap, y0, "TWO PARTICLE BUDGETS",
                    f"{s4['ppc_230'] / rows['S3']['ppc_230']:.0f}×", ["more particles", "per cell"],
                    ["in S4–S6 than in S1–S3;",
                     f"S4 and S6 match to {100 * abs(s4['ppc_230'] / s6['ppc_230'] - 1):.1f}%"], col_w)]
-    for k in range(2):
-        s.rule(M + (k + 1) * (col_w + gap) - gap / 2, y0 - 10, 0.6, 96, ds.GRANITE, alpha=0.35)
+    for x in (x1 - gap / 2, x1 + col_w + gap / 2):
+        s.rule(x, y0 - 10, 0.6, 96, ds.GRANITE, alpha=0.35)
     if max(ends) + 8 > FOOT_RULE_Y:
         raise ValueError("slide B1: metrics run into the footer")
     footer(s, cite("Pérez Chávez et al., to be submitted, JGR Planets (Table S1, Table 4)"))
@@ -699,7 +698,7 @@ def backup2():
     y += 46
     hero_row(s, WORD_X, y, WORD_W, f"+{n['fixXIITA']:.2f}–{n['fixXIITB']:.2f}", "%", ["TEMPERATURE", "ABOVE 260 KM"],
              size=30)
-    y = lines14(s, WORD_X, y + 4, ["Not the estimator, collision frame or band", "width; common to all twins, so it cancels."],
+    y = lines14(s, WORD_X, y + 4, ["Not the estimator, collision frame or band", "width; shared by every test run, so it cancels."],
                 WORD_W)
     eq = fp(SANS, 18)
     card = Card("WHY THE PLANE WALL PUSHED GAS DOWN",
@@ -708,18 +707,18 @@ def backup2():
                     [(r"$n_{\mathrm{2D}}/n_{\mathrm{1D}} = (R_0/R)^{\cos^2\beta}$", eq, ds.MIDNIGHT)]],
                 lines=[(f"R from Mars' centre; band half-width β = {b['beta_deg']:.1f}°", 14, ds.GRANITE, 300)])
     card_bottom(s, card, y)
-    footer(s, cite("Wheel-sector boundary fix: 2-D sector against twelve 1-D DSMC replicates (truncation-baseline campaign)"))
+    footer(s, cite("Wheel-sector boundary fix: 2-D sector against twelve repeat 1-D DSMC runs"))
     return s
 
 
 def backup3():
-    """Truncation twins and the Stage 2 pass rule proposed from the measured Stage 1B floor (FIG B3)."""
+    """One-change test runs of the wheel-sector setup and the pass rule proposed from the measured noise floor (FIG B3)."""
     s = backup(3)
     b = facts("backup_facts")["B3"]
-    header(s, "BACKUP · TRUNCATION TWINS",
-           "Four one-factor twins will test the one-wavelength sector against a measured noise floor.")
+    header(s, "BACKUP · DOMAIN-SIZE TESTS",
+           "Four test runs, each changing one setting, will check that the small sector does not change the wave.")
     s.place("figB3_noise_floor_deck", EVID_X, EVID_Y)
-    s.tracked(WORD_X, EVID_Y + 10, "FOUR TWINS, ONE CHANGE EACH", fp(SANS, 11), TRACK_LABEL)
+    s.tracked(WORD_X, EVID_Y + 10, "FOUR TEST RUNS, ONE CHANGE EACH", fp(SANS, 11), TRACK_LABEL)
     y = EVID_Y + 36
     for name, change in b["twins"]:
         for t, p in ((name, fp(SANS, 15, "semibold")), (change, fp(SANS, 13, 300))):
@@ -731,11 +730,11 @@ def backup3():
     last = y - 40 + 17
     card = Card("PASS RULE · PROPOSED",
                 eq=[[(r"$\delta_q \leq \max(3\,\delta_{\mathrm{floor}}/\sqrt{5},\ 5\%)$", fp(SANS, 18), ds.MIDNIGHT)]],
-                lines=[("scored below the 10% crossing; pass if at", 14, ds.GRANITE, 300),
-                       ("most 5% of scored levels fail", 14, ds.GRANITE, 300)])
+                lines=[("at each height where the noise is under 10%;", 14, ds.GRANITE, 300),
+                       ("a run passes if ≤ 5% of heights fail", 14, ds.GRANITE, 300)])
     card_bottom(s, card, last)
-    footer(s, cite(f"Truncation-baseline preregistration (draft); Stage 1B floor from {b['n_wave']} wave and "
-                   f"{b['n_nowave']} no-wave replicates"))
+    footer(s, cite(f"Noise floor from {b['n_wave']} repeat runs with the wave and {b['n_nowave']} without; "
+                   "pass rule proposed, not yet adopted"))
     return s
 
 
