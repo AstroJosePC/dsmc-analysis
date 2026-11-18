@@ -1,0 +1,120 @@
+{
+  "generated": "2026-11-17",
+  "sigma_m2": 2e-19,
+  "n_exobase_m2": 5e+18,
+  "d_ref_m": {
+    "O": 3e-10,
+    "Ar": 4.17e-10,
+    "CO2": 5.62e-10
+  },
+  "schematic": {
+    "z_exo_km": 230.0,
+    "H_km": 40.0,
+    "half_angle_deg": 22.0
+  },
+  "orbits": {
+    "2521": {
+      "role": "slide",
+      "date": "2016-01-16",
+      "t_peri_unix": 1452916273.903002,
+      "t_peri_utc": "2016-01-16 03:51:13",
+      "z_peri_km": 141.2,
+      "lst_peri_h": 3.24,
+      "sza_peri_deg": 108.6,
+      "lat_peri_deg": 28.6,
+      "z_exo_km": 151.6,
+      "z_top_O_km": 228.2,
+      "z_top_CO2_km": 221.2,
+      "kn_peri": 0.342,
+      "kn_peri_hard_sphere": 0.074,
+      "column_bottom_km": 141.2,
+      "replication_column_bottom_km": 146.4,
+      "kn_at_replication_column_bottom": 0.469,
+      "z_kn10_km": 172.9,
+      "z_kn01_km": null,
+      "z_kn10_km_hard_sphere": 190.8,
+      "z_kn1_km_hard_sphere": 162.8,
+      "z_kn01_km_hard_sphere": 145.9,
+      "transition_minutes": 6.53,
+      "transition_nu_deg": [
+        -13.1,
+        13.5
+      ],
+      "alt_at_nu_pm22_km": [
+        226.8,
+        224.4
+      ],
+      "kn_at_nu_pm22": [
+        103.0,
+        97.0
+      ],
+      "z_s_peri_km": 187.1,
+      "z_s_max_nu_pm22_km": 414.8,
+      "sza_range_nu_pm22_deg": [
+        98.4,
+        117.1
+      ],
+      "orbit_plane_residual_km": 13.3,
+      "minutes_700km_to_peri": 14.8,
+      "nu_at_700km_deg": [
+        -55.0,
+        54.7
+      ]
+    },
+    "3314": {
+      "role": "deep dip (comparison only)",
+      "date": "2016-06-12",
+      "t_peri_unix": 1465739116.936001,
+      "t_peri_utc": "2016-06-12 13:45:16",
+      "z_peri_km": 116.6,
+      "lst_peri_h": 5.07,
+      "sza_peri_deg": 98.9,
+      "lat_peri_deg": 31.8,
+      "z_exo_km": 152.3,
+      "z_top_O_km": 203.2,
+      "z_top_CO2_km": 185.5,
+      "kn_peri": 0.007,
+      "kn_peri_hard_sphere": 0.002,
+      "column_bottom_km": 116.6,
+      "replication_column_bottom_km": 121.7,
+      "kn_at_replication_column_bottom": 0.011,
+      "z_kn10_km": 181.4,
+      "z_kn01_km": 137.7,
+      "z_kn10_km_hard_sphere": 187.2,
+      "z_kn1_km_hard_sphere": 161.0,
+      "z_kn01_km_hard_sphere": 145.9,
+      "transition_minutes": 9.4,
+      "transition_nu_deg": [
+        -18.8,
+        19.7
+      ],
+      "alt_at_nu_pm22_km": [
+        202.7,
+        196.9
+      ],
+      "kn_at_nu_pm22": [
+        43.0,
+        28.0
+      ],
+      "z_s_peri_km": 33.8,
+      "z_s_max_nu_pm22_km": 380.6,
+      "sza_range_nu_pm22_deg": [
+        87.8,
+        109.5
+      ],
+      "orbit_plane_residual_km": 61.7,
+      "minutes_700km_to_peri": 15.0,
+      "nu_at_700km_deg": [
+        -55.6,
+        57.0
+      ]
+    }
+  },
+  "sources": {
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/outputs/tables/profiles.parquet": "6e473743f635ff74438fd840a294d2d5c817aa3895a30309c9921389b927a099",
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/outputs/tables/orbits.parquet": "115aeded591e244821c4bdf8046e65b3558b5f0abbab9b762be5a9c701f2babd",
+    "/Volumes/MyBook/Education and Research/Research/DSMC Exosphere GWs/williamson-replication/config.toml": "ebc29b1fccde4ca998ac8712ba86935e2e34e6b43d5db336141757ae2bc593ae",
+    "/Users/josepc/maven_data/kp_reduced/mvn_kp_insitu_20160116_v26_r01.parquet": "cd4cb7894937cdffdd19a0d7a03e43f889c2c2f45b19d945096fdec1db2bbea3",
+    "/Users/josepc/maven_data/kp_reduced/mvn_kp_insitu_20160612_v26_r01.parquet": "c23e62e8d65f951ecae39b67108168d2a596db8a4fbf9175a965435f58b66a0c"
+  }
+}
