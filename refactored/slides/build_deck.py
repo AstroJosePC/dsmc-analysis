@@ -145,6 +145,8 @@ class Slide:
     panels: list = field(default_factory=list)     # (x, y, w, h, name, step) card / chip rectangles
     layers: list = field(default_factory=list)     # (stem, x, y_top, w, h, first, last) incl. build variants
     swapped: list = field(default_factory=list)    # (x, y_top, w, h, first, last) of figures swapped out
+    images: list = field(default_factory=list)     # (x0, y0, x1, y1, name, first, last) raster chrome images
+    art_until: dict = field(default_factory=dict)  # chrome artist -> last build step it shows on
     step: int = 0                                  # build step of what is drawn now (0: every page)
     art_step: dict = field(default_factory=dict)   # chrome artist -> build step
     para_of: dict = field(default_factory=dict)    # text artist -> paragraph id (slides/export_pptx.py only)
@@ -187,7 +189,7 @@ class Slide:
         """Show build step k (chrome artists of later steps hidden); returns the figures on that page."""
         self._sweep()
         for a, s in self.art_step.items():
-            a.set_visible(s <= k)
+            a.set_visible(s <= k <= self.art_until.get(a, k))
         return [l[:5] for l in self.layers if l[5] <= k and (l[6] is None or k <= l[6])]
 
     def pages(self) -> range:
@@ -287,6 +289,23 @@ class Slide:
                 raise SystemExit(f"{v}: not the size of {stem}")
             self.layers.append((v, x, y_top, w, h, self.step + i - 1, self.step + i - 1))
         self.layers.append((stem, x, y_top, w, h, self.step + builds, None))
+        return w, h
+
+    def image(self, rgba, x, y_top, w=None, h=None, name="image", until=None):
+        """A raster image (RGBA array, trimmed to its ink) drawn in the chrome at width w or height h,
+        aspect kept. until = k: shown at steps step ... k only (not on the full slide); check_builds
+        then allows its ink where the full slide is blank. check_layout keeps it clear of text, panels
+        and the ink of placed figures."""
+        ar = rgba.shape[1] / rgba.shape[0]
+        w, h = (w, w / ar) if w is not None else (h * ar, h)
+        im = self.ax.imshow(rgba, extent=(x, x + w, y_top + h, y_top), interpolation="none", zorder=5)
+        if until is not None:
+            if until < self.step:
+                raise ValueError(f"{name}: until={until} before step {self.step}")
+            self._sweep()
+            self.art_until[im] = until
+            self.swapped.append((x, y_top, w, h, self.step, until))
+        self.images.append((x, y_top, x + w, y_top + h, name, self.step, until))
         return w, h
 
     def panel(self, x, y, w, h, name):
@@ -424,13 +443,21 @@ def chip(s: Slide, x, y, text, size=14.0, h=22.0):
 
 
 # ================================================================= slides
-def place_title_logos(s: Slide, x: float, y_center: float, howard_h: float = 86.0, nasa_h: float = 68.0,
-                      gap: float = 26.0):
-    """Place Howard University (light-on-Midnight reverse) and NASA logos in the bottom-left of slide 1."""
-    slides_dir = Path(__file__).resolve().parent
-    howard = mpimg.imread(slides_dir / "howard_logo.png").copy()
-    ys, xs = np.where(howard[..., 3] > 0.02)
-    howard = howard[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+SLIDES_DIR = Path(__file__).resolve().parent
+
+
+def trimmed_png(name: str) -> np.ndarray:
+    """RGBA array of slides/<name>, cropped to its non-transparent pixels."""
+    img = mpimg.imread(SLIDES_DIR / name).copy()
+    ys, xs = np.where(img[..., 3] > 0.02)
+    return img[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+
+
+def place_title_logos(s: Slide, x: float, y_center: float, howard_h: float = 112.0, nasa_h: float = 90.0,
+                      gap: float = 34.0):
+    """Place Howard University (light-on-Midnight reverse) and NASA logos in the bottom-left of slide 1,
+    centres level at y_center."""
+    howard = trimmed_png("howard_logo.png")
     # Convert Howard Blue (#003963) -> Cultured and white clock face -> Midnight; keep crimson 1867 & rule
     r, g, b = howard[..., 0], howard[..., 1], howard[..., 2]
     non_red = (r - b) < 0.15
@@ -439,17 +466,8 @@ def place_title_logos(s: Slide, x: float, y_center: float, howard_h: float = 86.
     midnight = np.array(matplotlib.colors.to_rgb(ds.MIDNIGHT))
     inv_rgb = (1.0 - t)[..., None] * cultured + t[..., None] * midnight
     howard[..., :3] = np.where(non_red[..., None], inv_rgb, howard[..., :3])
-    hw = howard_h * (howard.shape[1] / howard.shape[0])
-    hy0 = y_center - howard_h / 2
-    s.ax.imshow(howard, extent=(x, x + hw, hy0 + howard_h, hy0), interpolation="none", zorder=5)
-
-    nasa = mpimg.imread(slides_dir / "nasa_logo.png")
-    ys_n, xs_n = np.where(nasa[..., 3] > 0.02)
-    nasa = nasa[ys_n.min():ys_n.max() + 1, xs_n.min():xs_n.max() + 1]
-    nw = nasa_h * (nasa.shape[1] / nasa.shape[0])
-    nx0 = x + hw + gap
-    ny0 = y_center - nasa_h / 2
-    s.ax.imshow(nasa, extent=(nx0, nx0 + nw, ny0 + nasa_h, ny0), interpolation="none", zorder=5)
+    hw, _ = s.image(howard, x, y_center - howard_h / 2, h=howard_h, name="Howard logo")
+    s.image(trimmed_png("nasa_logo.png"), x + hw + gap, y_center - nasa_h / 2, h=nasa_h, name="NASA logo")
 
 
 def slide1():
@@ -484,11 +502,18 @@ def slide2():
            "like a fluid.")
     s.reveal(1)                                   # build: one pass, all passes, what they show
     s.place("fig02a_ngims_orbit2521_deck", EVID_X, EVID_Y, builds=1)   # FIG 2b's caption at step 2
+    maven = trimmed_png("maven_spacecraft.png")
+    w_big = WORD_W - 16                           # steps 1-2: the word column is still empty
+    h_big = w_big * maven.shape[0] / maven.shape[1]
+    s.image(maven, WORD_X + 8, EVID_Y + (EVID_H - h_big) / 2, w=w_big, name="MAVEN (large)", until=2)
     iw, ih = (v * 72 for v in ds.SIZES["inset"])
     s.reveal(2)
     s.place("fig02b_ngims_sza_deck", EVID_X + EVID_W - iw, EVID_BOTTOM - ih)   # x axes level with 2a
 
     s.reveal(3)
+    # from step 3 a thumbnail in FIG 2a's empty upper right: right of the 40% line, left of the legend,
+    # above the 87% callout (check_layout: no figure ink under it or within 4 pt)
+    s.image(maven, EVID_X + 233, EVID_Y + 40, w=100, name="MAVEN (small)")
     y = EVID_Y + 31
     for hero, labels in ((f"> {f['threshold_pct']}%", ["PEAK DENSITY", "PERTURBATIONS"]),
                          ("CO$_2$, Ar > O", ["HEAVIER SPECIES,", "LARGER AMPLITUDES"]),
@@ -1051,6 +1076,16 @@ def ink_rect(stem: str, x, y_top):
     return (x + cols.min() * k, y_top + rows.min() * k, x + (cols.max() + 1) * k, y_top + (rows.max() + 1) * k)
 
 
+def figure_ink_in(stem: str, x, y_top, rect) -> bool:
+    """Whether the placed figure has any ink (alpha > 0.03, 300-dpi PNG) inside rect (x0, y0, x1, y1), pt."""
+    img = mpimg.imread(FIGS / f"{stem}.png")
+    alpha = img[..., 3] if img.shape[-1] == 4 else 1 - img[..., :3].min(axis=-1)
+    k = 300.0 / 72.0
+    c0, c1 = max(int((rect[0] - x) * k), 0), max(int(np.ceil((rect[2] - x) * k)), 0)
+    r0, r1 = max(int((rect[1] - y_top) * k), 0), max(int(np.ceil((rect[3] - y_top) * k)), 0)
+    return bool((alpha[r0:r1, c0:c1] > 0.03).any())
+
+
 def check_layout(s: Slide, k: int | None = None):
     """Text inside the page, no text/text, text/figure-ink or panel/figure-ink collisions, on build
     step k (default: the full slide)."""
@@ -1091,6 +1126,20 @@ def check_layout(s: Slide, k: int | None = None):
     for (a, na), (b, nb) in itertools.combinations(items, 2):
         if hit(a, b):
             problems.append(f"text overlap: '{na}' / '{nb}'")
+    for x0, y0, x1, y1, name, first, last in s.images:
+        if not first <= k <= (k if last is None else last):
+            continue
+        if x0 < margin or y0 < margin or x1 > W - margin or y1 > H - margin:
+            problems.append(f"image outside page: {name}")
+        for box, tname in items:
+            if hit(box, (x0, y0, x1, y1), pad=-4.0):
+                problems.append(f"image over text: {name} / '{tname}'")
+        for px, py, pw, ph, pname in panels:
+            if hit((px, py, px + pw, py + ph), (x0, y0, x1, y1), pad=-4.0):
+                problems.append(f"image over {pname}: {name}")
+        for stem, fx, fy, fw, fh in placed:
+            if figure_ink_in(stem, fx, fy, (x0 - 4, y0 - 4, x1 + 4, y1 + 4)):
+                problems.append(f"image within 4 pt of figure ink: {name} / {stem}")
     for stem, x, y, w, h in placed:
         ink = ink_rect(stem, x, y)
         if ink[0] < 0 or ink[1] < 0 or ink[2] > W or ink[3] > H:

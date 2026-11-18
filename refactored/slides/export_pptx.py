@@ -25,7 +25,7 @@ file and NSBP2026_deck_full.pdf share one layout source. Neither PDF is read or 
              left out, their space kept, and their LaTeX is written to the slide's speaker notes for
              re-entry as native PowerPoint equations.
   Shapes     background, Crimson rules, card and chip outlines, footer rule and progress dots, as
-             native rectangles, rounded rectangles, ellipses and lines; the slide 1 logos as PNG pictures.
+             native rectangles, rounded rectangles, ellipses and lines; chrome images (logos, MAVEN) as PNG pictures.
   Figures    at their exact slots from Slide.placed: SVG (figures/deck/svg, rendered by the figure
              scripts with DECK_SVG=1: text as text, mathtext as outlines) with the 300-dpi PNG as
              fallback; fig01 and fig06a, heavy particle and mesh plots, as their 300-dpi transparent
@@ -552,13 +552,13 @@ def export_slide(prs, s: bd.Slide, notes: list):
             set_alpha(ln.line._get_or_add_ln().find(qn("a:solidFill")), (a.get_alpha() or 1.0) * al)
             ln.name = "Rule"
             counts["shape"] += 1
-        elif isinstance(a, AxesImage):                   # slide 1 logos: the RGBA array as drawn, as PNG
+        elif isinstance(a, AxesImage):                   # logos, MAVEN: the RGBA array as drawn, as PNG
             x0, x1, yb, yt = a.get_extent()              # y-down axes: extent (left, right, bottom, top)
             buf = io.BytesIO()
             plt.imsave(buf, np.asarray(a.get_array()), format="png")
             buf.seek(0)
             pic = slide.shapes.add_picture(buf, emu(x0), emu(min(yb, yt)), emu(x1 - x0), emu(abs(yb - yt)))
-            pic.name = "Logo"
+            pic.name = "Image"
             counts["shape"] += 1
         else:
             raise SystemExit(f"slide {s.number}: no PowerPoint translation for {type(a).__name__}")
