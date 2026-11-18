@@ -5,7 +5,8 @@ alternative slide in slides/alternatives_review.pdf, and the figure is drawn at 
 nothing is rescaled when placed. slides/build_deck.py audits every placed PDF against them.
 
 Adopted slots live in deckstyle.SIZES instead: fig01 title art -> "title", 4D -> "plate",
-6A wedge -> "evidence_tall", 6A plots -> "column" (STYLE_VERSION 1.1); 7B-2 strip -> "strip" (1.2).
+6A wedge -> "evidence_tall", 6A plots -> "column" (STYLE_VERSION 1.1); 7B-2 strip -> "strip" (1.2);
+merged slide 7 (wheel sector + fluid coupling) -> "split_left", "split_band", "split_right" (1.3).
 If another alternative is adopted, promote its slot the same way (with a STYLE_VERSION bump).
 
 Slide geometry they are cut from (points, y down; build_deck.py): margins 40, content 160-500,

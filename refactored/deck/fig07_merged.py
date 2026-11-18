@@ -1,18 +1,19 @@
-"""PROTOTYPE (not in the deck yet): figures for a merged slide 7 + 8 (wheel sector + fluid coupling),
-reviewed as slides/build/slide07_merged_preview.pdf (slides/build_slide07_merged_preview.py).
+"""Slide 7 · FIG 7 (merged slide: the wheel sector and the fluid model that drives it), as built:
 
-  fig07m_ring      (6.25 x 3.15 in)  build step 1 only: the full ring at true scale, the sector dark
-  fig07m_sector    (6.25 x 3.15 in)  from step 2: the wheel sector in 3D (FIG 7e's drawing) in the
-                                     ring's place, the true-scale ring kept as a thumbnail (RING_INSET)
-  fig07m_budget    (6.25 x 1.60 in)  from step 1: particles per run, the full ring as 170 sector tiles
-  fig08m_profile   (5.64 x 3.14 in)  step 3: FIG 8a (MAGNUS-P vs linear viscous theory) redrawn for
-                                     the right column, above the COUPLING CHECK card
+  fig07m_ring      split_left  (6.25 x 3.15 in)  build step 1 only: the full ring at true scale, the
+                                                 sector dark
+  fig07m_sector    split_left  (6.25 x 3.15 in)  from step 2: the wheel sector in 3D (FIG 7e's drawing)
+                                                 in the ring's place, the true-scale ring kept as a
+                                                 thumbnail (RING_INSET)
+  fig07m_budget    split_band  (6.25 x 1.60 in)  from step 1: particles per run, the full ring as 170
+                                                 sector tiles
+  fig07m_profile   split_right (5.64 x 3.14 in)  step 3: FIG 8a (MAGNUS-P vs linear viscous theory)
+                                                 redrawn for the right column, above the COUPLING CHECK card
 
-Slide grid (points, y down): content 150-492; left column 40-490 (6.25 in), gutter 0.33 in, right column
-514-920 (5.64 in). This slide trades the deck's 7.22 / 4.67 in split for 6.25 / 5.64 in so FIG 8a keeps
-its labels at a legible size. The slots are registered at runtime by the preview builder; none is a
-deckstyle SIZES token. If the merge is adopted, promote them (STYLE_VERSION bump) or add them to
-deck/slots.py.
+Slide grid (points, y down; slides/build_deck.slide7): content 150-492; left column 40-490 (6.25 in),
+gutter 0.33 in, right column 514-920 (5.64 in). This slide trades the deck's 7.22 / 4.67 in split for
+6.25 / 5.64 in so FIG 8a keeps its labels at a legible size; the three slots are deckstyle SIZES
+(STYLE_VERSION 1.3).
 
 Drawing code is reused: ring(), sector_3d(), sector_labels() and tiles() from fig07_alternatives.py
 (FIG 7e) and the FIG 8a recipe of fig08_baselines.py, with label positions refit to the smaller
@@ -22,7 +23,7 @@ slots. Numbers come from deck/data/slide07_facts.json, slide04_facts.json and fi
 Each figure passes audit_text() (measured ink) before it is saved: every text inside the figure, no two texts
 overlapping, and no in-axes label crossing a plotted line.
 
-    cd refactored && conda run -n dsmc python deck/fig07m_merged_proto.py
+    cd refactored && conda run -n dsmc python deck/fig07_merged.py
 """
 import itertools
 import json
@@ -43,8 +44,8 @@ DATA = Path(__file__).resolve().parent / "data"
 F7 = f7.F7
 SRC7 = (*f7.SOURCES, f"schematic + true-scale ring; MarsAtmos {F7['sources']['marsatmos_commit']}")
 
-PROTO_SLOTS = {"fig07m_ring": (6.25, 3.15), "fig07m_sector": (6.25, 3.15),
-               "fig07m_budget": (6.25, 1.60), "fig08m_profile": (5.64, 3.14)}
+SLOT = {"fig07m_ring": "split_left", "fig07m_sector": "split_left", "fig07m_budget": "split_band",
+        "fig07m_profile": "split_right"}                  # deckstyle SIZES key of each figure
 RING_INSET = True          # keep the true-scale ring as a thumbnail once the sector replaces it
 X_TAB = 0.043             # left edge of the misfit table (m/s, log axis)
 DOMAIN_CX = 2.62           # common centre (in) of the step-1 ring and the step-2 sector
@@ -128,7 +129,7 @@ def finish(fig, name, *inputs):
 
 # ================================================================= the domain slot
 def domain_ring():
-    w, h = PROTO_SLOTS["fig07m_ring"]
+    w, h = ds.SIZES[SLOT["fig07m_ring"]]
     fig, ax = f7.canvas(w, h)
     rm, cy = 0.98, 1.66
     f7.ring(ax, DOMAIN_CX, cy, rm, angle_deg=90.0)
@@ -140,7 +141,7 @@ def domain_ring():
 
 
 def domain_sector():
-    w, h = PROTO_SLOTS["fig07m_sector"]
+    w, h = ds.SIZES[SLOT["fig07m_sector"]]
     fig, ax = f7.canvas(w, h)
     f7.PLACE.update(scale=1.42, ox=DOMAIN_CX + 0.10, oy=-1.62)
     lat_f = f7.sector_3d(ax)["lat_front"]
@@ -160,7 +161,7 @@ def domain_sector():
 # ================================================================= particles per run
 def budget():
     """The full ring's particles as 170 sector-sized tiles in 5 rows; the one sector dark."""
-    w, h = PROTO_SLOTS["fig07m_budget"]
+    w, h = ds.SIZES[SLOT["fig07m_budget"]]
     fig, ax = f7.canvas(w, h)
     ratio = F7["s6"]["particles"] / F7["stage1b"]["particles"]
     n = 10 * round(ratio / 10)
@@ -188,7 +189,7 @@ def profile():
     the left of the curve move to free space on its right."""
     d = np.load(DATA / "fig08a_plate1A.npz")
     z, wm, wl = d["z_km"], d["w_model"], d["w_linear"]
-    fig, ax = plt.subplots(figsize=PROTO_SLOTS["fig08m_profile"])
+    fig, ax = plt.subplots(figsize=ds.SIZES[SLOT["fig07m_profile"]])
 
     ax.axhspan(180, 200, color=ds.SLATE, alpha=0.15, lw=0, zorder=0)
     ds.label(ax, "absorbing layer", (0.25, 190), color=ds.GRANITE, ha="left", va="center")
@@ -234,7 +235,7 @@ def profile():
     ax.set_xlabel("Wave vertical-wind amplitude (m/s)")
     ax.set_ylabel("Altitude (km)")
     meta = json.loads(str(d["meta"]))
-    finish(fig, "fig08m_profile", "deck/data/fig08a_plate1A.npz",
+    finish(fig, "fig07m_profile", "deck/data/fig08a_plate1A.npz",
            f"MAGNUS-P {meta['run']} {Path(meta['source']).name} @ MAGNUS-P {meta['magnusp_commit']}")
 
 

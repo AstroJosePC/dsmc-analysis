@@ -1,4 +1,4 @@
-"""Editable PowerPoint export of the 15-slide master deck (slides 1-9, backups B1-B6).
+"""Editable PowerPoint export of the 14-slide master deck (slides 1-8, backups B1-B6).
 
     cd refactored
     conda run -n dsmc python slides/export_pptx.py --render-svg   # figures as SVG (after a figure changes)
@@ -80,7 +80,7 @@ SVG_DIR = bd.FIGS / "svg"
 RASTER = {"fig01_title_wedge", "fig06a_s6_halfwedge"}       # heavy particle / mesh plots: 300-dpi PNG
 NATIVE = {"figB1_run_table"}                                # rebuilt as a native table
 SVG_SCRIPTS = [("fig02_ngims.py",), ("fig03_regimes.py",), ("fig04_method.py",), ("fig05_growth.py",),
-               ("fig06_alternatives.py", "panels"), ("fig07_alternatives.py", "b2"), ("fig08_baselines.py",),
+               ("fig06_alternatives.py", "panels"), ("fig07_merged.py",),
                ("fig09_roadmap.py",), ("figB_backups.py", "B1b", "B2", "B3", "B4", "B5", "B6")]
 MATH_FONT = "STIX Two Text"
 MATH_SYMBOLS = "STIX Two Math"                              # arrows and relations STIX Two Text lacks
@@ -923,9 +923,7 @@ def render_svg():
 
 
 def build(out: Path = PPTX, quiet: bool = False) -> Path:
-    slides = [bd.slide1(), bd.slide2(), bd.slide3(), bd.slide4(), bd.slide5(), bd.slide6(), bd.slide7(),
-              bd.slide8(), bd.slide9(), bd.backup1(), bd.backup2(), bd.backup3(), bd.backup4(), bd.backup5(),
-              bd.backup6()]
+    slides = bd.deck_slides()
     for s in slides:
         for stem, *_ in s.placed:
             bd.audit_figure(stem)

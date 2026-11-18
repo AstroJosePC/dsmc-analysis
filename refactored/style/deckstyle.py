@@ -20,7 +20,7 @@ from matplotlib import font_manager
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.transforms import blended_transform_factory
 
-STYLE_VERSION = "1.2 (2026-11-17)"  # bump when any token changes; copy to every repo
+STYLE_VERSION = "1.3 (2026-11-17)"  # bump when any token changes; copy to every repo
 
 # ---------------------------------------------------------------- palette
 # Howard University OUC primary palette
@@ -74,6 +74,10 @@ SIZES = {
     "column": (4.67, 1.62),         # word-column plot under a hero number (two per column)
     # added in 1.2 (slide 7 as adopted)
     "strip": (12.22, 3.15),         # full-width figure over a row of three hero metrics
+    # added in 1.3 (slide 7 merged with the fluid coupling: a 6.25 | 0.33 | 5.64 in split)
+    "split_left": (6.25, 3.15),     # left of the split: domain drawing (ring, then sector)
+    "split_band": (6.25, 1.60),     # left of the split, under split_left: a one-row band
+    "split_right": (5.64, 3.14),    # right of the split: a plot above a measure card
 }
 
 # ---------------------------------------------------------------- colormaps
