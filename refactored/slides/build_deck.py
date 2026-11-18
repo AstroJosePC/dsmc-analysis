@@ -605,7 +605,7 @@ def slide5():
     s = Slide(5)
     header(s, "1D RESULT · PUBLISHED",
            "Spherical geometry cuts wave-driven heating by 40–56% compared with slab models.")
-    s.reveal(1)                                   # build: growth curves, the numbers, the measure
+    s.reveal(1)                                   # build: growth curves with their measure, the numbers
     s.place("fig05a_amplitude_growth_deck", EVID_X, EVID_Y)
     s.reveal(2)
     hero, unit = fp(SERIF, 54), fp(SANS, 18, 300)
@@ -626,7 +626,7 @@ def slide5():
                 eq=[r"$G = A(z)/A_{150},\quad d\langle T\rangle/dr$"],
                 lines=[("Growth relative to 150 km; heating as", 16, ds.GRANITE, 300),
                        ("the cycle-5 mean temperature gradient.", 16, ds.GRANITE, 300)])
-    s.reveal(3)
+    s.reveal(1)                                   # the definitions come with the curves
     _, ch = card.layout()
     card.draw(s, WORD_X, EVID_BOTTOM - ch)
     footer(s, cite("Pérez Chávez et al. 2026, ", ("italic", "Icarus"), " 447, 116900"))
