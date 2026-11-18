@@ -500,18 +500,18 @@ def slide2():
     header(s, "WHAT MAVEN SEES",
            "MAVEN sees large, species-dependent waves right where Mars' atmosphere stops behaving "
            "like a fluid.")
-    s.reveal(1)                                   # build: one pass, all passes, what they show
-    s.place("fig02a_ngims_orbit2521_deck", EVID_X, EVID_Y, builds=1)   # FIG 2b's caption at step 2
+    s.reveal(1)                                   # build: one pass, its peak, all passes, what they show
+    s.place("fig02a_ngims_orbit2521_deck", EVID_X, EVID_Y, builds=2)   # 2: peak callout, 3: FIG 2b caption
     maven = trimmed_png("maven_spacecraft.png")
-    w_big = WORD_W - 16                           # steps 1-2: the word column is still empty
+    w_big = WORD_W - 16                           # steps 1-3: the word column is still empty
     h_big = w_big * maven.shape[0] / maven.shape[1]
-    s.image(maven, WORD_X + 8, EVID_Y + (EVID_H - h_big) / 2, w=w_big, name="MAVEN (large)", until=2)
+    s.image(maven, WORD_X + 8, EVID_Y + (EVID_H - h_big) / 2, w=w_big, name="MAVEN (large)", until=3)
     iw, ih = (v * 72 for v in ds.SIZES["inset"])
-    s.reveal(2)
+    s.reveal(3)
     s.place("fig02b_ngims_sza_deck", EVID_X + EVID_W - iw, EVID_BOTTOM - ih)   # x axes level with 2a
 
-    s.reveal(3)
-    # from step 3 a thumbnail in FIG 2a's empty upper right: right of the 40% line, left of the legend,
+    s.reveal(4)
+    # from step 4 a thumbnail in FIG 2a's empty upper right: right of the 40% line, left of the legend,
     # above the 87% callout (check_layout: no figure ink under it or within 4 pt)
     s.image(maven, EVID_X + 233, EVID_Y + 40, w=100, name="MAVEN (small)")
     y = EVID_Y + 31

@@ -8,8 +8,9 @@ FIG 2a (evidence slot): delta rho / rho_bar against altitude for the inbound pas
   40% event threshold dotted, and this pass's own exobase (N_tot = 5e18 m^-2, 151.6 km) as the Gold
   dashed line: on the cold nightside it sits well below the 230 km of the model atmosphere, so the
   deck default would misplace it. The axes fill the left 4.5 in; the right part of the field holds the
-  key (shared with FIG 2b) above the space where build_deck.py places FIG 2b. Build step 1
-  (fig02a_ngims_orbit2521_b1, progressive deck) omits FIG 2b's caption.
+  key (shared with FIG 2b) above the space where build_deck.py places FIG 2b. Build steps for the
+  progressive deck: _b1 the profiles and key only, _b2 + the Crimson peak callout, the finished
+  figure + FIG 2b's caption (it appears with FIG 2b).
 FIG 2b (inset slot): median over passes of each pass's mean |delta rho / rho_bar|, in 15 deg SZA bins
   (>= 50 passes), all 4,282 inbound passes Feb 2015 - Nov 2017, no event selection; bands are the
   bootstrap 16-84% range of the median. Its x axis sits at the same height as FIG 2a's.
@@ -59,9 +60,6 @@ def fig2a(d):
     ax.set_xlabel(r"$\delta\rho/\bar\rho$  (%)")
     ax.set_ylabel("Altitude (km)")
     ds.label(ax, f"{thr}% threshold", (thr + 2, 141), ha="left", va="bottom")
-    zp, pk = FACTS["orbit_peak_alt_km"], FACTS["orbit_peak_pct"]["CO2"]
-    ds.takeaway(ax, f"{pk}% at {zp:.0f} km", xy=(pk + 1.0, zp + 1.2), xytext=(52, 172),
-                ha="left", va="center")
 
     # key and pass caption in the right part of the field, above FIG 2b
     x0 = (left + width + 0.42) / W_A
@@ -74,9 +72,14 @@ def fig2a(d):
     fig.legend(handles, labels, loc="upper left", bbox_to_anchor=(x0 - 0.008, 1 - 0.66 / H_A),
                fontsize=14, handlelength=1.6, handletextpad=0.6, labelspacing=0.35, borderaxespad=0,
                borderpad=0)
-    # caption for FIG 2b, which build_deck.py places in the lower right of this field; in the
-    # progressive deck it appears with FIG 2b (build step 2)
+    # the peak callout: its own build step
     build.at(2)
+    zp, pk = FACTS["orbit_peak_alt_km"], FACTS["orbit_peak_pct"]["CO2"]
+    ds.takeaway(ax, f"{pk}% at {zp:.0f} km", xy=(pk + 1.0, zp + 1.2), xytext=(52, 172),
+                ha="left", va="center")
+    # caption for FIG 2b, which build_deck.py places in the lower right of this field; in the
+    # progressive deck it appears with FIG 2b (build step 3)
+    build.at(3)
     fig.text(x0, (H_B + 0.10) / H_A, "ALL PASSES · 2015–2017", fontsize=12, fontweight="semibold",
              color=ds.GRANITE, va="baseline")
     build.save("fig02a_ngims_orbit2521", *SRC)
