@@ -398,6 +398,34 @@ def chip(s: Slide, x, y, text, size=14.0, h=22.0):
 
 
 # ================================================================= slides
+def place_title_logos(s: Slide, x: float, y_center: float, howard_h: float = 86.0, nasa_h: float = 68.0,
+                      gap: float = 26.0):
+    """Place Howard University (light-on-Midnight reverse) and NASA logos in the bottom-left of slide 1."""
+    slides_dir = Path(__file__).resolve().parent
+    howard = mpimg.imread(slides_dir / "howard_logo.png").copy()
+    ys, xs = np.where(howard[..., 3] > 0.02)
+    howard = howard[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+    # Convert Howard Blue (#003963) -> Cultured and white clock face -> Midnight; keep crimson 1867 & rule
+    r, g, b = howard[..., 0], howard[..., 1], howard[..., 2]
+    non_red = (r - b) < 0.15
+    t = np.clip((g - 0.2235) / (1.0 - 0.2235), 0.0, 1.0)
+    cultured = np.array(matplotlib.colors.to_rgb(ds.CULTURED))
+    midnight = np.array(matplotlib.colors.to_rgb(ds.MIDNIGHT))
+    inv_rgb = (1.0 - t)[..., None] * cultured + t[..., None] * midnight
+    howard[..., :3] = np.where(non_red[..., None], inv_rgb, howard[..., :3])
+    hw = howard_h * (howard.shape[1] / howard.shape[0])
+    hy0 = y_center - howard_h / 2
+    s.ax.imshow(howard, extent=(x, x + hw, hy0 + howard_h, hy0), interpolation="none", zorder=5)
+
+    nasa = mpimg.imread(slides_dir / "nasa_logo.png")
+    ys_n, xs_n = np.where(nasa[..., 3] > 0.02)
+    nasa = nasa[ys_n.min():ys_n.max() + 1, xs_n.min():xs_n.max() + 1]
+    nw = nasa_h * (nasa.shape[1] / nasa.shape[0])
+    nx0 = x + hw + gap
+    ny0 = y_center - nasa_h / 2
+    s.ax.imshow(nasa, extent=(nx0, nx0 + nw, ny0 + nasa_h, ny0), interpolation="none", zorder=5)
+
+
 def slide1():
     s = Slide(1, dark=True)
     x = 56.0
@@ -411,9 +439,10 @@ def slide1():
             s.text(x, 140 + 31.5 * i, line, fp(SERIF, 30), color=ds.CULTURED)
     s.rule(x, 284, 48, 2.5, ds.CRIMSON)
     s.text(x, 322, "José Ángel Pérez Chávez", fp(SANS, 15), color=ds.CULTURED)
-    s.text(x, 340, "O. J. Tucker · R. E. Johnson · S. Carberry Mogan · C. Boxe", fp(SANS, 11, 300),
+    s.text(x, 340, "O. J. Tucker · R. E. Johnson · S. Carberry Mogan · C. Blaszczak-Boxe", fp(SANS, 11, 300),
            color=ds.CULTURED, alpha=0.75)
     s.tracked(x, 364, "HOWARD UNIVERSITY", fp(SANS, 9.5), 0.2, color=ds.CULTURED, alpha=0.75)
+    place_title_logos(s, x, y_center=448.0)
     fw, fh = figure_size("fig01_title_wedge_deck")
     s.place("fig01_title_wedge_deck", W - fw - 16, H - fh - 32)
     return s
@@ -454,16 +483,19 @@ def slide2():
 def slide3():
     s = Slide(3)
     header(s, "WHY KINETIC",
-           "Near the exobase, molecules rarely collide, so fluid equations lose their footing "
-           "and kinetic models don't.")
+           "Near the exobase, gas becomes rarefied and mean free paths grow, "
+           "so non-equilibrium solutions require kinetic models.")
     s.reveal(1)                                   # build: regimes and Kn, then the two statements
     s.place("fig03_regime_schematic_deck", EVID_X, EVID_Y)
     body = fp(SANS, 20)
-    y = EVID_Y + 15
-    for k, stmt in enumerate(("Fluid models need many collisions per wave period.",
-                              "DSMC has no closure: heating and dissipation emerge from the collisions.")):
+    y = EVID_Y + 8
+    for k, stmt in enumerate((
+        r"Navier-Stokes errors become significant when local $\mathrm{Kn}>0.1$, "
+        r"and continuum models must be replaced by molecular at $\mathrm{Kn}\sim0.2$.",
+        "Heating and dissipation effects self-consistently emerge from collisions.",
+    )):
         s.reveal(2 + k)
-        y = s.paragraph(WORD_X, y, stmt, body, WORD_W, 27) + 42
+        y = s.paragraph(WORD_X, y, stmt, body, WORD_W, 26) + 37
     s.reveal(1)
     card = Card("WHERE FLUIDS FAIL",
                 eq=[[(r"$\mathrm{Kn} = \lambda_{\mathrm{mfp}}/H \;\to\; 1$", fp(SANS, 20), ds.MIDNIGHT),
@@ -495,7 +527,7 @@ def slide4():
     f = facts("slide04_facts")
     ratio = int(f["tau_100"] / f["dt"])          # shortest collision time in S6 (100 km) over the step
     nb = " "                                # keep a value with its symbol and unit on one line
-    steps = [("Move", f"fly straight in x, y, z for Δt{nb}={nb}{f['dt']:.2f}{nb}s, {ratio}× shorter than "
+    steps = [("Move", f"traverse under gravity for Δt{nb}={nb}{f['dt']:.2f}{nb}s, {ratio}× shorter than "
                       "a collision time"),
              ("Collide", "random pairs in the same cell; momentum and energy conserved"),
              ("Boundaries", f"wave-driven inflow at {f['z_bot']:.0f}{nb}km; escape above "
